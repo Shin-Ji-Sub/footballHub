@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mezzala.mapper.AccountMapper">
+
+    <select id="selectUser" parameterType="String" resultType="UserDto">
+        SELECT
+            user_id as userId,
+            nickname,
+            social_method as socialMethod,
+            join_date as joinDate,
+            is_admin as isAdmin,
+            state
+        FROM
+            user
+        WHERE
+            user_id = #{userId}
+        AND
+            state = true;
+    </select>
+
+    <insert id="insertAccount" parameterType="hashMap">
+        INSERT INTO
+            user (
+                user_id,
+                nickname,
+                social_method
+            )
+        VALUES (
+                #{userId},
+                #{nickname},
+                #{socialMethod}
+            );
+    </insert>
+
+</mapper>

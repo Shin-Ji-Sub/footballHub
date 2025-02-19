@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/main.css">
+    <title>Mezzla</title>
+</head>
+<body>
+    <div th:replace="~{/modules/header}"></div>
+
+    <main>
+        <div class="sign-up-main-container">
+            <div class="subject-section">
+                <h2>회원가입</h2>
+                <div class="to-sign-in"><a href="/account/sign-in">로그인 할래요</a></div>
+            </div>
+            <div class="field">
+                <div class="kakao-button">
+                    <a href="https://kauth.kakao.com/oauth/authorize"
+                       th:href="@{https://kauth.kakao.com/oauth/authorize(client_id=${kakaoApiKey}, redirect_uri=${redirectUri}, response_type='code')}">
+                        <img src="/img/kakao_signup_medium_narrow.png">
+                    </a>
+                </div>
+                <div class="naver-button">
+                    <a href="https://nid.naver.com/oauth2.0/authorize"
+                       th:href="@{https://nid.naver.com/oauth2.0/authorize(client_id=${naverApiKey}, redirect_uri=${naverRedirectUri}, response_type='code', state=${state})}">
+                        <div class="naver-signup-button">
+                            <img src="/img/btnG_naver_logo.png" alt="Naver Logo">
+                            Naver로 시작하기
+                        </div>
+                    </a>
+                </div>
+                <div class="center-circle"></div>
+                <div class="mid-line"></div>
+                <div class="goal-area left"></div>
+                <div class="goal-area right"></div>
+                <div class="penalty-box left"></div>
+                <div class="penalty-box right"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(window).on('load', function() {
+
+        });
+    </script>
+</body>
+</html>
