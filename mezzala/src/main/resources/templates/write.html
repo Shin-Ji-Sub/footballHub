@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Text Editor -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Custom -->
+    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/write.css">
+    <title>FootballHub</title>
+</head>
+<body>
+    <div th:replace="~{/modules/header}"></div>
+<!--    <input id="socialMethod" type="hidden" th:if="${session.user != null}" th:value="${session.user.socialMethod}">-->
+
+    <form id="#" action="/personal/signup" method="POST" enctype="multipart/form-data">
+    <main>
+        <div class="main-container">
+            <div class="board-container">
+                <ul>
+                    <li>파일 형태 제한</li>
+                    <li>파일 크기 제한</li>
+                    <li>비하 자제</li>
+                </ul>
+                <div class="write-header">
+                    <select name="#" class="form-select write-subject" id="writeLargeCategory" aria-label="Default select example">
+                        <option selected>카테고리</option>
+                        <option th:each="largeCategory : ${largeCategories}"
+                                th:value="${largeCategory.largeCategoryName}"
+                                th:text="${largeCategory.largeCategoryName}"></option>
+                    </select>
+                    <select disabled name="#" class="form-select write-subject" id="normalCategory" aria-label="Default select example">
+                        <option id="deleteOption" selected>카테고리</option>
+                        <th:block th:each="largeCategory : ${largeCategories}"
+                                  th:if="${largeCategory.largeCategoryId == 1}">
+                            <option th:each="smallCategory : ${largeCategory.smallCategories}"
+                                    th:value="${smallCategory.smallCategoryName}"
+                                    th:text="${smallCategory.smallCategoryName}"></option>
+                        </th:block>
+                    </select>
+                    <div class="input-group flex-nowrap display-none" id="teamValueContainer">
+                        <input readonly type="text" id="teamValue" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping">
+                        <span class="input-group-text" id="addon-wrapping">
+                          <i class="bi bi-arrow-clockwise"></i>
+                        </span>
+                    </div>
+                    <div class="search-team-container display-none" id="fanCategory">
+                        <input type="text" class="team-search-value" id="teamSearchValue" placeholder="팀 이름을 입력해주세요">
+                        <div id="appendTeam">
+                            <th:block th:each="largeCategory : ${largeCategories}"
+                                      th:if="${largeCategory.largeCategoryId == 2}">
+                                <div th:each="smallCategory : ${largeCategory.smallCategories}"
+                                     th:value="${smallCategory.smallCategoryName}"
+                                     th:text="${smallCategory.smallCategoryName}"
+                                     class="search-team"></div>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+                <input type="text" class="write-subject" id="writeSubject" placeholder="제목">
+                <div id="content"></div>
+            </div>
+            <button class="write-button">글작성</button>
+        </div>
+    </main>
+    </form>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Text Editor -->
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(window).on('load', function() {
+            // editor.getMarkdown();
+            const editor = new toastui.Editor({
+                    el: document.querySelector('#content'), // 에디터를 적용할 요소 (컨테이너)
+                    height: '500px',                        // 에디터 영역의 높이 값 (OOOpx || auto)
+                    initialEditType: 'wysiwyg',            // 최초로 보여줄 에디터 타입 (markdown || wysiwyg)
+                    // initialValue: '내용을 입력해 주세요.',     // 내용의 초기 값으로, 반드시 마크다운 문자열 형태여야 함
+                    previewStyle: 'vertical',                // 마크다운 프리뷰 스타일 (tab || vertical)
+                    hideModeSwitch: true,
+                    placeholder: "내용을 입력해 주세요."
+            });
+
+            const writeSubject = $('#writeSubject');
+            const writeLargeCategory = $('#writeLargeCategory');
+            const normalCategory = $('#normalCategory');
+            const fanCategory = $('#fanCategory');
+            const teamValueContainer = $('#teamValueContainer');
+            const contentWidth = $('#content').width();
+            const appendTeam = $('#appendTeam');
+            const teamSearchValue = $('#teamSearchValue');
+            const refreshBtn = $('#addon-wrapping');
+            const deleteOption = $('#deleteOption');
+            const teamArrEl = $('.search-team');
+
+            const width = contentWidth / 2;
+
+            writeSubject.css('width', contentWidth);
+            writeLargeCategory.css('width', width);
+            normalCategory.css('width', width);
+            fanCategory.css('width', width);
+            teamValueContainer.css('width', width);
+
+            writeLargeCategory.on('change', () => {
+              const writeLargeCategoryValue = writeLargeCategory.val();
+              if (writeLargeCategoryValue == '일반') {
+                deleteOption.remove();
+                normalCategory.removeAttr('disabled');
+                normalCategory.removeClass('display-none');
+                fanCategory.addClass('display-none');
+                teamValueContainer.addClass('display-none');
+              } else if (writeLargeCategoryValue == '공화국') {
+                fanCategory.removeClass('display-none');
+                normalCategory.addClass('display-none');
+
+                appendTeam.css({
+                  'bottom' : writeLargeCategory.height() * 2,
+                  'max-height': teamArrEl.outerHeight() * 5 + 'px',
+                  'overflow-y': 'auto'
+                });
+              }
+            });
+
+            teamSearchValue.on('input', () => {
+              const searchValue = teamSearchValue.val();
+              const result = teamArrEl.filter((i, el) => $(el).text().trim().includes(searchValue));
+              appendTeam.empty();
+              for (let i = 0; i < result.length; i++) {
+                appendTeam.append(`<div class='search-team'>${$(result[i]).text()}</div>`);
+              }
+              if (searchValue.length == 0) {
+                for (let i = 0; i < teamArrEl.length; i++) {
+                  appendTeam.append(`<div class='search-team'>${$(teamArrEl[i]).text()}</div>`);
+                }
+              }
+            });
+
+            appendTeam.on('click', '.search-team', (e) => {
+              const value = $(e.target).html();
+              $('#teamValue').val(value);
+              teamValueContainer.removeClass('display-none');
+              fanCategory.addClass('display-none');
+            });
+
+            refreshBtn.on('click', () => {
+              fanCategory.removeClass('display-none');
+              teamValueContainer.addClass('display-none');
+            });
+        });
+    </script>
+</body>
+</html>

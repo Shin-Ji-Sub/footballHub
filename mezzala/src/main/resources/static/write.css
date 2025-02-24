@@ -1,0 +1,71 @@
+/* Write Section */
+.placeholder {
+  all: unset !important;
+}
+
+.board-container {
+  width: 60%;
+}
+
+.write-header {
+  display: flex;
+}
+
+.write-subject {
+  padding: 10px;
+  border: 1px solid lightgray;
+  border-bottom: none;
+}
+
+
+.write-button {
+  padding: 5px 1rem 5px 1rem;
+  border: 1px solid gray;
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px #999999;
+  font-size: 1.2rem;
+}
+
+.write-button:hover {
+  box-shadow: inset 0px 0px 10px #666;
+}
+
+.display-none {
+  display: none !important;
+}
+
+.search-team-container {
+  position: relative;
+}
+
+.team-search-value {
+  width: 100%;
+  height: 100%;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+#appendTeam {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #fff;
+  z-index: 9;
+}
+
+.search-team {
+  border: 1px solid lightgray;
+  box-shadow: 0px 0px 5px #999999;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.search-team:hover {
+  box-shadow: inset 0px 0px 10px #666;
+}
+
+#addon-wrapping {
+  cursor: pointer;
+}

@@ -1,8 +1,11 @@
 package com.mezzala.config;
 
 import com.mezzala.mapper.AccountMapper;
+import com.mezzala.mapper.BoardMapper;
 import com.mezzala.service.AccountService;
 import com.mezzala.service.AccountServiceImpl;
+import com.mezzala.service.BoardService;
+import com.mezzala.service.BoardServiceImpl;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.core.env.Environment;
@@ -34,18 +37,18 @@ public class RootConfiguration {
         return new HikariConfig();
     }
 
-//    @Bean
-//    public ProductService productService(ProductMapper productMapper) throws Exception {
-//        ProductServiceImpl productService = new ProductServiceImpl();
-//        productService.setProductMapper(productMapper);
-//        return productService;
-//    }
-
     @Bean
     public AccountService accountService(AccountMapper accountMapper) throws Exception {
         AccountServiceImpl accountService = new AccountServiceImpl();
         accountService.setAccountMapper(accountMapper);
         return accountService;
+    }
+
+    @Bean
+    public BoardService boardService(BoardMapper boardMapper) throws Exception {
+        BoardServiceImpl boardService = new BoardServiceImpl();
+        boardService.setBoardMapper(boardMapper);
+        return boardService;
     }
 
     @Bean

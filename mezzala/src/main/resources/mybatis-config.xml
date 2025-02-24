@@ -6,13 +6,14 @@
 <configuration>
 
 	<typeAliases>
-<!--		<typeAlias type="com.groupware.dto.ProjectDto" alias="ProjectDto" />-->
 		<typeAlias type="com.mezzala.dto.UserDto" alias="UserDto" />
+		<typeAlias type="com.mezzala.dto.BoardLargeCategoryDto" alias="BoardLargeCategoryDto" />
+		<typeAlias type="com.mezzala.dto.BoardSmallCategoryDto" alias="BoardSmallCategoryDto" />
 	</typeAliases>
 
 	<mappers>
-<!--		<mapper resource="com/groupware/mapper/ProjectMapper.xml" />-->
 		<mapper resource="com/mezzala/mapper/AccountMapper.xml"/>
+		<mapper resource="com/mezzala/mapper/BoardMapper.xml"/>
 	</mappers>
 
 </configuration>

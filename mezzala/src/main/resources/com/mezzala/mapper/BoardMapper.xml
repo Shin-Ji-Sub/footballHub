@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mezzala.mapper.BoardMapper">
+    <resultMap id="BoardLargeCategoryResultMap" type="com.mezzala.dto.BoardLargeCategoryDto">
+        <id property="largeCategoryId" column="large_category_id" />
+        <result property="largeCategoryName" column="large_category_name" />
+        <collection property="smallCategories" ofType="com.mezzala.dto.BoardSmallCategoryDto">
+            <id property="smallCategoryIndex" column="small_category_index" />
+            <result property="largeCategoryId" column="large_category_id" />
+            <result property="smallCategoryName" column="small_category_name"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectAllCategory" resultMap="BoardLargeCategoryResultMap">
+        SELECT
+            large.large_category_id,
+            large.large_category_name,
+            small.small_category_index,
+            small.large_category_id,
+            small.small_category_name
+        FROM
+            board_large_category large
+        LEFT JOIN
+            board_small_category small
+        ON
+            large.large_category_id = small.large_category_id
+        ORDER BY
+            small.small_category_index;
+    </select>
+
+</mapper>
