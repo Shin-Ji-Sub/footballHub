@@ -5,8 +5,8 @@
         <div class="account-section">
             <button th:if="${session.user != null}" id="logOut">로그아웃</button>
             <th:block th:if="${session.user == null}">
-                <button id="signUp">회원가입</button>
-                <button id="signIn">로그인</button>
+                <button id="signUp"><a href="/account/sign-up">회원가입</a></button>
+                <button id="signIn"><a href="/account/sign-in">로그인</a></button>
             </th:block>
         </div>
     </div>
