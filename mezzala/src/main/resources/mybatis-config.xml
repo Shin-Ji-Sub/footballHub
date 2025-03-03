@@ -9,6 +9,8 @@
 		<typeAlias type="com.mezzala.dto.UserDto" alias="UserDto" />
 		<typeAlias type="com.mezzala.dto.BoardLargeCategoryDto" alias="BoardLargeCategoryDto" />
 		<typeAlias type="com.mezzala.dto.BoardSmallCategoryDto" alias="BoardSmallCategoryDto" />
+		<typeAlias type="com.mezzala.dto.BoardDto" alias="BoardDto" />
+		<typeAlias type="com.mezzala.dto.BoardAttachDto" alias="BoardAttachDto" />
 	</typeAliases>
 
 	<mappers>

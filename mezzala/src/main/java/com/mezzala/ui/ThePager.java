@@ -46,14 +46,14 @@ public class ThePager {
 							"<span aria-hidden='true'>&laquo;</span>" +
 							"</a>" +
 							"</li>");
-			linkString.append("<li class='page-item'><a class='page-link' href='javascript:'>Previous</a></li>");
+			linkString.append("<li class='page-item'><a class='page-link' href='javascript:'>&lt;</a></li>");
 		} else {
 			linkString.append("<li class='page-item disabled'> " +
 							"<a class='page-link' href='javascript:' aria-label='Previous'>" +
 							"<span aria-hidden='true'>&laquo;</span>" +
 							"</a>" +
 							"</li>");
-			linkString.append("<li class='page-item disabled'><a class='page-link' href='javascript:'>Previous</a></li>");
+			linkString.append("<li class='page-item disabled'><a class='page-link' href='javascript:'>&lt;</a></li>");
 		}
 		
 		//2. 페이지 번호 Link 만들기
@@ -73,14 +73,14 @@ public class ThePager {
 		
 		//3. 다음, 마지막 항목 만들기
 		if (pageNo < pageCount) {
-			linkString.append("<li class='page-item'><a class='page-link' href='javascript:'>Next</a></li>");
+			linkString.append("<li class='page-item'><a class='page-link' href='javascript:'>&gt;</a></li>");
 			linkString.append("<li class='page-item'>" +
 				"<a class='page-link' href='javascript:' aria-label='Next'>" +
 				"<span aria-hidden='true'>&raquo;</span>" +
 				"</a>" +
 				"</li>");
 		} else {
-			linkString.append("<li class='page-item disabled'><a class='page-link' href='javascript:' aria-label='Next'>Next</a></li>");
+			linkString.append("<li class='page-item disabled'><a class='page-link' href='javascript:' aria-label='Next'>&gt;</a></li>");
 			linkString.append("<li class='page-item disabled'>" +
 					"<a class='page-link' href='javascript:' aria-label='Next'>" +
 					"<span aria-hidden='true'>&raquo;</span>" +

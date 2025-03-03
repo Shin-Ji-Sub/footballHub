@@ -1,6 +1,9 @@
 package com.mezzala.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mezzala.common.Util;
+import com.mezzala.dto.BoardDto;
 import com.mezzala.dto.BoardLargeCategoryDto;
 import com.mezzala.service.AccountService;
 import com.mezzala.service.BoardService;
@@ -17,8 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping(path = {"board"})
@@ -48,9 +50,11 @@ public class BoardController {
      */
     @PostMapping(path = {"/image-upload"})
     @ResponseBody
-    public String uploadEditorImage(@RequestParam final MultipartFile image, HttpServletRequest req) {
+    public Map<String, String> uploadEditorImage(@RequestParam final MultipartFile image, HttpServletRequest req, Model model) {
+        Map<String, String> result = new HashMap<>();
+
         if (image.isEmpty()) {
-            return "";
+            return result;
         }
 
         try {
@@ -58,10 +62,13 @@ public class BoardController {
             String userFileName = image.getOriginalFilename();
             String savedFileName = Util.makeUniqueFileName(userFileName);
             image.transferTo(new File(dir, savedFileName));
-            return savedFileName;
+
+            result.put("userFileName", userFileName);
+            result.put("savedFileName", savedFileName);
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
-            return "";
+            return result;
         }
 
 //        String orgFilename = image.getOriginalFilename();                                          // 원본 파일명
@@ -134,5 +141,118 @@ public class BoardController {
 //            return error;
 //        }
     }
+
+    @PostMapping(path = {"/write-board"})
+    @ResponseBody
+    public String writeBoard(BoardDto board, @RequestParam(name = "ImageFilesArr", required = false) String ImageFilesArr) {
+        System.out.println("board : " + board);
+        List<Map<String, String>> imageFiles = new ArrayList<>();
+        if (ImageFilesArr != null && !ImageFilesArr.isEmpty()) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                imageFiles = objectMapper.readValue(ImageFilesArr, new TypeReference<List<Map<String, String>>>() {});
+                System.out.println("이미지 리스트: " + imageFiles);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "error";
+            }
+        }
+
+        boardService.addBoard(board, imageFiles);
+
+        return "success";
+    }
+
+    private static class UploadResponse {
+        public boolean success;
+        public String url;
+
+        public UploadResponse(boolean success, String url) {
+            this.success = success;
+            this.url = url;
+        }
+    }
+
+    @PostMapping(path = "/upload-video", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public UploadResponse uploadVideo(@RequestParam("video") MultipartFile file, HttpServletRequest req) {
+        try {
+            // 업로드 주소
+            String dir = req.getServletContext().getRealPath("/board-attachments");
+
+            // 1. 확장자 체크
+            String originalFilename = file.getOriginalFilename();
+            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
+
+            System.out.println("📂 업로드된 파일: " + originalFilename);
+            System.out.println("📏 파일 크기: " + file.getSize() + " bytes");
+
+            if (!fileExtension.matches("mp4|webm|mov")) {
+                return new UploadResponse(false, "Invalid file type");
+            }
+
+            // 2. 크기 체크 (20MB 이하)
+            if (file.getSize() > 20 * 1024 * 1024) {
+                return new UploadResponse(false, "File too large");
+            }
+
+            // 3. 저장할 파일명 생성 (UUID 사용)
+            String savedFileName = UUID.randomUUID() + "." + fileExtension;
+            file.transferTo(new File(dir, savedFileName));
+
+            // 4. 저장된 파일의 URL 반환
+            String fileUrl = "/board-attachments/" + savedFileName;
+            System.out.println("✅ 저장된 파일 URL: " + fileUrl);
+
+            return new UploadResponse(true, fileUrl);
+//            String fileUrl = req.getContextPath() + "/board-attachments/" + savedFileName;
+//            return new UploadResponse(true, fileUrl);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new UploadResponse(false, "Upload failed");
+        }
+    }
+
+//    @PostMapping(path = {"/video-upload"})
+//    @ResponseBody
+//    public String uploadEditorVideo(@RequestParam final MultipartFile file, HttpServletRequest req) {
+//        if (file.isEmpty()) {
+//            return "";
+//        }
+//
+//        try {
+//            String dir = req.getServletContext().getRealPath("/board-attachments");
+//            String userFileName = file.getOriginalFilename();
+//            String savedFileName = Util.makeUniqueFileName(userFileName);
+//            file.transferTo(new File(dir, savedFileName));
+//            return savedFileName;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "";
+//        }
+//    }
+//
+//    @GetMapping(path = {"/video-print"}, produces = {MediaType.})
+//    @ResponseBody
+//    public byte[] printEditorVideo(@RequestParam final String filename, HttpServletRequest req) {
+//        // 업로드된 파일의 전체 경로
+//        String dir = req.getServletContext().getRealPath("/board-attachments");
+//        String fileFullPath = Paths.get(dir, filename).toString();
+//        File uploadedFile = new File(fileFullPath);
+//        if (uploadedFile.exists() == false) {
+//            throw new RuntimeException();
+//        }
+//        try {
+//            // 이미지 파일을 byte[]로 변환 후 반환
+//            byte[] imageBytes = Files.readAllBytes(uploadedFile.toPath());
+//            return imageBytes;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            byte[] error = {1};
+//            return error;
+//        }
+//    }
 
 }

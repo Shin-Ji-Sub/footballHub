@@ -16,7 +16,7 @@
 <body>
     <div th:replace="~{/modules/header}"></div>
 
-    <form id="writeBoardForm" action="/board/write" method="POST" enctype="multipart/form-data">
+    <form id="writeBoardForm" action="/board/write-board" method="POST" enctype="multipart/form-data">
     <main>
         <div class="main-container">
             <div class="board-container">
@@ -26,23 +26,24 @@
                     <li>비하 자제</li>
                 </ul>
                 <div class="write-header">
-                    <select name="#" class="form-select write-subject" id="writeLargeCategory" aria-label="Default select example">
+                    <select name="largeCategoryId" class="form-select write-subject" id="writeLargeCategory" aria-label="Default select example">
                         <option selected>카테고리</option>
                         <option th:each="largeCategory : ${largeCategories}"
-                                th:value="${largeCategory.largeCategoryName}"
+                                th:value="${largeCategory.largeCategoryId}"
                                 th:text="${largeCategory.largeCategoryName}"></option>
                     </select>
-                    <select disabled name="#" class="form-select write-subject" id="normalCategory" aria-label="Default select example">
+                    <select disabled name="smallCategoryIndex" class="form-select write-subject" id="normalCategory" aria-label="Default select example">
                         <option id="deleteOption" selected>카테고리</option>
                         <th:block th:each="largeCategory : ${largeCategories}"
                                   th:if="${largeCategory.largeCategoryId == 1}">
                             <option th:each="smallCategory : ${largeCategory.smallCategories}"
-                                    th:value="${smallCategory.smallCategoryName}"
+                                    th:value="${smallCategory.smallCategoryIndex}"
                                     th:text="${smallCategory.smallCategoryName}"></option>
                         </th:block>
                     </select>
                     <div class="input-group flex-nowrap display-none" id="teamValueContainer">
                         <input readonly type="text" id="teamValue" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping">
+                        <input type="hidden" name="smallCategoryIndex" id="teamIndexValue">
                         <span class="input-group-text" id="addon-wrapping">
                           <i class="bi bi-arrow-clockwise"></i>
                         </span>
@@ -53,20 +54,29 @@
                             <th:block th:each="largeCategory : ${largeCategories}"
                                       th:if="${largeCategory.largeCategoryId == 2}">
                                 <div th:each="smallCategory : ${largeCategory.smallCategories}"
-                                     th:value="${smallCategory.smallCategoryName}"
+                                     th:data-value="${smallCategory.smallCategoryIndex}"
                                      th:text="${smallCategory.smallCategoryName}"
                                      class="search-team"></div>
                             </th:block>
                         </div>
                     </div>
                 </div>
-                <input type="text" class="write-subject" id="writeSubject" placeholder="제목">
+                <input type="text" class="write-subject" id="writeSubject" name="subject" placeholder="제목">
                 <div id="content"></div>
+<!--                <div class="mb-3">-->
+<!--                    <label for="formFileMultiple" class="form-label">-->
+<!--                        첨부파일(mp4, webm, mov만 지원)은 최대 20MB까지 등록 가능합니다.-->
+<!--                    </label>-->
+<!--                    <input class="form-control" type="file" id="formFileMultiple" accept="video/mp4,video/webm,video/quicktime" multiple>-->
+<!--                    <button type="button" class="btn btn-primary mt-2" id="uploadButton">업로드</button>-->
+<!--                </div>-->
             </div>
             <button type="button" id="submitButton" class="write-button">글작성</button>
         </div>
     </main>
-    <input type="hidden" id="userId" th:value="${session.user.userId}">
+    <div class="visibility-hidden" id="hiddenBox">
+        <input type="hidden" id="userId" name="userId" th:value="${session.user.userId}">
+    </div>
     </form>
 
     <!-- jQuery -->
@@ -78,15 +88,15 @@
 </body>
 <script type="text/javascript" th:inline="javascript">
     $(window).on('load', function() {
-        // editor.getMarkdown();
         const editor = new toastui.Editor({
                 el: document.querySelector('#content'), // 에디터를 적용할 요소 (컨테이너)
                 height: '500px',                        // 에디터 영역의 높이 값 (OOOpx || auto)
                 initialEditType: 'wysiwyg',            // 최초로 보여줄 에디터 타입 (markdown || wysiwyg)
-                // initialValue: '내용을 입력해 주세요.',     // 내용의 초기 값으로, 반드시 마크다운 문자열 형태여야 함
                 previewStyle: 'vertical',                // 마크다운 프리뷰 스타일 (tab || vertical)
                 hideModeSwitch: true,
                 placeholder: "내용을 입력해 주세요.",
+                //useDefaultHTMLSanitizer: false,          // 🔥 기본 HTML 필터링 완전 비활성화
+                //customHTMLSanitizer: html => html,       // HTML 필터링 방지
                 hooks: {
                     async addImageBlobHook(blob, callback) {     // 이미지 업로드 로직 커스텀
                         try {
@@ -103,14 +113,21 @@
                             });
 
                             // 3. 컨트롤러에서 전달받은 디스크에 저장된 파일명
-                            const filename = await response.text();
-                            console.log('서버에 저장된 파일명 : ', filename);
+                            const result = await response.json();
+                            console.log('서버에 저장된 파일명 : ', result.userFileName);
+                            console.log('원본 파일명 : ', result.savedFileName);
+
+                            $('#hiddenBox').append(
+                                `<div class='visibility-hidden image-file'
+                                data-file='{"userFileName": "${result.userFileName}", "savedFileName": "${result.savedFileName}"}'>
+                                </div>`
+                            );
 
                             // 4. addImageBlobHook의 callback 함수를 통해, 디스크에 저장된 이미지를 에디터에 렌더링
-                            //const imageUrl = `/board/image-print?filename=${filename}`;
+                            //const imageUrl = `/board/image-print?filename=${result.savedFileName}`;
                             //callback(imageUrl, 'image alt attribute');
 
-                            callback(`/board/image-print?filename=${filename}`);
+                            callback(`/board/image-print?filename=${result.savedFileName}`);
 
                         } catch (error) {
                             console.error('업로드 실패 : ', error);
@@ -118,6 +135,78 @@
                     }
                 }
         });
+
+<!--        const iframeTag = `-->
+<!--            <p>-->
+<!--                <iframe src="/board-attachments/c8f034d1-72f0-48ad-ba0e-385b42f909a2.mp4"-->
+<!--                    width="100%" height="300" frameborder="0" allowfullscreen></iframe>-->
+<!--            </p>-->
+<!--        `;-->
+
+<!--        editor.setHTML(iframeTag);-->
+<!--        console.log(editor.getHTML());-->
+
+
+<!--        $('#uploadButton').on('click', () => {-->
+<!--            uploadVideo();-->
+<!--        });-->
+
+<!--        // 비디오 업로드 Function-->
+<!--        function uploadVideo() {-->
+<!--            const fileInput = document.getElementById("formFileMultiple");-->
+<!--            const file = fileInput.files[0];-->
+
+<!--            if (!file) {-->
+<!--                alert("파일을 선택하세요.");-->
+<!--                return;-->
+<!--            }-->
+
+<!--            // 파일 확장자 및 크기 체크 (20MB 제한)-->
+<!--            const allowedExtensions = ["mp4", "webm", "mov"];-->
+<!--            const fileExtension = file.name.split('.').pop().toLowerCase();-->
+
+<!--            if (!allowedExtensions.includes(fileExtension)) {-->
+<!--                alert("MP4, WebM, MOV 파일만 업로드 가능합니다.");-->
+<!--                return;-->
+<!--            }-->
+
+<!--            if (file.size > 20 * 1024 * 1024) {-->
+<!--                alert("파일 크기는 최대 20MB까지 가능합니다.");-->
+<!--                return;-->
+<!--            }-->
+
+<!--            // FormData 생성 후 서버에 업로드-->
+<!--            const formData = new FormData();-->
+<!--            formData.append("video", file);-->
+
+<!--            console.log("📤 파일 업로드 시작:", file.name, file.size);-->
+
+<!--            fetch("/board/upload-video", {-->
+<!--                method: "POST",-->
+<!--                body: formData-->
+<!--            })-->
+<!--            .then(response => response.json())-->
+<!--            .then(data => {-->
+<!--                console.log("📥 응답 데이터:", data);-->
+<!--                if (data.success) {-->
+<!--                    insertVideoToEditor(data.url);-->
+<!--                } else {-->
+<!--                    console.error("❌ 업로드 중 오류 발생:", error);-->
+<!--                    alert("업로드 실패: " + data.message);-->
+<!--                }-->
+<!--            })-->
+<!--            .catch(error => {-->
+<!--                console.error("업로드 중 오류 발생:", error);-->
+<!--                alert("업로드 중 오류가 발생했습니다.");-->
+<!--            });-->
+<!--        }-->
+
+<!--        // Toast UI Editor에 <video> 태그 삽입-->
+<!--        function insertVideoToEditor(url) {-->
+<!--            console.log("🔗 비디오 삽입 URL:", url);-->
+<!--            const videoTag = `<p><video controls width="100%"><source src="${url}" type="video/mp4"></video></p>`;-->
+<!--            editor.setHTML(videoTag);-->
+<!--        }-->
 
         const writeSubject = $('#writeSubject');
         const writeLargeCategory = $('#writeLargeCategory');
@@ -147,13 +236,13 @@
 
         writeLargeCategory.on('change', () => {
           const writeLargeCategoryValue = writeLargeCategory.val();
-          if (writeLargeCategoryValue == '일반') {
+          if (writeLargeCategoryValue == 1) {
             deleteOption.remove();
             normalCategory.removeAttr('disabled');
             normalCategory.removeClass('display-none');
             fanCategory.addClass('display-none');
             teamValueContainer.addClass('display-none');
-          } else if (writeLargeCategoryValue == '공화국') {
+          } else if (writeLargeCategoryValue == 2) {
             fanCategory.removeClass('display-none');
             normalCategory.addClass('display-none');
 
@@ -181,7 +270,9 @@
 
         appendTeam.on('click', '.search-team', (e) => {
           const value = $(e.target).html();
+          const indexValue = $(e.target).data('value');
           $('#teamValue').val(value);
+          $('#teamIndexValue').val(indexValue);
           teamValueContainer.removeClass('display-none');
           fanCategory.addClass('display-none');
         });
@@ -193,15 +284,26 @@
 
         // write ajax submit
         submitButton.on('click', (e) => {
+            const writeBoardForm = $('#writeBoardForm');
             const largeCategory = $('#writeLargeCategory').val();
             const normalValue = $('#normalCategory').val();
             const teamValue = $('#teamValue').val();
             const subject = $('#writeSubject').val();
             const content = editor.getHTML();
+            const userId = $('#userId').val();
+
+            const imageFiles = $('.image-file');
+            const ImageFilesArr = [];
+            if (imageFiles.length == 0) {
+                console.log("length = 0");
+            } else {
+                for (let i = 0; i < imageFiles.length; i++) {
+                    ImageFilesArr.push(imageFiles.eq(i).data('file'));
+                }
+            }
+            console.log(ImageFilesArr);
 
             //const matches = [...content.matchAll(regex)].map(match => match[1]);
-            console.log(content);
-            console.log(content.length);
 
             if (largeCategory == '카테고리') {
                 alert('카테고리를 선택해주세요');
@@ -209,7 +311,7 @@
                 return;
             }
 
-            if (largeCategory == '공화국') {
+            if (largeCategory == 2) {
                 if (teamValue.length == 0) {
                     alert('팀을 선택해주세요');
                     teamSearchValue.focus();
@@ -230,6 +332,36 @@
                 e.preventDefault();
                 return;
             }
+
+            const data = writeBoardForm.serializeArray();
+            //if (largeCategory == 1) data.splice(2, 1);
+            //if (largeCategory == 2) data.splice(1, 1);
+            data.push({
+                name : 'content',
+                value : content
+            });
+            if (ImageFilesArr.length != 0) {
+                data.push({
+                    name : 'ImageFilesArr',
+                    value : JSON.stringify(ImageFilesArr)
+                });
+            }
+            console.log(data);
+            $.ajax({
+                "url" : writeBoardForm.attr('action'),
+                "method" : writeBoardForm.attr('method'),
+                "data" : data,
+                "dataType" : "text",
+                "success" : (response, status, xhr) => {
+                    if (response == "success") {
+                        alert('작성되었습니다.');
+                        location.href="/";
+                    };
+                },
+                "error" : (xhr, status, err) => {
+                    alert("작성하지 못하였습니다. 다시 작성해주세요.");
+                }
+            });
 
         });
 

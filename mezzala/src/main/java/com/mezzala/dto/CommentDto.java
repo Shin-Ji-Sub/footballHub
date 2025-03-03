@@ -11,7 +11,7 @@ public class CommentDto {
     private int parentId;
     private Date regDate;
     private String content;
-    private boolean commentStatus;
+    private boolean commentState;
 
     // user
     private String user;

@@ -2,6 +2,7 @@ package com.mezzala.dto;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -11,10 +12,14 @@ public class BoardDto {
     private int boardId;
     private String subject;
     private String content;
-    private Date regDate;
+    // default(now())
+    private Timestamp regDate;
+    // default(0)
     private int visitCount;
+    // default(0)
     private int recommendationCount;
-    private boolean boardStatus;
+    // default(true)
+    private boolean boardState;
 
     // user
     private String userId;
@@ -23,6 +28,10 @@ public class BoardDto {
     // board_small_category
     private int smallCategoryIndex;
 
+    UserDto user;
     List<CommentDto> comments;
+    List<BoardAttachDto> boardAttaches;
+    BoardLargeCategoryDto largeCategory;
+    BoardSmallCategoryDto smallCategory;
 
 }

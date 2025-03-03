@@ -69,3 +69,7 @@
 #addon-wrapping {
   cursor: pointer;
 }
+
+.write-hidden-box {
+  visibility: hidden;
+}
