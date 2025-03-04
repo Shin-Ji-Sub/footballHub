@@ -40,7 +40,7 @@ public class BoardController {
 
         model.addAttribute("largeCategories", largeCategories);
 
-        return "write";
+        return "/board/write";
     }
 
     /**
@@ -254,5 +254,14 @@ public class BoardController {
 //            return error;
 //        }
 //    }
+
+    @GetMapping(path = {"content"})
+    public String content(Model model, @RequestParam(name = "boardId") String boardId) {
+        List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
+        System.out.println(boards.get(0));
+        model.addAttribute("board", boards.get(0));
+
+        return "/board/content";
+    }
 
 }

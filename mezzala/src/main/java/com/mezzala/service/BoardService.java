@@ -11,7 +11,9 @@ public interface BoardService {
 
     void addBoard(BoardDto board, List<Map<String, String>> imageFiles);
 
-    List<BoardDto> findBoardWithPaging(int start);
+    List<BoardDto> findBoardWithPaging(int start, String category, String searchValue);
 
     int findAllBoardCount();
+
+    List<BoardDto> findBoardWithBoardId(String boardId);
 }

@@ -27,7 +27,9 @@ public class HomeController {
 
     @GetMapping(path = {"/content-list"})
     public String contentList(Model model, HttpServletRequest req,
-                              @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
+                              @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                              @RequestParam(name = "category", defaultValue = "bestList") String category,
+                              @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
         // paging
         int pageSize = 10;
         int pagerSize = 5;
@@ -39,7 +41,7 @@ public class HomeController {
         int start = pageSize * (pageNo - 1);
 
         ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
-        List<BoardDto> boards = boardService.findBoardWithPaging(start);
+        List<BoardDto> boards = boardService.findBoardWithPaging(start, category, searchValue);
 
         model.addAttribute("pager", pager);
         model.addAttribute("pageNo", pageNo);

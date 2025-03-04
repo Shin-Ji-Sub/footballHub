@@ -50,13 +50,13 @@
             </div>
             <div class="container section content-container">
                 <div class="subject-container">
-                    <span class="subject underline">인기글</span>
-                    <span class="subject">최신글</span>
+                    <span class="subject underline" id="bestList">인기글</span>
+                    <span class="subject" id="latestList">최신글</span>
                 </div>
                 <div class="search-write-container">
                     <div>
-                        <input type="text" id="searchValue" placeholder="글제목, 해시태그 검색">
-                        <button class="search-write-button">검색</button>
+                        <input type="text" id="searchValue" placeholder="글제목 검색">
+                        <button class="search-write-button" id="searchButton">검색</button>
                     </div>
                     <button th:if="${session.user != null}" class="search-write-button">
                         <a href="/board/write">글쓰기</a>
@@ -75,21 +75,66 @@
     <script type="text/javascript" th:inline="javascript">
         $(window).on('load', function() {
             const moduleBox = $('#moduleBox');
+            const bestList = $('#bestList');
+            const latestList = $('#latestList');
+            let categoryValue = 'bestList';
+            const searchButton = $('#searchButton');
+            let searchValue = '';
 
+            // 처음 list select
             moduleBox.load('content-list');
 
+            // 인기글, 최신글
+            bestList.on('click', (e) => {
+                bestList.addClass('underline');
+                latestList.removeClass('underline');
+                categoryValue = 'bestList';
+                moduleBox.load('content-list?category=' + categoryValue);
+            });
+            latestList.on('click', (e) => {
+                latestList.addClass('underline');
+                bestList.removeClass('underline');
+                categoryValue = 'latestList';
+                moduleBox.load('content-list?category=' + categoryValue);
+            });
+
+            // 글제목 검색 FUNCTION
+            function search() {
+                searchValue = $('#searchValue').val();
+                moduleBox.load('content-list?searchValue=' + searchValue);
+            }
+            // 글제목 검색 (searchValue)
+            searchButton.on('click', (e) => {
+                search();
+            });
+            // 글제목 검색 Enter
+            $('#searchValue').on('keyup', (key) => {
+                if (key.keyCode == 13) {
+                    search();
+                }
+            });
+
+            // pagination
             moduleBox.on('click', '.page-item', function(e) {
                 let pageNo = $('.paging').data('pageno');
                 const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
-                if ($(this).text() == '&lt;') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
-                if ($(this).text() == '&gt;') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
+                if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
+                if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
                 if (/»/.test($(this).text())) pageNo = lastPageNo;
                 if (!isNaN($(this).text())) pageNo = $(this).text();
 
-                moduleBox.load('content-list?pageNo=' + pageNo);
+                moduleBox.load('content-list?pageNo=' + pageNo + '&category=' + categoryValue +
+                               '&searchValue=' + searchValue);
             });
 
+            // 상세글
+            moduleBox.on('click', '.content', (e) => {
+                const boardId = $(e.currentTarget).data('id');
+                location.href = '/board/content?boardId=' + boardId;
+            });
+
+            // 로그아웃
             $('#logOut').on('click', () => {
                 const socialMethod = $('#socialMethod').val();
                 location.href = '/account/log-out?socialMethod=' + socialMethod;

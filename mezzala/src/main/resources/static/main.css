@@ -216,7 +216,7 @@ header nav {
   height: 50px;
 }
 
-.content .content-category {
+.content-category {
   border-radius: 10px;
   background-color: lightgray;
   padding: 3px;
@@ -233,6 +233,7 @@ header nav {
 }
 
 .content .icon {
+  display: flex;
   font-size: 1.2rem;
 }
 
@@ -246,7 +247,7 @@ header nav {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 1rem 1rem 1rem 0;
 }
 
 #searchValue {

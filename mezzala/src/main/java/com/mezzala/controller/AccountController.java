@@ -34,7 +34,7 @@ public class AccountController {
         model.addAttribute("redirectUri", kakaoApi.getKakaoRedirectUri());
         model.addAttribute("naverApiKey", naverApi.getNaverApiKey());
         model.addAttribute("naverRedirectUri", naverApi.getNaverRedirectUri());
-        return "sign-up";
+        return "/account/sign-up";
     }
 
     @RequestMapping(path = {"/kakao/api"})
@@ -87,7 +87,7 @@ public class AccountController {
         model.addAttribute("naverApiKey", naverApi.getNaverApiKey());
         model.addAttribute("naverRedirectUri", naverApi.getNaverRedirectUri());
         model.addAttribute("state", "STATE_STRING");
-        return "sign-in";
+        return "/account/sign-in";
     }
 
     @GetMapping(path = {"/naver/api"})

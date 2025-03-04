@@ -5,6 +5,7 @@ import com.mezzala.dto.BoardLargeCategoryDto;
 import com.mezzala.mapper.BoardMapper;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +28,15 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public List<BoardDto> findBoardWithPaging(int start) {
-        List<BoardDto> boards = boardMapper.selectBoardWithPaging(start);
+    public List<BoardDto> findBoardWithPaging(int start, String category, String searchValue) {
+        List<BoardDto> boards = new ArrayList<>();
+
+        if (searchValue.isEmpty()) {
+            boards = boardMapper.selectBoardWithPaging(start, category);
+        } else {
+            boards = boardMapper.selectBoardWithPagingAndSearch(start, category, searchValue);
+        }
+
         for (BoardDto b : boards) {
             System.out.println("* :" + b);
         }
@@ -39,5 +47,11 @@ public class BoardServiceImpl implements BoardService{
     public int findAllBoardCount() {
         return boardMapper.selectAllBoardCount();
     }
+
+    @Override
+    public List<BoardDto> findBoardWithBoardId(String boardId) {
+        return boardMapper.selectBoardWithBoardId(boardId);
+    }
+
 
 }

@@ -102,7 +102,7 @@
             </foreach>
     </insert>
 
-    <select id="selectBoardWithPaging" parameterType="int" resultMap="BoardResultMap">
+    <select id="selectBoardWithPaging" parameterType="hashmap" resultMap="BoardResultMap">
         SELECT
             b.board_id,
             b.subject,
@@ -146,6 +146,68 @@
         WHERE
             b.board_state = true
         ORDER BY
+            <choose>
+                <when test="category == 'bestList'">
+                    b.visit_count + (b.recommendation_count * 2) DESC,
+                    b.reg_date DESC
+                </when>
+                <when test="category == 'latestList'">
+                    b.reg_date DESC
+                </when>
+            </choose>
+        LIMIT
+            10
+        OFFSET
+            #{start}
+    </select>
+
+    <select id="selectBoardWithPagingAndSearch" parameterType="hashmap" resultMap="BoardResultMap">
+        SELECT
+            b.board_id,
+            b.subject,
+            b.content,
+            b.reg_date,
+            b.visit_count,
+            b.recommendation_count,
+            b.board_state,
+            u.user_id,
+            u.nickname,
+            u.social_method,
+            u.join_date,
+            u.is_admin,
+            u.state,
+            ba.attach_id,
+            ba.user_file_name,
+            ba.saved_file_name,
+            ba.download_count,
+            lc.large_category_id,
+            lc.large_category_name,
+            sc.small_category_index,
+            sc.small_category_name
+        FROM
+            board b
+        LEFT JOIN
+            user u
+        ON
+            b.user_id = u.user_id
+        LEFT JOIN
+            board_attach ba
+        ON
+            b.board_id = ba.board_id
+        LEFT JOIN
+            board_large_category lc
+        ON
+            b.large_category_id = lc.large_category_id
+        LEFT JOIN
+            board_small_category sc
+        ON
+            b.small_category_index = sc.small_category_index
+        WHERE
+            b.subject LIKE CONCAT('%', #{searchValue}, '%')
+        AND
+            b.board_state = true
+        ORDER BY
+            b.visit_count + (b.recommendation_count * 2) DESC,
             b.reg_date DESC
         LIMIT
             10
@@ -160,6 +222,51 @@
             board
         WHERE
             board_state = true
+    </select>
+
+    <select id="selectBoardWithBoardId" parameterType="String" resultMap="BoardResultMap">
+        SELECT
+            b.board_id,
+            b.subject,
+            b.content,
+            b.reg_date,
+            b.visit_count,
+            b.recommendation_count,
+            b.board_state,
+            u.user_id,
+            u.nickname,
+            u.social_method,
+            u.join_date,
+            u.is_admin,
+            u.state,
+            ba.attach_id,
+            ba.user_file_name,
+            ba.saved_file_name,
+            ba.download_count,
+            lc.large_category_id,
+            lc.large_category_name,
+            sc.small_category_index,
+            sc.small_category_name
+        FROM
+            board b
+        LEFT JOIN
+            user u
+        ON
+            b.user_id = u.user_id
+        LEFT JOIN
+            board_attach ba
+        ON
+            b.board_id = ba.board_id
+        LEFT JOIN
+            board_large_category lc
+        ON
+            b.large_category_id = lc.large_category_id
+        LEFT JOIN
+            board_small_category sc
+        ON
+            b.small_category_index = sc.small_category_index
+        WHERE
+            b.board_id = #{boardId}
     </select>
 
 </mapper>
