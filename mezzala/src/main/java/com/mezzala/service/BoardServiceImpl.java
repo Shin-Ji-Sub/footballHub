@@ -2,6 +2,7 @@ package com.mezzala.service;
 
 import com.mezzala.dto.BoardDto;
 import com.mezzala.dto.BoardLargeCategoryDto;
+import com.mezzala.dto.UserDto;
 import com.mezzala.mapper.BoardMapper;
 import lombok.Setter;
 
@@ -49,8 +50,23 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public List<BoardDto> findBoardWithBoardId(String boardId) {
+    public List<BoardDto> findBoardWithBoardId(int boardId) {
         return boardMapper.selectBoardWithBoardId(boardId);
+    }
+
+    @Override
+    public void incrementVisitedBoard(int boardId) {
+        boardMapper.updateVisitedBoard(boardId);
+    }
+
+    @Override
+    public List<BoardDto> findBoardWithBoardNo(int boardNo) {
+        return boardMapper.selectBoardWithBoardNo(boardNo);
+    }
+
+    @Override
+    public void addUserAction(UserDto user, int boardId, String actionCategory) {
+        boardMapper.insertUserAction(user.getUserId(), boardId, actionCategory);
     }
 
 

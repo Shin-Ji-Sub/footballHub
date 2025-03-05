@@ -49,28 +49,48 @@
                 <!-- 이전글, 목록, 다음글 버튼 -->
                 <div class="content-button-list dividing-line">
                     <div class="top-button-list">
-                        <button class="top-button like-button">
+                        <button class="top-button like-button" id="likeButton" data-value="like">
+                            <!-- 채워진 버전 -->
+                            <!-- <i class="bi bi-hand-thumbs-up-fill"></i> -->
                             <i class="bi bi-hand-thumbs-up"></i>
-                            <span>추천</span>
+                            <span>좋아요</span>
                         </button>
-                        <button class="top-button bookmark-button">
+                        <button class="top-button bookmark-button" id="bookmarkButton" data-value="bookmark">
+                            <!-- 채워진 버전 -->
+                            <!-- <i class="bi bi-bookmark-check-fill"></i> -->
                             <i class="bi bi-bookmark-plus"></i>
                             <span>스크랩 하기</span>
                         </button>
                     </div>
                     <div class="bottom-button-list">
-                        <button class="content-button">
-                            <i class="bi bi-arrow-bar-left"></i>
-                            <span>이전글</span>
-                        </button>
+                        <th:block th:if="${index == 0 && pageNo == 1}">
+                            <button class="content-button" style="visibility : hidden">
+                                <i class="bi bi-arrow-bar-left"></i>
+                                <span>이전글</span>
+                            </button>
+                        </th:block>
+                        <th:block th:unless="${index == 0 && pageNo == 1}">
+                            <button class="content-button" id="previousButton">
+                                <i class="bi bi-arrow-bar-left"></i>
+                                <span>이전글</span>
+                            </button>
+                        </th:block>
                         <button class="content-button">
                             <i class="bi bi-list-task"></i>
                             <span><a href="/">목록</a></span>
                         </button>
-                        <button class="content-button">
-                            <span>다음글</span>
-                            <i class="bi bi-arrow-bar-right"></i>
-                        </button>
+                        <th:block th:if="${(pageNo - 1) * 10 + (index + 1) == count}">
+                            <button class="content-button" style="visibility : hidden">
+                                <span>다음글</span>
+                                <i class="bi bi-arrow-bar-right"></i>
+                            </button>
+                        </th:block>
+                        <th:block th:if="${(pageNo - 1) * 10 + (index + 1) < count}">
+                            <button class="content-button" id="nextButton">
+                                <span>다음글</span>
+                                <i class="bi bi-arrow-bar-right"></i>
+                            </button>
+                        </th:block>
                     </div>
                 </div>
                 <!-- 댓글 -->
@@ -83,6 +103,10 @@
                 전체 인기글
             </div>
         </div>
+        <input type="hidden" id="boardId" th:value="${board.boardId}">
+        <input type="hidden" id="indexValue" th:value="${index}">
+        <input type="hidden" id="pageNo" th:value="${pageNo}">
+        <input type="hidden" id="count" th:value="${count}">
     </main>
 
     <!-- jQuery -->
@@ -95,6 +119,13 @@
 <script type="text/javascript" th:inline="javascript">
     $(window).on('load', function() {
         const content = /*[[${board.content}]]*/'';
+        const indexValue = Number($('#indexValue').val());
+        const pageNo = Number($('#pageNo').val());
+        const count = Number($('#count').val());
+        const nextButton = $('#nextButton');
+        const previousButton = $('#previousButton');
+        const likeButton = $('#likeButton');
+        const bookmarkButton = $('#bookmarkButton');
 
         // Toast UI Viewer 사용하여 렌더링
         const viewer = new toastui.Editor.factory({
@@ -115,6 +146,47 @@
             $(this).find('i').css('animation', 'shake 0.4s ease-in-out');
         }).on('mouseout', function() {
             $(this).find('i').css('animation', '');
+        });
+
+        // 다음글, 이전글 버튼
+        nextButton.on('click', () => {
+            const boardNo = (pageNo - 1) * 10 + indexValue + 1;
+            const index = indexValue + 1 == 10 ? 0 : indexValue + 1;
+            const page = indexValue + 1 == 10 ? pageNo + 1 : pageNo;
+            console.log("boardNo : " + boardNo);
+            console.log("index : " + index);
+            console.log("page : " + page);
+            location.href = '/board/contentToContent?boardNo=' + boardNo + '&index=' + index +
+                                                    '&pageNo=' + page + '&count=' + count;
+        });
+        previousButton.on('click', () => {
+            const boardNo = (pageNo - 1) * 10 + indexValue - 1;
+            const index = indexValue - 1 == -1 ? 9 : indexValue - 1;
+            const page = indexValue - 1 == -1 ? pageNo - 1 : pageNo;
+            location.href = '/board/contentToContent?boardNo=' + boardNo + '&index=' + index +
+                                                    '&pageNo=' + page + '&count=' + count;
+        });
+
+        // 좋아요, 북마크 버튼
+        likeButton.on('click', () => {
+            const actionCategory = likeButton.data('value');
+            const boardId = $('#boardId').val();
+            $.ajax({
+                url : "/board/action",
+                method : "POST",
+                data : "actionCategory=" + actionCategory + "&boardId=" + boardId,
+                dataType : "text",
+                success : (response, status, xhr) => {
+                    if (response == "login") {
+                        alert("로그인 후 이용해주세요");
+                    } else {
+                        alert('성공, load하면 됨');
+                    }
+                },
+                error : (xhr, status, err) => {
+                    alert('추가하지 못하였습니다.');
+                }
+            });
         });
 
     });

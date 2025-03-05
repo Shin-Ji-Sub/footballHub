@@ -5,9 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mezzala.common.Util;
 import com.mezzala.dto.BoardDto;
 import com.mezzala.dto.BoardLargeCategoryDto;
+import com.mezzala.dto.UserDto;
 import com.mezzala.service.AccountService;
 import com.mezzala.service.BoardService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -256,12 +260,77 @@ public class BoardController {
 //    }
 
     @GetMapping(path = {"content"})
-    public String content(Model model, @RequestParam(name = "boardId") String boardId) {
+    public String content(Model model, @RequestParam(name = "boardId") int boardId,
+                          @RequestParam(name = "index") int index,
+                          @RequestParam(name = "count") int count,
+                          @RequestParam(name = "pageNo") int pageNo,
+                          @CookieValue(value = "visited", required = false) String visitedBoard,
+                          HttpServletResponse res) {
+        // 쿠키에 현재 boardId가 포함되어 있는지 확인
+        if (visitedBoard == null || !visitedBoard.contains("[" + boardId + "]")) {
+            boardService.incrementVisitedBoard(boardId); // 조회수 증가
+
+            // 쿠키에 현재 boardId 추가
+            visitedBoard = (visitedBoard == null ? "" : visitedBoard) + "[" + boardId + "]";
+            Cookie cookie = new Cookie("visited", visitedBoard);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효 기간(1일)
+            res.addCookie(cookie);
+        }
+
         List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
         System.out.println(boards.get(0));
         model.addAttribute("board", boards.get(0));
+        model.addAttribute("index", index);
+        model.addAttribute("count", count);
+        model.addAttribute("pageNo", pageNo);
 
         return "/board/content";
+    }
+
+    @GetMapping(path = {"contentToContent"})
+    public String contentToContent(Model model, HttpServletResponse res,
+                                   @CookieValue(value = "visited", required = false) String visitedBoard,
+                                   @RequestParam(name = "boardNo") int boardNo,
+                                   @RequestParam(name = "index") int index,
+                                   @RequestParam(name = "pageNo") int pageNo,
+                                   @RequestParam(name = "count") int count) {
+        List<BoardDto> boards = boardService.findBoardWithBoardNo(boardNo);
+        BoardDto board = boards.get(0);
+
+        // 쿠키에 현재 boardId가 포함되어 있는지 확인
+        if (visitedBoard == null || !visitedBoard.contains("[" + board.getBoardId() + "]")) {
+            boardService.incrementVisitedBoard(board.getBoardId()); // 조회수 증가
+
+            // 쿠키에 현재 boardId 추가
+            visitedBoard = (visitedBoard == null ? "" : visitedBoard) + "[" + board.getBoardId() + "]";
+            Cookie cookie = new Cookie("visited", visitedBoard);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효 기간(1일)
+            res.addCookie(cookie);
+        }
+
+        model.addAttribute("board", board);
+        model.addAttribute("index", index);
+        model.addAttribute("count", count);
+        model.addAttribute("pageNo", pageNo);
+        return "/board/content";
+    }
+
+    @PostMapping(path = {"/action"})
+    @ResponseBody
+    public String action(@RequestParam(name = "actionCategory") String actionCategory,
+                         @RequestParam(name = "boardId") int boardId,
+                         HttpSession session) {
+
+        UserDto user = (UserDto) session.getAttribute("user");
+        if (user == null) {
+            return "login";
+        } else {
+            boardService.addUserAction(user, boardId, actionCategory);
+            return "success";
+        }
+
     }
 
 }

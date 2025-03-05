@@ -22,5 +22,11 @@ public interface BoardMapper {
 
     List<BoardDto> selectBoardWithPagingAndSearch(@Param("start") int start, @Param("category") String category, @Param("searchValue") String searchValue);
 
-    List<BoardDto> selectBoardWithBoardId(String boardId);
+    List<BoardDto> selectBoardWithBoardId(int boardId);
+
+    void updateVisitedBoard(int boardId);
+
+    List<BoardDto> selectBoardWithBoardNo(int boardNo);
+
+    void insertUserAction(@Param("userId") String userId, @Param("boardId") int boardId, @Param("actionCategory") String actionCategory);
 }

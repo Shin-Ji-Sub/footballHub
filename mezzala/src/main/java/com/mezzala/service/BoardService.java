@@ -2,6 +2,7 @@ package com.mezzala.service;
 
 import com.mezzala.dto.BoardDto;
 import com.mezzala.dto.BoardLargeCategoryDto;
+import com.mezzala.dto.UserDto;
 
 import java.util.List;
 import java.util.Map;
@@ -15,5 +16,11 @@ public interface BoardService {
 
     int findAllBoardCount();
 
-    List<BoardDto> findBoardWithBoardId(String boardId);
+    List<BoardDto> findBoardWithBoardId(int boardId);
+
+    void incrementVisitedBoard(int boardId);
+
+    List<BoardDto> findBoardWithBoardNo(int boardNo);
+
+    void addUserAction(UserDto user, int boardId, String actionCategory);
 }

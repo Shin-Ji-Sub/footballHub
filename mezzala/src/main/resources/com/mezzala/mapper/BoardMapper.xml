@@ -117,10 +117,10 @@
             u.join_date,
             u.is_admin,
             u.state,
-            ba.attach_id,
-            ba.user_file_name,
-            ba.saved_file_name,
-            ba.download_count,
+            MAX(ba.attach_id) AS attach_id,
+            MAX(ba.user_file_name) AS user_file_name,
+            MAX(ba.saved_file_name) AS saved_file_name,
+            MAX(ba.download_count) AS download_count,
             lc.large_category_id,
             lc.large_category_name,
             sc.small_category_index,
@@ -145,6 +145,8 @@
             b.small_category_index = sc.small_category_index
         WHERE
             b.board_state = true
+        GROUP BY
+            b.board_id
         ORDER BY
             <choose>
                 <when test="category == 'bestList'">
@@ -176,10 +178,10 @@
             u.join_date,
             u.is_admin,
             u.state,
-            ba.attach_id,
-            ba.user_file_name,
-            ba.saved_file_name,
-            ba.download_count,
+            MAX(ba.attach_id) AS attach_id,
+            MAX(ba.user_file_name) AS user_file_name,
+            MAX(ba.saved_file_name) AS saved_file_name,
+            MAX(ba.download_count) AS download_count,
             lc.large_category_id,
             lc.large_category_name,
             sc.small_category_index,
@@ -206,6 +208,8 @@
             b.subject LIKE CONCAT('%', #{searchValue}, '%')
         AND
             b.board_state = true
+        GROUP BY
+            b.board_id
         ORDER BY
             b.visit_count + (b.recommendation_count * 2) DESC,
             b.reg_date DESC
@@ -224,7 +228,7 @@
             board_state = true
     </select>
 
-    <select id="selectBoardWithBoardId" parameterType="String" resultMap="BoardResultMap">
+    <select id="selectBoardWithBoardId" parameterType="int" resultMap="BoardResultMap">
         SELECT
             b.board_id,
             b.subject,
@@ -268,5 +272,90 @@
         WHERE
             b.board_id = #{boardId}
     </select>
+
+    <update id="updateVisitedBoard" parameterType="int">
+        UPDATE
+            board
+        SET
+            visit_count = visit_count + 1
+        WHERE
+            board_id = #{boardId}
+    </update>
+
+    <select id="selectBoardWithBoardNo" parameterType="int" resultMap="BoardResultMap">
+        SELECT
+            b.board_id,
+            b.subject,
+            b.content,
+            b.reg_date,
+            b.visit_count,
+            b.recommendation_count,
+            b.board_state,
+            u.user_id,
+            u.nickname,
+            u.social_method,
+            u.join_date,
+            u.is_admin,
+            u.state,
+            ba.attach_id,
+            ba.user_file_name,
+            ba.saved_file_name,
+            ba.download_count,
+            lc.large_category_id,
+            lc.large_category_name,
+            sc.small_category_index,
+            sc.small_category_name
+        FROM
+            board b
+        LEFT JOIN
+            user u
+        ON
+            b.user_id = u.user_id
+        LEFT JOIN
+            board_attach ba
+        ON
+            b.board_id = ba.board_id
+        LEFT JOIN
+            board_large_category lc
+        ON
+            b.large_category_id = lc.large_category_id
+        LEFT JOIN
+            board_small_category sc
+        ON
+            b.small_category_index = sc.small_category_index
+        WHERE
+            b.board_id = (
+                select
+                    board_id
+                from
+                    board
+                WHERE
+                    board_state = true
+                GROUP BY
+                    board_id
+                ORDER BY
+                    visit_count + (recommendation_count * 2) DESC,
+                    reg_date DESC
+                LIMIT
+                    1
+                OFFSET
+                    #{boardNo}
+            );
+    </select>
+
+    <insert id="insertUserAction" parameterType="hashmap">
+        INSERT INTO
+            user_action (
+                action_category,
+                user_id,
+                board_id
+            )
+        VALUES
+            (
+                #{actionCategory},
+                #{userId},
+                #{boardId}
+            )
+    </insert>
 
 </mapper>

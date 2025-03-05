@@ -131,7 +131,11 @@
             // 상세글
             moduleBox.on('click', '.content', (e) => {
                 const boardId = $(e.currentTarget).data('id');
-                location.href = '/board/content?boardId=' + boardId;
+                const index = $(e.currentTarget).data('index');
+                const count = $('.paging').data('datacount');
+                const pageNo = $('.paging').data('pageno');
+                location.href = '/board/content?boardId=' + boardId + '&index=' + index +
+                                                '&count=' + count + '&pageNo=' + pageNo;
             });
 
             // 로그아웃
