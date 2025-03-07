@@ -4,9 +4,11 @@ import com.mezzala.dto.UserDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 @Mapper
 public interface AccountMapper {
-    UserDto selectUser(String userId);
+    List<UserDto> selectUser(String userId);
 
     void insertAccount(@Param("userId") String userId, @Param("nickname") String nickname, @Param("socialMethod") String socialMethod);
 }

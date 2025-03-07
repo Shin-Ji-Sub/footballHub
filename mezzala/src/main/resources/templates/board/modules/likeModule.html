@@ -1,0 +1,4 @@
+<i class="bi bi-hand-thumbs-up" xmlns:th="http://www.thymeleaf.org"></i>
+<span th:if="${board.userActions.get(0).actionId == null}">0</span>
+<span th:if="${board.userActions.get(0).actionId != null}"
+      th:text="${board.userActions.size()}"></span>

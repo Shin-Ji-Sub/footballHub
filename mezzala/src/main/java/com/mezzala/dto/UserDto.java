@@ -3,6 +3,7 @@ package com.mezzala.dto;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class UserDto {
@@ -16,5 +17,8 @@ public class UserDto {
     private boolean isAdmin;
     // default (true)
     private boolean state;
+
+    // UserAction
+    List<UserActionDto> userActions;
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -50,10 +51,10 @@ public class AccountController {
 //        System.out.println("userId : " + userId);
 //        System.out.println("accessToken : " + accessToken);
 
-        UserDto user = accountService.addAccount(userId, nickname, socialMethod);
+        List<UserDto> users = accountService.addAccount(userId, nickname, socialMethod);
 
         session.setAttribute("accessToken", accessToken);
-        session.setAttribute("user", user);
+        session.setAttribute("user", users.get(0));
 
         return "redirect:/";
     }
@@ -103,10 +104,12 @@ public class AccountController {
         System.out.println("userId : " + userId);
         System.out.println("accessToken : " + accessToken);
 
-        UserDto user = accountService.addAccount(userId, nickname, socialMethod);
+        List<UserDto> users = accountService.addAccount(userId, nickname, socialMethod);
+
+        System.out.println("user : " + users.get(0));
 
         session.setAttribute("accessToken", accessToken);
-        session.setAttribute("user", user);
+        session.setAttribute("user", users.get(0));
 
         return "redirect:/";
     }

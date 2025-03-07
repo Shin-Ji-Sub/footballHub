@@ -23,4 +23,6 @@ public interface BoardService {
     List<BoardDto> findBoardWithBoardNo(int boardNo);
 
     void addUserAction(UserDto user, int boardId, String actionCategory);
+
+    void removeUserAction(UserDto user, int boardId, String actionCategory);
 }

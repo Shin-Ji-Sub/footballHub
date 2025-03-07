@@ -29,4 +29,6 @@ public interface BoardMapper {
     List<BoardDto> selectBoardWithBoardNo(int boardNo);
 
     void insertUserAction(@Param("userId") String userId, @Param("boardId") int boardId, @Param("actionCategory") String actionCategory);
+
+    void deleteUserAction(@Param("userId") String userId, @Param("boardId") int boardId, @Param("actionCategory") String actionCategory);
 }

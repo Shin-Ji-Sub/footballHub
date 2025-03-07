@@ -33,5 +33,6 @@ public class BoardDto {
     List<BoardAttachDto> boardAttaches;
     BoardLargeCategoryDto largeCategory;
     BoardSmallCategoryDto smallCategory;
+    List<UserActionDto> userActions;
 
 }

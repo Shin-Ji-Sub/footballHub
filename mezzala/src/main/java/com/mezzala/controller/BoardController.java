@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mezzala.common.Util;
 import com.mezzala.dto.BoardDto;
 import com.mezzala.dto.BoardLargeCategoryDto;
+import com.mezzala.dto.UserActionDto;
 import com.mezzala.dto.UserDto;
 import com.mezzala.service.AccountService;
 import com.mezzala.service.BoardService;
@@ -265,7 +266,8 @@ public class BoardController {
                           @RequestParam(name = "count") int count,
                           @RequestParam(name = "pageNo") int pageNo,
                           @CookieValue(value = "visited", required = false) String visitedBoard,
-                          HttpServletResponse res) {
+                          HttpServletResponse res,
+                          HttpSession session) {
         // 쿠키에 현재 boardId가 포함되어 있는지 확인
         if (visitedBoard == null || !visitedBoard.contains("[" + boardId + "]")) {
             boardService.incrementVisitedBoard(boardId); // 조회수 증가
@@ -279,7 +281,16 @@ public class BoardController {
         }
 
         List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
-        System.out.println(boards.get(0));
+        UserDto user = (UserDto) session.getAttribute("user");
+        List<UserActionDto> actions = new ArrayList<>();
+        if (user == null) {
+            UserActionDto action = new UserActionDto();
+            actions.add(action);
+        } else {
+            actions = user.getUserActions();
+        }
+
+        model.addAttribute("actions", actions);
         model.addAttribute("board", boards.get(0));
         model.addAttribute("index", index);
         model.addAttribute("count", count);
@@ -310,6 +321,8 @@ public class BoardController {
             res.addCookie(cookie);
         }
 
+        System.out.println(board);
+
         model.addAttribute("board", board);
         model.addAttribute("index", index);
         model.addAttribute("count", count);
@@ -321,16 +334,39 @@ public class BoardController {
     @ResponseBody
     public String action(@RequestParam(name = "actionCategory") String actionCategory,
                          @RequestParam(name = "boardId") int boardId,
+                         @RequestParam(name = "state") String state,
                          HttpSession session) {
-
+        String result = "";
         UserDto user = (UserDto) session.getAttribute("user");
+
         if (user == null) {
-            return "login";
+            result = "login";
         } else {
-            boardService.addUserAction(user, boardId, actionCategory);
-            return "success";
+            if (state.equals("add")) {
+                boardService.addUserAction(user, boardId, actionCategory);
+                result = "success";
+            }
+            if (state.equals("remove")) {
+                boardService.removeUserAction(user, boardId, actionCategory);
+                result = "success";
+            }
         }
 
+        return result;
+    }
+
+    @GetMapping(path = {"/action-button"})
+    public String actionButton(Model model, @RequestParam(name = "likeAction") String likeAction) {
+        model.addAttribute("likeAction", likeAction);
+        return "/board/modules/userActionModule";
+    }
+
+    @GetMapping(path = {"/action-like"})
+    public String likeAction(@RequestParam(name = "boardId") int boardId,
+                             Model model) {
+        List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
+        model.addAttribute("board", boards.get(0));
+        return "/board/modules/likeModule";
     }
 
 }

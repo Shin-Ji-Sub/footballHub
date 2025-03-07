@@ -4,21 +4,44 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mezzala.mapper.AccountMapper">
+    <resultMap id="UserResultMap" type="com.mezzala.dto.UserDto">
+        <id property="userId" column="user_id"/>
+        <result property="nickname" column="nickname"/>
+        <result property="socialMethod" column="social_method"/>
+        <result property="joinDate" column="join_date"/>
+        <result property="isAdmin" column="is_admin"/>
+        <result property="state" column="state"/>
+        <!-- 1:N 관계 user_action -->
+        <collection property="userActions" ofType="com.mezzala.dto.UserActionDto">
+            <id property="actionId" column="action_id"/>
+            <result property="actionCategory" column="action_category"/>
+            <result property="userId" column="user_id"/>
+            <result property="boardId" column="board_id"/>
+        </collection>
+    </resultMap>
 
-    <select id="selectUser" parameterType="String" resultType="UserDto">
+    <select id="selectUser" parameterType="String" resultMap="UserResultMap">
         SELECT
-            user_id as userId,
-            nickname,
-            social_method as socialMethod,
-            join_date as joinDate,
-            is_admin as isAdmin,
-            state
+            u.user_id,
+            u.nickname,
+            u.social_method,
+            u.join_date,
+            u.is_admin,
+            u.state,
+            ua.action_id,
+            ua.action_category,
+            ua.user_id,
+            ua.board_id
         FROM
-            user
+            user u
+        LEFT JOIN
+            user_action ua
+        ON
+            u.user_id = ua.user_id
         WHERE
-            user_id = #{userId}
+            u.user_id = #{userId}
         AND
-            state = true;
+            u.state = true;
     </select>
 
     <insert id="insertAccount" parameterType="hashMap">

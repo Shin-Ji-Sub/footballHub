@@ -69,5 +69,10 @@ public class BoardServiceImpl implements BoardService{
         boardMapper.insertUserAction(user.getUserId(), boardId, actionCategory);
     }
 
+    @Override
+    public void removeUserAction(UserDto user, int boardId, String actionCategory) {
+        boardMapper.deleteUserAction(user.getUserId(), boardId, actionCategory);
+    }
+
 
 }
