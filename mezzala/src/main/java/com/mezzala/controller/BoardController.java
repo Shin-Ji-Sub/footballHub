@@ -305,9 +305,18 @@ public class BoardController {
                                    @RequestParam(name = "boardNo") int boardNo,
                                    @RequestParam(name = "index") int index,
                                    @RequestParam(name = "pageNo") int pageNo,
-                                   @RequestParam(name = "count") int count) {
+                                   @RequestParam(name = "count") int count,
+                                   HttpSession session) {
         List<BoardDto> boards = boardService.findBoardWithBoardNo(boardNo);
         BoardDto board = boards.get(0);
+        UserDto user = (UserDto) session.getAttribute("user");
+        List<UserActionDto> actions = new ArrayList<>();
+        if (user == null) {
+            UserActionDto action = new UserActionDto();
+            actions.add(action);
+        } else {
+            actions = user.getUserActions();
+        }
 
         // 쿠키에 현재 boardId가 포함되어 있는지 확인
         if (visitedBoard == null || !visitedBoard.contains("[" + board.getBoardId() + "]")) {
@@ -323,6 +332,7 @@ public class BoardController {
 
         System.out.println(board);
 
+        model.addAttribute("actions", actions);
         model.addAttribute("board", board);
         model.addAttribute("index", index);
         model.addAttribute("count", count);

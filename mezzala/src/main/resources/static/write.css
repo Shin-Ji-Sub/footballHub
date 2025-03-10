@@ -30,10 +30,6 @@
   box-shadow: inset 0px 0px 10px #666;
 }
 
-.display-none {
-  display: none !important;
-}
-
 .search-team-container {
   position: relative;
 }
