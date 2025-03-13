@@ -138,11 +138,6 @@
                                                 '&count=' + count + '&pageNo=' + pageNo;
             });
 
-            // 로그아웃
-            $('#logOut').on('click', () => {
-                const socialMethod = $('#socialMethod').val();
-                location.href = '/account/log-out?socialMethod=' + socialMethod;
-            });
         });
     </script>
 </body>

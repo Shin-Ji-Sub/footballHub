@@ -2,6 +2,7 @@ package com.mezzala.service;
 
 import com.mezzala.dto.BoardDto;
 import com.mezzala.dto.BoardLargeCategoryDto;
+import com.mezzala.dto.CommentDto;
 import com.mezzala.dto.UserDto;
 
 import java.util.List;
@@ -25,4 +26,8 @@ public interface BoardService {
     void addUserAction(UserDto user, int boardId, String actionCategory);
 
     void removeUserAction(UserDto user, int boardId, String actionCategory);
+
+    void addComment(String content, int boardId, String userId);
+
+    List<CommentDto> findCommentsWithBoardId(int boardId);
 }

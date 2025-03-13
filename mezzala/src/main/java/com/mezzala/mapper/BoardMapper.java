@@ -2,6 +2,7 @@ package com.mezzala.mapper;
 
 import com.mezzala.dto.BoardDto;
 import com.mezzala.dto.BoardLargeCategoryDto;
+import com.mezzala.dto.CommentDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -31,4 +32,8 @@ public interface BoardMapper {
     void insertUserAction(@Param("userId") String userId, @Param("boardId") int boardId, @Param("actionCategory") String actionCategory);
 
     void deleteUserAction(@Param("userId") String userId, @Param("boardId") int boardId, @Param("actionCategory") String actionCategory);
+
+    void insertComment(@Param("content") String content, @Param("boardId") int boardId, @Param("userId") String userId);
+
+    List<CommentDto> selectCommentsWithBoardId(int boardId);
 }

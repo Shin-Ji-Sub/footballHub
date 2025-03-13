@@ -3,10 +3,7 @@ package com.mezzala.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mezzala.common.Util;
-import com.mezzala.dto.BoardDto;
-import com.mezzala.dto.BoardLargeCategoryDto;
-import com.mezzala.dto.UserActionDto;
-import com.mezzala.dto.UserDto;
+import com.mezzala.dto.*;
 import com.mezzala.service.AccountService;
 import com.mezzala.service.BoardService;
 import jakarta.servlet.http.Cookie;
@@ -281,6 +278,8 @@ public class BoardController {
         }
 
         List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
+        List<CommentDto> comments = boardService.findCommentsWithBoardId(boardId);
+        System.out.println(comments);
         UserDto user = (UserDto) session.getAttribute("user");
         List<UserActionDto> actions = new ArrayList<>();
         if (user == null) {
@@ -292,6 +291,7 @@ public class BoardController {
 
         model.addAttribute("actions", actions);
         model.addAttribute("board", boards.get(0));
+        model.addAttribute("comments", comments);
         model.addAttribute("index", index);
         model.addAttribute("count", count);
         model.addAttribute("pageNo", pageNo);
@@ -330,10 +330,9 @@ public class BoardController {
             res.addCookie(cookie);
         }
 
-        System.out.println(board);
-
         model.addAttribute("actions", actions);
         model.addAttribute("board", board);
+        model.addAttribute("comments", board.getComments());
         model.addAttribute("index", index);
         model.addAttribute("count", count);
         model.addAttribute("pageNo", pageNo);
@@ -377,6 +376,17 @@ public class BoardController {
         List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
         model.addAttribute("board", boards.get(0));
         return "/board/modules/likeModule";
+    }
+
+    @PostMapping(path = {"/write-comment"})
+    @ResponseBody
+    public String writeComment(@RequestParam(name = "content") String content,
+                               @RequestParam(name = "boardId") int boardId,
+                               @RequestParam(name = "userId") String userId) {
+
+        boardService.addComment(content, boardId, userId);
+
+        return "success";
     }
 
 }

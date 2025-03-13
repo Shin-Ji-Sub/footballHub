@@ -4,6 +4,7 @@ import com.mezzala.common.KakaoApi;
 import com.mezzala.common.NaverApi;
 import com.mezzala.dto.UserDto;
 import com.mezzala.service.AccountService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +43,7 @@ public class AccountController {
     }
 
     @RequestMapping(path = {"/kakao/api"})
-    public String kakaoSignIn(@RequestParam String code, HttpSession session) {
+    public String kakaoSignIn(@RequestParam String code, @RequestParam String state, HttpSession session) {
         String accessToken = kakaoApi.getAccessToken(code);
         Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
 
@@ -55,8 +59,8 @@ public class AccountController {
 
         session.setAttribute("accessToken", accessToken);
         session.setAttribute("user", users.get(0));
-
-        return "redirect:/";
+        state = URLDecoder.decode(state, StandardCharsets.UTF_8);
+        return "redirect:" + state;
     }
 
     @GetMapping(path = {"/log-out"})
@@ -82,17 +86,20 @@ public class AccountController {
     }
 
     @GetMapping(path = {"/sign-in"})
-    public String signIn(Model model) {
+    public String signIn(Model model, @RequestParam(name = "returnUri", defaultValue = "/home") String returnUri) {
         model.addAttribute("kakaoApiKey", kakaoApi.getKakaoApiKey());
         model.addAttribute("redirectUri", kakaoApi.getKakaoRedirectUri());
         model.addAttribute("naverApiKey", naverApi.getNaverApiKey());
         model.addAttribute("naverRedirectUri", naverApi.getNaverRedirectUri());
         model.addAttribute("state", "STATE_STRING");
+
+        returnUri = URLEncoder.encode(returnUri, StandardCharsets.UTF_8);
+        model.addAttribute("returnUri", returnUri);
         return "/account/sign-in";
     }
 
     @GetMapping(path = {"/naver/api"})
-    public String naverSignIn(HttpSession session, @RequestParam String code) {
+    public String naverSignIn(HttpSession session, @RequestParam String code, @RequestParam String state) {
         String accessToken = naverApi.getAccessToken(code);
         Map<String, Object> userInfo = naverApi.getUserInfo(accessToken);
 
@@ -100,18 +107,18 @@ public class AccountController {
         String nickname = (String) userInfo.get("nickname");
         String socialMethod = "naver";
 
-        System.out.println("nickname : " + nickname);
-        System.out.println("userId : " + userId);
-        System.out.println("accessToken : " + accessToken);
+//        System.out.println("nickname : " + nickname);
+//        System.out.println("userId : " + userId);
+//        System.out.println("accessToken : " + accessToken);
 
         List<UserDto> users = accountService.addAccount(userId, nickname, socialMethod);
 
-        System.out.println("user : " + users.get(0));
+//        System.out.println("user : " + users.get(0));
 
         session.setAttribute("accessToken", accessToken);
         session.setAttribute("user", users.get(0));
 
-        return "redirect:/";
+        return "redirect:" + state;
     }
 
 }

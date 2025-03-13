@@ -12,6 +12,7 @@
 		<typeAlias type="com.mezzala.dto.BoardDto" alias="BoardDto" />
 		<typeAlias type="com.mezzala.dto.BoardAttachDto" alias="BoardAttachDto" />
 		<typeAlias type="com.mezzala.dto.UserActionDto" alias="UserActionDto" />
+		<typeAlias type="com.mezzala.dto.CommentDto" alias="CommentDto" />
 	</typeAliases>
 
 	<mappers>

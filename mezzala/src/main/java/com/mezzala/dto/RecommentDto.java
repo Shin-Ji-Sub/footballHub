@@ -3,10 +3,9 @@ package com.mezzala.dto;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
-public class CommentDto {
+public class RecommentDto {
 
     private int commentId;
     private int parentId;
@@ -16,10 +15,5 @@ public class CommentDto {
     private String userId;
     // board
     private int boardId;
-
-    UserDto user;
-
-    // 자기참조
-    List<CommentDto> recomments;
 
 }

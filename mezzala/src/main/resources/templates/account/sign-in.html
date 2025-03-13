@@ -19,13 +19,13 @@
             <div class="field">
                 <div class="kakao-button">
                     <a href="https://kauth.kakao.com/oauth/authorize"
-                       th:href="@{https://kauth.kakao.com/oauth/authorize(client_id=${kakaoApiKey}, redirect_uri=${redirectUri}, response_type='code')}">
+                       th:href="@{https://kauth.kakao.com/oauth/authorize(client_id=${kakaoApiKey}, redirect_uri=${redirectUri}, response_type='code', state=${returnUri})}">
                         <img src="/img/kakao_login_medium_narrow.png">
                     </a>
                 </div>
                 <div class="naver-button">
                     <a href="https://nid.naver.com/oauth2.0/authorize"
-                       th:href="@{https://nid.naver.com/oauth2.0/authorize(client_id=${naverApiKey}, redirect_uri=${naverRedirectUri}, response_type='code', state=${state})}">
+                       th:href="@{https://nid.naver.com/oauth2.0/authorize(client_id=${naverApiKey}, redirect_uri=${naverRedirectUri}, response_type='code', state=${returnUri})}">
                         <div class="naver-signup-button">
                             <img src="/img/btnG_naver_logo.png" alt="Naver Logo">
                             Naver로 로그인

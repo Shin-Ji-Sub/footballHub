@@ -2,6 +2,7 @@ package com.mezzala.service;
 
 import com.mezzala.dto.BoardDto;
 import com.mezzala.dto.BoardLargeCategoryDto;
+import com.mezzala.dto.CommentDto;
 import com.mezzala.dto.UserDto;
 import com.mezzala.mapper.BoardMapper;
 import lombok.Setter;
@@ -74,5 +75,14 @@ public class BoardServiceImpl implements BoardService{
         boardMapper.deleteUserAction(user.getUserId(), boardId, actionCategory);
     }
 
+    @Override
+    public void addComment(String content, int boardId, String userId) {
+        boardMapper.insertComment(content, boardId, userId);
+    }
+
+    @Override
+    public List<CommentDto> findCommentsWithBoardId(int boardId) {
+        return boardMapper.selectCommentsWithBoardId(boardId);
+    }
 
 }

@@ -56,6 +56,40 @@
             <result property="boardId" column="board_id"/>
         </collection>
     </resultMap>
+    <resultMap id="CommentResultMap" type="com.mezzala.dto.CommentDto">
+        <id property="commentId" column="comment_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="regDate" column="reg_date"/>
+        <result property="content" column="content"/>
+        <result property="userId" column="user_id"/>
+        <result property="boardId" column="board_id"/>
+        <association property="user" javaType="com.mezzala.dto.UserDto">
+            <id property="userId" column="user_id" />
+            <result property="nickname" column="nickname" />
+            <result property="socialMethod" column="social_method" />
+            <result property="joinDate" column="join_date" />
+            <result property="isAdmin" column="is_admin" />
+            <result property="state" column="state" />
+        </association>
+        <collection property="recomments" ofType="com.mezzala.dto.CommentDto">
+            <id property="commentId" column="recomment_comment_id"/>
+            <result property="parentId" column="recomment_parent_id"/>
+            <result property="regDate" column="recomment_reg_date"/>
+            <result property="content" column="recomment_content"/>
+            <result property="userId" column="recomment_user_id"/>
+            <result property="boardId" column="recomment_board_id"/>
+
+            <association property="user" javaType="com.mezzala.dto.UserDto">
+                <id property="userId" column="recomment_user_id"/>
+                <result property="nickname" column="recomment_nickname"/>
+                <result property="socialMethod" column="recomment_social_method"/>
+                <result property="joinDate" column="recomment_join_date"/>
+                <result property="isAdmin" column="recomment_is_admin"/>
+                <result property="state" column="recomment_state"/>
+            </association>
+        </collection>
+    </resultMap>
+
 
     <select id="selectAllCategory" resultMap="BoardLargeCategoryResultMap">
         SELECT
@@ -401,5 +435,66 @@
         AND
             action_category = #{actionCategory}
     </delete>
+
+    <insert id="insertComment" parameterType="hashmap">
+        INSERT INTO
+            comment (
+                content,
+                user_id,
+                board_id
+            )
+        VALUES (
+                #{content},
+                #{userId},
+                #{boardId}
+            )
+    </insert>
+
+    <select id="selectCommentsWithBoardId" parameterType="int" resultMap="CommentResultMap">
+        SELECT
+            c1.comment_id,
+            c1.parent_id,
+            c1.reg_date,
+            c1.content,
+            c1.user_id,
+            c1.board_id,
+
+            u.user_id,
+            u.nickname,
+            u.social_method,
+            u.join_date,
+            u.is_admin,
+            u.state,
+
+            c2.comment_id AS recomment_comment_id,
+            c2.parent_id AS recomment_parent_id,
+            c2.reg_date AS recomment_reg_date,
+            c2.content AS recomment_content,
+            c2.user_id AS recomment_user_id,
+            c2.board_id AS recomment_board_id,
+
+            u2.user_id AS recomment_user_id,
+            u2.nickname AS recomment_nickname,
+            u2.social_method AS recomment_social_method,
+            u2.join_date AS recomment_join_date,
+            u2.is_admin AS recomment_is_admin,
+            u2.state AS recomment_state
+        FROM
+            comment c1
+        LEFT JOIN
+            comment c2
+        ON
+            c1.comment_id = c2.parent_id
+        LEFT JOIN
+            user u
+        ON
+            c1.user_id = u.user_id
+        LEFT JOIN
+            user u2
+        ON
+            c2.user_id = u2.user_id
+        WHERE
+            c1.parent_id IS NULL;
+    </select>
 
 </mapper>

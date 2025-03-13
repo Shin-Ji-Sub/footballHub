@@ -3,7 +3,11 @@
         <div></div>
         <div class="head"><a href="/">FootballHub</a></div>
         <div class="account-section">
-            <button th:if="${session.user != null}" id="logOut">로그아웃</button>
+            <button th:if="${session.user != null}" id="logOut">
+                <a th:href="@{/account/log-out(socialMethod=${session.user.socialMethod})}">
+                    로그아웃
+                </a>
+            </button>
             <th:block th:if="${session.user == null}">
                 <button id="signUp"><a href="/account/sign-up">회원가입</a></button>
                 <button id="signIn"><a href="/account/sign-in">로그인</a></button>
