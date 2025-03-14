@@ -83,132 +83,8 @@
                 </div>
                 <!-- 댓글 -->
                 <div class="dividing-line">
-                    <div class="comment-content-section">
-<!--                        <div class="comment-content-item best-content">-->
-<!--                            <div class="item-header" data-index="0">-->
-<!--                                <span class="modifier bg-success">BEST</span>-->
-<!--                                <span class="modifier bg-success display-none">글쓴이</span>-->
-<!--                                <span class="nickname-font">닉네임</span>-->
-<!--                                <span class="date-font">25-02-02</span>-->
-<!--                                <span>-->
-<!--                                    <i class="bi bi-hand-thumbs-up"></i>-->
-<!--                                    <span>21</span>-->
-<!--                                </span>-->
-<!--                                <span class="comment-button-common">-->
-<!--                                    &lt;!&ndash; <i class="bi bi-hand-thumbs-up"></i> &ndash;&gt;-->
-<!--                                    <i class="bi bi-hand-thumbs-up-fill" style="color : #228B22"></i>-->
-<!--                                    추천-->
-<!--                                </span>-->
-<!--                                <span class="comment-button-common append-comment">-->
-<!--                                    <i class="bi bi-chat-dots"></i>-->
-<!--                                    댓글쓰기-->
-<!--                                </span>-->
-<!--                                <span class="comment-button-common close-comment display-none">-->
-<!--                                    <i class="bi bi-x-circle"></i>-->
-<!--                                    닫기-->
-<!--                                </span>-->
-<!--                                <span class="comment-button-common dots-button" data-index="0">-->
-<!--                                    <i class="bi bi-three-dots"></i>-->
-<!--                                </span>-->
-<!--                                <div class="report-container display-none" data-index="0">-->
-<!--                                    <span class="comment-button-common report-button">-->
-<!--                                        <i class="bi bi-file-fill text-danger"></i>-->
-<!--                                        신고-->
-<!--                                    </span>-->
-<!--                                    <span class="comment-button-common block-button">-->
-<!--                                        <i class="bi bi-file-fill text-warning"></i>-->
-<!--                                        차단-->
-<!--                                    </span>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="item-content">-->
-<!--                                도레미네? ㅋㅋㅋㅋ-->
-<!--                                명물로 마을을 지키자는 그 만화가 아니네-->
-<!--                            </div>-->
-<!--                            <div class="write-comment-box"></div>-->
-<!--                        </div>-->
-
-<!--                        <div class="comment-content-item recomment">-->
-<!--                            <div class="item-header" data-index="1">-->
-<!--                                <span class="modifier display-none">BEST</span>-->
-<!--                                <span class="modifier display-none">글쓴이</span>-->
-<!--                                <span class="nickname-font">닉네임</span>-->
-<!--                                <span class="date-font">25-02-02</span>-->
-<!--                                <span>-->
-<!--                                    <i class="bi bi-hand-thumbs-up"></i>-->
-<!--                                    <span>21</span>-->
-<!--                                </span>-->
-<!--                                <span class="comment-button-common">-->
-<!--                                    <i class="bi bi-hand-thumbs-up"></i>-->
-<!--                                    추천-->
-<!--                                </span>-->
-<!--                                <span class="comment-button-common append-comment">-->
-<!--                                    <i class="bi bi-chat-dots"></i>-->
-<!--                                    댓글쓰기-->
-<!--                                </span>-->
-<!--                                <span class="comment-button-common close-comment display-none">-->
-<!--                                    <i class="bi bi-x-circle"></i>-->
-<!--                                    닫기-->
-<!--                                </span>-->
-<!--                                <span class="comment-button-common dots-button" data-index="1">-->
-<!--                                    <i class="bi bi-three-dots"></i>-->
-<!--                                </span>-->
-<!--                                <div class="report-container display-none" data-index="1">-->
-<!--                                    <span class="comment-button-common report-button">-->
-<!--                                        <i class="bi bi-file-fill text-danger"></i>-->
-<!--                                        신고-->
-<!--                                    </span>-->
-<!--                                    <span class="comment-button-common block-button">-->
-<!--                                        <i class="bi bi-file-fill text-warning"></i>-->
-<!--                                        차단-->
-<!--                                    </span>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="item-content">-->
-<!--                                도레미네? ㅋㅋㅋㅋ-->
-<!--                                명물로 마을을 지키자는 그 만화가 아니네-->
-<!--                            </div>-->
-<!--                            <div class="write-comment-box"></div>-->
-<!--                        </div>-->
-
-                        <div th:each="comment, commentStat : ${comments}" class="comment-content-item">
-                            <div class="item-header" th:data-index="${commentStat.index}">
-                                <span class="modifier bg-success display-none">BEST</span>
-                                <th:block th:if="${session.user != null}">
-                                    <span class="modifier bg-success" th:if="${comment.user.userId == session.user.userId}">글쓴이</span>
-                                </th:block>
-                                <span class="nickname-font" th:text="${comment.user.nickname}"></span>
-                                <span class="date-font" th:text="${#dates.format(comment.regDate, 'yy-MM-dd')}"></span>
-                                <span>
-                                    <i class="bi bi-hand-thumbs-up"></i>
-                                    <span>21</span>
-                                </span>
-                                <span class="comment-button-common">
-                                    <i class="bi bi-hand-thumbs-up"></i>
-                                    추천
-                                </span>
-                                <span class="comment-button-common append-comment">
-                                    <i class="bi bi-chat-dots"></i>
-                                    댓글쓰기
-                                </span>
-                                <span class="comment-button-common dots-button">
-                                    <i class="bi bi-three-dots"></i>
-                                </span>
-                                <div class="report-container display-none" th:data-index="${commentStat.index}">
-                                    <span class="comment-button-common report-button">
-                                        <i class="bi bi-file-fill text-danger"></i>
-                                        신고
-                                    </span>
-                                    <span class="comment-button-common block-button">
-                                        <i class="bi bi-file-fill text-warning"></i>
-                                        차단
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="item-content" th:text="${comment.content}"></div>
-                            <div class="write-comment-box"></div>
-                        </div>
-
+                    <div class="comment-content-section" id="commentModuleBox">
+                        <!-- 댓글 Module -->
                     </div>
                     <div class="comment-write-section" th:if="${session.user != null}">
                         <textarea name="content" id="writeComment" placeholder="댓글을 작성해주세요"></textarea>
@@ -246,6 +122,7 @@
 </body>
 <script type="text/javascript" th:inline="javascript">
     $(window).on('load', function() {
+        const user = /*[[${session.user}]]*/'';
         const content = /*[[${board.content}]]*/'';
         const userActions = /*[[${actions}]]*/'';
         const boardId = $('#boardId').val();
@@ -257,12 +134,10 @@
         const previousButton = $('#previousButton');
         const topButtonList = $('.top-button-list');
         const likeModuleBox = $('#likeModuleBox');
-        const dotsButton = $('.dots-button');
-        const reportContainer = $('.report-container');
-        const appendComment = $('.append-comment');
         const writeCommentBox = $('.write-comment-box');
         const boardToLoginButton = $('#boardToLogin');
         const writeCommentButton = $('#writeCommentButton');
+        const commentModuleBox = $('#commentModuleBox');
 
         // Toast UI Viewer 사용하여 렌더링
         const viewer = new toastui.Editor.factory({
@@ -273,6 +148,8 @@
 
         // 좋아요 Header LOAD
         likeModuleBox.load('/board/action-like?boardId=' + boardId);
+        // 댓글 LOAD
+        commentModuleBox.load('/board/bring-comment?boardId=' + boardId);
 
         // 좋아요, 북마크 버튼 LOAD
         if (userActions[0].actionId == null) {
@@ -362,46 +239,49 @@
         });
 
         // three dots 버튼
-        dotsButton.on('click', (e) => {
+        commentModuleBox.on('click', '.dots-button', (e) => {
             e.stopPropagation();
-            const index = $(e.currentTarget).parent('.item-header').data('index');
-            reportContainer.addClass('display-none');
-            dotsButton.removeClass('display-none');
-            reportContainer.eq(index).removeClass('display-none');
-            dotsButton.eq(index).addClass('display-none');
+            $('.report-container').addClass('display-none');
+            $('.dots-button').removeClass('display-none');
+            $(e.currentTarget).siblings('.report-container').removeClass('display-none');
+            $(e.currentTarget).addClass('display-none');
         });
         // report container 외 다른 곳 클릭 시 닫힘
         $(document).on('click', (e) => {
             if (!$(e.target).closest('.report-container, .dots-button').length) {
-                reportContainer.addClass('display-none');
-                dotsButton.removeClass('display-none');
+                $('.report-container').addClass('display-none');
+                $('.dots-button').removeClass('display-none');
             }
         });
         // (대)댓글쓰기 버튼
-        appendComment.on('click', (e) => {
-            const index = $(e.currentTarget).parent('.item-header').data('index');
-            writeCommentBox.empty();
-            writeCommentBox.eq(index).append(
-                `
-                <div class="comment-write-section">
-                    <textarea name="#" id="writeComment" placeholder="댓글을 작성해주세요"></textarea>
-                    <div class="recomment-button-box">
-                        <button class="comment-action-button bg-danger close-recomment">
-                            <i class="bi bi-x-circle"></i>
-                            닫기
-                        </button>
-                        <button class="comment-action-button bg-primary write-recomment">
-                            <i class="bi bi-send-fill"></i>
-                            등록
-                        </button>
+        commentModuleBox.on('click', '.append-comment', (e) => {
+            if (user == null) {
+                alert('로그인 후 댓글 등록이 가능합니다.');
+            } else {
+                $('.write-comment-box').empty();
+                $(e.currentTarget).closest("div").next().next(".write-comment-box").append(
+                    `
+                    <div class="comment-write-section">
+                        <textarea name="#" id="writeComment" placeholder="댓글을 작성해주세요"></textarea>
+                        <div class="recomment-button-box">
+                            <button class="comment-action-button bg-danger close-recomment">
+                                <i class="bi bi-x-circle"></i>
+                                닫기
+                            </button>
+                            <button class="comment-action-button bg-primary write-recomment">
+                                <i class="bi bi-send-fill"></i>
+                                등록
+                            </button>
+                        </div>
                     </div>
-                </div>
-                `
-            );
+                    `
+                );
+            }
         });
         // (대)댓글 닫기 버튼
-        writeCommentBox.on('click', '.close-recomment', (e) => {
-            writeCommentBox.empty();
+        //.write-comment-box
+        commentModuleBox.on('click', '.close-recomment', (e) => {
+            $('.write-comment-box').empty();
         });
 
         // 로그인 버튼
@@ -426,7 +306,10 @@
                     data : 'content=' + content + '&boardId=' + boardId + '&userId=' + userId,
                     dataType : 'text',
                     success : (response, status, xhr) => {
-                        if (response == 'success') alert('댓글 작성 완료');
+                        if (response == 'success') {
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId);
+                            $('#writeComment').val("");
+                        }
                     },
                     error : (xhr, status, error) => {
                         alert('댓글을 등록하지 못하였습니다. 다시 작성해주세요.');

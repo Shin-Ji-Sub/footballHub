@@ -278,8 +278,8 @@ public class BoardController {
         }
 
         List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
-        List<CommentDto> comments = boardService.findCommentsWithBoardId(boardId);
-        System.out.println(comments);
+
+
         UserDto user = (UserDto) session.getAttribute("user");
         List<UserActionDto> actions = new ArrayList<>();
         if (user == null) {
@@ -291,7 +291,7 @@ public class BoardController {
 
         model.addAttribute("actions", actions);
         model.addAttribute("board", boards.get(0));
-        model.addAttribute("comments", comments);
+
         model.addAttribute("index", index);
         model.addAttribute("count", count);
         model.addAttribute("pageNo", pageNo);
@@ -332,7 +332,7 @@ public class BoardController {
 
         model.addAttribute("actions", actions);
         model.addAttribute("board", board);
-        model.addAttribute("comments", board.getComments());
+//        model.addAttribute("comments", board.getComments());
         model.addAttribute("index", index);
         model.addAttribute("count", count);
         model.addAttribute("pageNo", pageNo);
@@ -387,6 +387,14 @@ public class BoardController {
         boardService.addComment(content, boardId, userId);
 
         return "success";
+    }
+
+    @GetMapping(path = {"/bring-comment"})
+    public String bringComment(Model model, @RequestParam(name = "boardId") int boardId) {
+        List<CommentDto> comments = boardService.findCommentsWithBoardId(boardId);
+        model.addAttribute("comments", comments);
+
+        return "/board/modules/commentModule";
     }
 
 }
