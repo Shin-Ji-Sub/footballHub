@@ -30,4 +30,8 @@ public interface BoardService {
     void addComment(String content, int boardId, String userId);
 
     List<CommentDto> findCommentsWithBoardId(int boardId);
+
+    void addRecomment(String content, int boardId, String userId, Integer parentId);
+
+    void deleteCommentWithCommentIdAndBoardId(int commentId, int boardId);
 }

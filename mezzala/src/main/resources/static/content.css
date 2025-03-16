@@ -105,7 +105,7 @@
 
 .comment-content-item {
   display: grid;
-  grid-template-rows: 0.5fr 1fr;
+  grid-template-rows: 0.1fr 1fr;
   row-gap: 5px;
   border-bottom: 1px dotted lightgray;
   padding: 10px;
@@ -147,6 +147,10 @@
   cursor: pointer;
 }
 
+.modify-comment-button, .delete-comment-button {
+  font-size: 0.9rem;
+}
+
 .dots-button {
   position: absolute;
   right: 10px;
@@ -170,7 +174,7 @@
   background-color: #fff;
 }
 
-#writeComment {
+.write-comment {
   width: 100%;
   height: 10vh;
   padding: 5px;
@@ -179,13 +183,14 @@
   resize: none;
   background-color: lightgray;
 }
-#writeComment:focus {
+.write-comment:focus {
   outline: none;
 }
 
 .comment-write-button {
   float: right;
-  border: 1px solid #007bff;
+  /*border: 1px solid #007bff;*/
+  border: none;
   border-radius: 10px;
   padding: 5px;
   background-color: rgb(230, 230, 230);
@@ -205,6 +210,7 @@
 
 .comment-action-button {
   float: right;
+  border: none;
   border-radius: 10px;
   padding: 5px;
   background-color: rgb(230, 230, 230);

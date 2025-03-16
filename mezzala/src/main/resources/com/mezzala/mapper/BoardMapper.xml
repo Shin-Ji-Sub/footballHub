@@ -61,6 +61,7 @@
         <result property="parentId" column="parent_id"/>
         <result property="regDate" column="reg_date"/>
         <result property="content" column="content"/>
+        <result property="commentState" column="comment_state"/>
         <result property="userId" column="user_id"/>
         <result property="boardId" column="board_id"/>
         <association property="user" javaType="com.mezzala.dto.UserDto">
@@ -76,6 +77,7 @@
             <result property="parentId" column="recomment_parent_id"/>
             <result property="regDate" column="recomment_reg_date"/>
             <result property="content" column="recomment_content"/>
+            <result property="commentState" column="recomment_comment_state"/>
             <result property="userId" column="recomment_user_id"/>
             <result property="boardId" column="recomment_board_id"/>
 
@@ -450,12 +452,29 @@
             )
     </insert>
 
+    <insert id="insertRecomment" parameterType="hashmap">
+        INSERT INTO
+        comment (
+            parent_id,
+            content,
+            user_id,
+            board_id
+        )
+        VALUES (
+            #{parentId},
+            #{content},
+            #{userId},
+            #{boardId}
+        )
+    </insert>
+
     <select id="selectCommentsWithBoardId" parameterType="int" resultMap="CommentResultMap">
         SELECT
             c1.comment_id,
             c1.parent_id,
             c1.reg_date,
             c1.content,
+            c1.comment_state,
             c1.user_id,
             c1.board_id,
 
@@ -470,6 +489,7 @@
             c2.parent_id AS recomment_parent_id,
             c2.reg_date AS recomment_reg_date,
             c2.content AS recomment_content,
+            c2.comment_state AS recomment_comment_state,
             c2.user_id AS recomment_user_id,
             c2.board_id AS recomment_board_id,
 
@@ -494,7 +514,21 @@
         ON
             c2.user_id = u2.user_id
         WHERE
-            c1.parent_id IS NULL;
+            c1.parent_id IS NULL
+        ORDER BY
+            c1.reg_date ASC,
+            c2.reg_date ASC;
     </select>
+
+    <update id="deleteCommentWithCommentIdAndBoardId" parameterType="hashmap">
+        UPDATE
+            comment
+        SET
+            comment_state = false
+        WHERE
+            comment_id = #{commentId}
+        AND
+            board_id = ${boardId}
+    </update>
 
 </mapper>

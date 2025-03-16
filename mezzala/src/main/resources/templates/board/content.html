@@ -87,7 +87,7 @@
                         <!-- 댓글 Module -->
                     </div>
                     <div class="comment-write-section" th:if="${session.user != null}">
-                        <textarea name="content" id="writeComment" placeholder="댓글을 작성해주세요"></textarea>
+                        <textarea name="content" class="write-comment" id="writeComment" placeholder="댓글을 작성해주세요"></textarea>
                         <button class="comment-write-button bg-primary" id="writeCommentButton">
                             <i class="bi bi-send-fill"></i>
                             등록
@@ -253,36 +253,6 @@
                 $('.dots-button').removeClass('display-none');
             }
         });
-        // (대)댓글쓰기 버튼
-        commentModuleBox.on('click', '.append-comment', (e) => {
-            if (user == null) {
-                alert('로그인 후 댓글 등록이 가능합니다.');
-            } else {
-                $('.write-comment-box').empty();
-                $(e.currentTarget).closest("div").next().next(".write-comment-box").append(
-                    `
-                    <div class="comment-write-section">
-                        <textarea name="#" id="writeComment" placeholder="댓글을 작성해주세요"></textarea>
-                        <div class="recomment-button-box">
-                            <button class="comment-action-button bg-danger close-recomment">
-                                <i class="bi bi-x-circle"></i>
-                                닫기
-                            </button>
-                            <button class="comment-action-button bg-primary write-recomment">
-                                <i class="bi bi-send-fill"></i>
-                                등록
-                            </button>
-                        </div>
-                    </div>
-                    `
-                );
-            }
-        });
-        // (대)댓글 닫기 버튼
-        //.write-comment-box
-        commentModuleBox.on('click', '.close-recomment', (e) => {
-            $('.write-comment-box').empty();
-        });
 
         // 로그인 버튼
         boardToLoginButton.on('click', (e) => {
@@ -294,7 +264,6 @@
         // 댓글 등록 버튼
         writeCommentButton.on('click', (e) => {
             const content = $('#writeComment').val();
-            console.log(content);
             if (content.length == 0) {
                 alert('댓글을 써주세요.');
                 $('#writeComment').focus();
@@ -317,6 +286,105 @@
                 });
             }
         });
+
+        // (대)댓글쓰기 버튼 - textarea view 노출
+        commentModuleBox.on('click', '.append-comment', (e) => {
+            if (user == null) {
+                alert('로그인 후 댓글 등록이 가능합니다.');
+            } else {
+                $('.write-comment-box').empty();
+                $(e.currentTarget).closest("div").next().next(".write-comment-box").append(
+                    `
+                    <div class="comment-write-section">
+                        <textarea name="#" class="write-comment" id="writeRecomment" placeholder="댓글을 작성해주세요"></textarea>
+                        <div class="recomment-button-box">
+                            <button class="comment-action-button bg-danger close-recomment">
+                                <i class="bi bi-x-circle"></i>
+                                닫기
+                            </button>
+                            <button class="comment-action-button bg-primary write-recomment" id="writeRecommentButton">
+                                <i class="bi bi-send-fill"></i>
+                                등록
+                            </button>
+                        </div>
+                    </div>
+                    `
+                );
+            }
+        });
+        // (대)댓글 등록 버튼
+        commentModuleBox.on('click', '#writeRecommentButton', (e) => {
+            const content = $('#writeRecomment').val();
+            const parentId = $(e.currentTarget).closest('.write-comment-box').data('id');
+            if (content.length == 0) {
+                alert('댓글을 써주세요.');
+                $('#writeRecomment').focus();
+                return;
+            } else {
+                $.ajax({
+                    url : '/board/write-comment',
+                    method : 'POST',
+                    data : 'content=' + content + '&boardId=' + boardId + '&userId=' + userId + '&parentId=' + parentId,
+                    dataType : 'text',
+                    success : (response, status, xhr) => {
+                        if (response == 'success') {
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId);
+                            $('#writeComment').val("");
+                        }
+                    },
+                    error : (xhr, status, error) => {
+                        alert('댓글 등록하지 못하였습니다. 다시 작성해주세요.');
+                    }
+                });
+            }
+        });
+        // (대)댓글 닫기 버튼
+        commentModuleBox.on('click', '.close-recomment', (e) => {
+            $('.write-comment-box').empty();
+        });
+
+        // 댓글 삭제 버튼
+        commentModuleBox.on('click', '.delete-comment-button', (e) => {
+            const commentId = $(e.currentTarget).parent('.item-header').siblings('input.comment-id').val();
+            $.ajax({
+                url : '/board/delete-comment',
+                method : 'POST',
+                data : 'commentId=' + commentId + '&boardId=' + boardId,
+                dataType : 'text',
+                success : (response, status, xhr) => {
+                    if (response == 'success') {
+                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId);
+                    }
+                },
+                error : (xhr, status, error) => {
+                    alert('댓글 삭제를 못하였습니다. 다시 시도해주세요.');
+                }
+            });
+        });
+
+        // 댓글 수정 버튼 - textarea view 노출
+        commentModuleBox.on('click', '.modify-comment-button', (e) => {
+            //item-content
+            $(e.currentTarget).parent('.item-header').siblings('.item-content').addClass('display-none');
+            $(e.currentTarget).parent('.item-header').siblings('.comment-write-section').removeClass('display-none');
+        });
+<!--        commentModuleBox.on('click', '.modify-comment-button', (e) => {-->
+<!--            const commentId = $(e.currentTarget).parent('.item-header').siblings('input.comment-id').val();-->
+<!--            $.ajax({-->
+<!--                url : '/board/modify-comment',-->
+<!--                method : 'POST',-->
+<!--                data : 'commentId=' + commentId + '&boardId=' + boardId,-->
+<!--                dataType : 'text',-->
+<!--                success : (response, status, xhr) => {-->
+<!--                    if (response == 'success') {-->
+<!--                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId);-->
+<!--                    }-->
+<!--                },-->
+<!--                error : (xhr, status, error) => {-->
+<!--                    alert('댓글 수정을 못하였습니다. 다시 시도해주세요.');-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
 
     });
 </script>

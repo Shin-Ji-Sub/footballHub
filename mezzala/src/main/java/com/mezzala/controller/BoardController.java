@@ -382,9 +382,14 @@ public class BoardController {
     @ResponseBody
     public String writeComment(@RequestParam(name = "content") String content,
                                @RequestParam(name = "boardId") int boardId,
-                               @RequestParam(name = "userId") String userId) {
+                               @RequestParam(name = "userId") String userId,
+                               @RequestParam(name = "parentId", required = false) Integer parentId) {
 
-        boardService.addComment(content, boardId, userId);
+        if (parentId == null) {
+            boardService.addComment(content, boardId, userId);
+        } else {
+            boardService.addRecomment(content, boardId, userId, parentId);
+        }
 
         return "success";
     }
@@ -395,6 +400,15 @@ public class BoardController {
         model.addAttribute("comments", comments);
 
         return "/board/modules/commentModule";
+    }
+
+    @PostMapping(path = {"/delete-comment"})
+    @ResponseBody
+    public String deleteComment(@RequestParam(name = "commentId") int commentId,
+                                @RequestParam(name = "boardId") int boardId) {
+        boardService.deleteCommentWithCommentIdAndBoardId(commentId, boardId);
+
+        return "success";
     }
 
 }

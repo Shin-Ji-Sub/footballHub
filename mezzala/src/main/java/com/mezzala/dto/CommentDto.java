@@ -12,6 +12,8 @@ public class CommentDto {
     private int parentId;
     private Date regDate;
     private String content;
+    // default(true)
+    private boolean commentState;
     // user
     private String userId;
     // board

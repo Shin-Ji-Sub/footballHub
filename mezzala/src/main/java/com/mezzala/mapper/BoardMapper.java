@@ -35,5 +35,9 @@ public interface BoardMapper {
 
     void insertComment(@Param("content") String content, @Param("boardId") int boardId, @Param("userId") String userId);
 
+    void insertRecomment(@Param("content") String content, @Param("boardId") int boardId, @Param("userId") String userId, @Param("parentId") int parentId);
+
     List<CommentDto> selectCommentsWithBoardId(int boardId);
+
+    void deleteCommentWithCommentIdAndBoardId(@Param("commentId") int commentId, @Param("boardId") int boardId);
 }
