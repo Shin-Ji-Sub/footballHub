@@ -40,4 +40,6 @@ public interface BoardMapper {
     List<CommentDto> selectCommentsWithBoardId(int boardId);
 
     void deleteCommentWithCommentIdAndBoardId(@Param("commentId") int commentId, @Param("boardId") int boardId);
+
+    void updateCommentWithCommentIdAndBoardId(@Param("commentId") int commentId, @Param("boardId") int boardId, @Param("content") String content);
 }

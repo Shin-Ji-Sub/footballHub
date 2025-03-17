@@ -127,6 +127,10 @@
   column-gap: 1rem;
 }
 
+.item-content {
+  white-space: pre-line;
+}
+
 .modifier {
   font-size: 0.9rem;
   font-weight: 600;

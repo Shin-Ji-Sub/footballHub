@@ -263,7 +263,7 @@
 
         // 댓글 등록 버튼
         writeCommentButton.on('click', (e) => {
-            const content = $('#writeComment').val();
+            const content = encodeURIComponent($('#writeComment').val());
             if (content.length == 0) {
                 alert('댓글을 써주세요.');
                 $('#writeComment').focus();
@@ -314,7 +314,7 @@
         });
         // (대)댓글 등록 버튼
         commentModuleBox.on('click', '#writeRecommentButton', (e) => {
-            const content = $('#writeRecomment').val();
+            const content = encodeURIComponent($('#writeRecomment').val());
             const parentId = $(e.currentTarget).closest('.write-comment-box').data('id');
             if (content.length == 0) {
                 alert('댓글을 써주세요.');
@@ -368,23 +368,31 @@
             $(e.currentTarget).parent('.item-header').siblings('.item-content').addClass('display-none');
             $(e.currentTarget).parent('.item-header').siblings('.comment-write-section').removeClass('display-none');
         });
-<!--        commentModuleBox.on('click', '.modify-comment-button', (e) => {-->
-<!--            const commentId = $(e.currentTarget).parent('.item-header').siblings('input.comment-id').val();-->
-<!--            $.ajax({-->
-<!--                url : '/board/modify-comment',-->
-<!--                method : 'POST',-->
-<!--                data : 'commentId=' + commentId + '&boardId=' + boardId,-->
-<!--                dataType : 'text',-->
-<!--                success : (response, status, xhr) => {-->
-<!--                    if (response == 'success') {-->
-<!--                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId);-->
-<!--                    }-->
-<!--                },-->
-<!--                error : (xhr, status, error) => {-->
-<!--                    alert('댓글 수정을 못하였습니다. 다시 시도해주세요.');-->
-<!--                }-->
-<!--            });-->
-<!--        });-->
+        // 댓글 수정 취소 버튼
+        commentModuleBox.on('click', '.cancel-comment-button', (e) => {
+            $(e.currentTarget).closest('.comment-write-section').siblings('.item-content').removeClass('display-none');
+            $(e.currentTarget).closest('.comment-write-section').addClass('display-none');
+        });
+
+        // 댓글 수정 기능
+        commentModuleBox.on('click', '.modify-comment-function', (e) => {
+            const commentId = $(e.currentTarget).closest('.comment-write-section').siblings('input.comment-id').val();
+            const content = encodeURIComponent($(e.currentTarget).parent('.recomment-button-box').siblings('.write-comment').val());
+            $.ajax({
+                url : '/board/modify-comment',
+                method : 'POST',
+                data : 'commentId=' + commentId + '&boardId=' + boardId + '&content=' + content,
+                dataType : 'text',
+                success : (response, status, xhr) => {
+                    if (response == 'success') {
+                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId);
+                    }
+                },
+                error : (xhr, status, error) => {
+                    alert('댓글 수정을 못하였습니다. 다시 시도해주세요.');
+                }
+            });
+        });
 
     });
 </script>

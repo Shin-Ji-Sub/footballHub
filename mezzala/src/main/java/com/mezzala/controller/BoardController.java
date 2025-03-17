@@ -411,4 +411,15 @@ public class BoardController {
         return "success";
     }
 
+    @PostMapping(path = {"/modify-comment"})
+    @ResponseBody
+    public String modifyComment(@RequestParam(name = "commentId") int commentId,
+                                @RequestParam(name = "boardId") int boardId,
+                                @RequestParam(name = "content") String content) {
+
+        boardService.modifyCommentWithCommentIdAndBoardId(commentId, boardId, content);
+
+        return "success";
+    }
+
 }

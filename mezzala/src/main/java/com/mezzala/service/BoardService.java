@@ -34,4 +34,6 @@ public interface BoardService {
     void addRecomment(String content, int boardId, String userId, Integer parentId);
 
     void deleteCommentWithCommentIdAndBoardId(int commentId, int boardId);
+
+    void modifyCommentWithCommentIdAndBoardId(int commentId, int boardId, String content);
 }

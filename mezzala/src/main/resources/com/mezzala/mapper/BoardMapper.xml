@@ -515,6 +515,8 @@
             c2.user_id = u2.user_id
         WHERE
             c1.parent_id IS NULL
+        AND
+            c1.board_id = ${boardId}
         ORDER BY
             c1.reg_date ASC,
             c2.reg_date ASC;
@@ -529,6 +531,17 @@
             comment_id = #{commentId}
         AND
             board_id = ${boardId}
+    </update>
+
+    <update id="updateCommentWithCommentIdAndBoardId" parameterType="hashmap">
+        UPDATE
+            comment
+        SET
+            content = #{content}
+        WHERE
+            comment_id = #{commentId}
+        AND
+            board_id = #{boardId}
     </update>
 
 </mapper>

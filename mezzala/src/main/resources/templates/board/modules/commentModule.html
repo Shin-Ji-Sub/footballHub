@@ -125,13 +125,13 @@
         </div>
         <div class="item-content" th:text="${comment.content}" th:if="${comment.commentState == true}"></div>
         <div class="comment-write-section display-none">
-            <textarea name="#" class="write-comment" th:text="${comment.content}"></textarea>
+            <textarea name="content" class="write-comment" th:text="${comment.content}"></textarea>
             <div class="recomment-button-box">
                 <button class="comment-action-button bg-danger cancel-comment-button">
                     <i class="bi bi-x-circle"></i>
                     취소
                 </button>
-                <button class="comment-action-button bg-success modify-comment-button">
+                <button class="comment-action-button bg-success modify-comment-function">
                     <i class="bi bi-send-fill"></i>
                     수정
                 </button>
@@ -184,13 +184,13 @@
         </div>
         <div class="item-content" th:text="${recomment.content}" th:if="${recomment.commentState == true}"></div>
         <div class="comment-write-section display-none">
-            <textarea name="#" class="write-comment" th:text="${comment.content}"></textarea>
+            <textarea name="content" class="write-comment" th:text="${recomment.content}"></textarea>
             <div class="recomment-button-box">
                 <button class="comment-action-button bg-danger cancel-comment-button">
                     <i class="bi bi-x-circle"></i>
                     취소
                 </button>
-                <button class="comment-action-button bg-success modify-comment-button">
+                <button class="comment-action-button bg-success modify-comment-function">
                     <i class="bi bi-send-fill"></i>
                     수정
                 </button>
