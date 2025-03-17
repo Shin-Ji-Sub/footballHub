@@ -371,7 +371,7 @@ public class BoardController {
     }
 
     @GetMapping(path = {"/action-like"})
-    public String likeAction(@RequestParam(name = "boardId") int boardId,
+    public String actionLike(@RequestParam(name = "boardId") int boardId,
                              Model model) {
         List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
         model.addAttribute("board", boards.get(0));
@@ -396,6 +396,7 @@ public class BoardController {
 
     @GetMapping(path = {"/bring-comment"})
     public String bringComment(Model model, @RequestParam(name = "boardId") int boardId) {
+
         List<CommentDto> comments = boardService.findCommentsWithBoardId(boardId);
         model.addAttribute("comments", comments);
 
@@ -418,6 +419,16 @@ public class BoardController {
                                 @RequestParam(name = "content") String content) {
 
         boardService.modifyCommentWithCommentIdAndBoardId(commentId, boardId, content);
+
+        return "success";
+    }
+
+    @PostMapping(path = {"/recommendation-comment"})
+    @ResponseBody
+    public String recommendationComment(@RequestParam(name = "commentId") int commentId,
+                                        @RequestParam(name = "userId") String userId) {
+
+        boardService.addCommentAction(commentId, userId);
 
         return "success";
     }

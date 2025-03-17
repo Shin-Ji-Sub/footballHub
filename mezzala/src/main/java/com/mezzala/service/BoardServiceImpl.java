@@ -7,11 +7,13 @@ import com.mezzala.dto.UserDto;
 import com.mezzala.mapper.BoardMapper;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class BoardServiceImpl implements BoardService{
+public class BoardServiceImpl implements BoardService {
     @Setter
     BoardMapper boardMapper;
 
@@ -97,7 +99,15 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public void modifyCommentWithCommentIdAndBoardId(int commentId, int boardId, String content) {
-        boardMapper.updateCommentWithCommentIdAndBoardId(commentId, boardId, content);
+        Date now = new Date();
+        Timestamp modifyDate = new Timestamp(now.getTime());
+        System.out.println("modifyDate : " + modifyDate);
+        boardMapper.updateCommentWithCommentIdAndBoardId(commentId, boardId, content, modifyDate);
+    }
+
+    @Override
+    public void addCommentAction(int commentId, String userId) {
+        boardMapper.insertCommentAction(commentId, userId);
     }
 
 }

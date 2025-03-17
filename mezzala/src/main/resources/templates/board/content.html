@@ -157,10 +157,8 @@
         } else {
             const result = userActions.find(e => e.boardId == boardId);
             if (result != undefined) {
-                console.log('cancelLike');
                 topButtonList.load('/board/action-button?likeAction=cancelLike');
             } else {
-                console.log('like');
                 topButtonList.load('/board/action-button?likeAction=like');
             }
         }
@@ -345,21 +343,24 @@
 
         // 댓글 삭제 버튼
         commentModuleBox.on('click', '.delete-comment-button', (e) => {
-            const commentId = $(e.currentTarget).parent('.item-header').siblings('input.comment-id').val();
-            $.ajax({
-                url : '/board/delete-comment',
-                method : 'POST',
-                data : 'commentId=' + commentId + '&boardId=' + boardId,
-                dataType : 'text',
-                success : (response, status, xhr) => {
-                    if (response == 'success') {
-                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId);
+            const ok = window.confirm('삭제하면 복구할 수 없습니다. 그래도 삭제하겠습니까?');
+            if (ok) {
+                const commentId = $(e.currentTarget).parent('.item-header').siblings('input.comment-id').val();
+                $.ajax({
+                    url : '/board/delete-comment',
+                    method : 'POST',
+                    data : 'commentId=' + commentId + '&boardId=' + boardId,
+                    dataType : 'text',
+                    success : (response, status, xhr) => {
+                        if (response == 'success') {
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId);
+                        }
+                    },
+                    error : (xhr, status, error) => {
+                        alert('댓글 삭제를 못하였습니다. 다시 시도해주세요.');
                     }
-                },
-                error : (xhr, status, error) => {
-                    alert('댓글 삭제를 못하였습니다. 다시 시도해주세요.');
-                }
-            });
+                });
+            }
         });
 
         // 댓글 수정 버튼 - textarea view 노출
@@ -392,6 +393,30 @@
                     alert('댓글 수정을 못하였습니다. 다시 시도해주세요.');
                 }
             });
+        });
+
+        // 댓글 추천 기능
+        commentModuleBox.on('click', '.comment-recommendation-button', (e) => {
+            if (user == null) {
+                alert('로그인 후 댓글 등록이 가능합니다.');
+            } else {
+                const commentId = $(e.currentTarget).parent('.item-header').siblings('input.comment-id').val();
+                $.ajax({
+                    url : '/board/recommendation-comment',
+                    method : 'POST',
+                    data : 'commentId=' + commentId + '&userId=' + userId,
+                    dataType : 'text',
+                    success : (response, status, xhr) => {
+                        if (response == "success") {
+                            alert('추천 완료!');
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId);
+                        }
+                    },
+                    error : (xhr, status, error) => {
+                        alert('추천하지 못하였습니다. 다시 시도해주세요.');
+                    }
+                });
+            }
         });
 
     });

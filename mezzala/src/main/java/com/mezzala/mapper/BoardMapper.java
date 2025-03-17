@@ -6,6 +6,7 @@ import com.mezzala.dto.CommentDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -41,5 +42,7 @@ public interface BoardMapper {
 
     void deleteCommentWithCommentIdAndBoardId(@Param("commentId") int commentId, @Param("boardId") int boardId);
 
-    void updateCommentWithCommentIdAndBoardId(@Param("commentId") int commentId, @Param("boardId") int boardId, @Param("content") String content);
+    void updateCommentWithCommentIdAndBoardId(@Param("commentId") int commentId, @Param("boardId") int boardId, @Param("content") String content, @Param("modifyDate") Timestamp modifyDate);
+
+    void insertCommentAction(@Param("commentId") int commentId, @Param("userId") String userId);
 }

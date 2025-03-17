@@ -61,6 +61,7 @@
         <result property="parentId" column="parent_id"/>
         <result property="regDate" column="reg_date"/>
         <result property="content" column="content"/>
+        <result property="recommendationCount" column="c1_recommendation_count"/>
         <result property="commentState" column="comment_state"/>
         <result property="userId" column="user_id"/>
         <result property="boardId" column="board_id"/>
@@ -72,6 +73,11 @@
             <result property="isAdmin" column="is_admin" />
             <result property="state" column="state" />
         </association>
+        <collection property="commentActions" ofType="com.mezzala.dto.CommentActionDto">
+            <id property="actionId" column="ca1_action_id"/>
+            <result property="userId" column="ca1_user_id"/>
+            <result property="commentId" column="ca1_comment_id"/>
+        </collection>
         <collection property="recomments" ofType="com.mezzala.dto.CommentDto">
             <id property="commentId" column="recomment_comment_id"/>
             <result property="parentId" column="recomment_parent_id"/>
@@ -80,7 +86,6 @@
             <result property="commentState" column="recomment_comment_state"/>
             <result property="userId" column="recomment_user_id"/>
             <result property="boardId" column="recomment_board_id"/>
-
             <association property="user" javaType="com.mezzala.dto.UserDto">
                 <id property="userId" column="recomment_user_id"/>
                 <result property="nickname" column="recomment_nickname"/>
@@ -89,6 +94,11 @@
                 <result property="isAdmin" column="recomment_is_admin"/>
                 <result property="state" column="recomment_state"/>
             </association>
+            <collection property="commentActions" ofType="com.mezzala.dto.CommentActionDto">
+                <id property="actionId" column="ca2_action_id"/>
+                <result property="userId" column="ca2_user_id"/>
+                <result property="commentId" column="ca2_comment_id"/>
+            </collection>
         </collection>
     </resultMap>
 
@@ -485,6 +495,10 @@
             u.is_admin,
             u.state,
 
+            ca1.action_id AS ca1_action_id,
+            ca1.user_id AS ca1_user_id,
+            ca1.comment_id AS ca1_comment_id,
+
             c2.comment_id AS recomment_comment_id,
             c2.parent_id AS recomment_parent_id,
             c2.reg_date AS recomment_reg_date,
@@ -498,13 +512,25 @@
             u2.social_method AS recomment_social_method,
             u2.join_date AS recomment_join_date,
             u2.is_admin AS recomment_is_admin,
-            u2.state AS recomment_state
+            u2.state AS recomment_state,
+
+            ca2.action_id AS ca2_action_id,
+            ca2.user_id AS ca2_user_id,
+            ca2.comment_id AS ca2_comment_id
         FROM
             comment c1
+        LEFT JOIN
+            comment_action ca1
+        ON
+            c1.comment_id = ca1.comment_id
         LEFT JOIN
             comment c2
         ON
             c1.comment_id = c2.parent_id
+        LEFT JOIN
+            comment_action ca2
+        ON
+            c2.comment_id = ca2.comment_id
         LEFT JOIN
             user u
         ON
@@ -518,8 +544,8 @@
         AND
             c1.board_id = ${boardId}
         ORDER BY
-            c1.reg_date ASC,
-            c2.reg_date ASC;
+            c1.comment_id ASC,
+            c2.comment_id ASC;
     </select>
 
     <update id="deleteCommentWithCommentIdAndBoardId" parameterType="hashmap">
@@ -537,11 +563,24 @@
         UPDATE
             comment
         SET
-            content = #{content}
+            content = #{content},
+            reg_date = #{modifyDate}
         WHERE
             comment_id = #{commentId}
         AND
             board_id = #{boardId}
     </update>
+
+    <insert id="insertCommentAction" parameterType="hashmap">
+        INSERT INTO
+            comment_action (
+                user_id,
+                comment_id
+            )
+        VALUES (
+                #{userId},
+                #{commentId}
+            )
+    </insert>
 
 </mapper>

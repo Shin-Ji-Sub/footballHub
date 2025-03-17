@@ -91,10 +91,11 @@
             <span class="modifier bg-success display-none">BEST</span>
             <span class="modifier bg-success" th:if="${session.user != null && comment.user.userId == session.user.userId}">글쓴이</span>
             <span class="nickname-font" th:text="${comment.user.nickname}"></span>
-            <span class="date-font" th:text="${#dates.format(comment.regDate, 'yy-MM-dd')}"></span>
-            <span class="comment-button-common">
+<!--            <span class="date-font" th:text="${#dates.format(comment.regDate, 'yy-MM-dd')}"></span>-->
+            <span class="date-font" th:text="${comment.getRegDateFormatted()}"></span>
+            <span class="comment-button-common comment-recommendation-button">
                 <i class="bi bi-hand-thumbs-up"></i>
-                <span>21</span>
+                <span th:text="${comment.commentActions.size()}"></span>
             </span>
             <span class="comment-button-common append-comment">
                 <i class="bi bi-chat-dots"></i>
@@ -147,10 +148,10 @@
             <span class="modifier bg-success display-none">BEST</span>
             <span class="modifier bg-success" th:if="${session.user != null && recomment.user.userId == session.user.userId}">글쓴이</span>
             <span class="nickname-font" th:text="${recomment.user.nickname}"></span>
-            <span class="date-font" th:text="${#dates.format(recomment.regDate, 'yy-MM-dd')}"></span>
-            <span class="comment-button-common">
+            <span class="date-font" th:text="${comment.getRegDateFormatted()}"></span>
+            <span class="comment-button-common comment-recommendation-button">
                 <i class="bi bi-hand-thumbs-up"></i>
-                <span>21</span>
+                <span th:text="${recomment.commentActions.size()}"></span>
             </span>
             <span class="comment-button-common append-comment">
                 <i class="bi bi-chat-dots"></i>
