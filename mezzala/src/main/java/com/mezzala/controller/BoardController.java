@@ -395,9 +395,28 @@ public class BoardController {
     }
 
     @GetMapping(path = {"/bring-comment"})
-    public String bringComment(Model model, @RequestParam(name = "boardId") int boardId) {
+    public String bringComment(Model model, HttpSession session,
+                               @RequestParam(name = "boardId") int boardId) {
+
+        UserDto user = (UserDto) session.getAttribute("user");
+        if (user != null) {
+
+            List<CommentDto> commentActions = boardService.findCommentActions(boardId, user.getUserId());
+            model.addAttribute("commentActions", commentActions);
+
+        }
 
         List<CommentDto> comments = boardService.findCommentsWithBoardId(boardId);
+        int best = -1;
+        int bestCommentId = -1;
+        for (CommentDto c : comments) {
+            if (best < c.getCommentActions().size() && c.getCommentActions().size() > 1) {
+                best = c.getCommentActions().size();
+                bestCommentId = c.getCommentId();
+            }
+        }
+
+        model.addAttribute("bestCommentId", bestCommentId);
         model.addAttribute("comments", comments);
 
         return "/board/modules/commentModule";
@@ -432,5 +451,16 @@ public class BoardController {
 
         return "success";
     }
+
+    @PostMapping(path = {"/cancel-comment-recommendation"})
+    @ResponseBody
+    public String cancelCommentRecommendation(@RequestParam(name = "commentId") int commentId,
+                                              @RequestParam(name = "userId") String userId) {
+
+        boardService.deleteCommentRecommendation(commentId, userId);
+
+        return "success";
+    }
+
 
 }

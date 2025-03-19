@@ -101,6 +101,20 @@
             </collection>
         </collection>
     </resultMap>
+    <resultMap id="CommentActionResultMap" type="com.mezzala.dto.CommentActionDto">
+        <id property="actionId" column="ca_action_id"/>
+        <result property="userId" column="ca_user_id"/>
+        <result property="commentId" column="ca_comment_id"/>
+        <association property="comment" javaType="com.mezzala.dto.CommentDto">
+            <id property="commentId" column="c_comment_id"/>
+            <result property="parentId" column="c_parent_id"/>
+            <result property="regDate" column="c_reg_date"/>
+            <result property="content" column="c_content"/>
+            <result property="commentState" column="c_comment_state"/>
+            <result property="userId" column="c_user_id"/>
+            <result property="boardId" column="c_board_id"/>
+        </association>
+    </resultMap>
 
 
     <select id="selectAllCategory" resultMap="BoardLargeCategoryResultMap">
@@ -548,6 +562,31 @@
             c2.comment_id ASC;
     </select>
 
+    <select id="selectCommentActions" parameterType="hashmap" resultMap="CommentActionResultMap">
+        SELECT
+            ca.action_id AS ca_action_id,
+            ca.user_id AS ca_user_id,
+            ca.comment_id AS ca_comment_id,
+
+            c.comment_id AS c_comment_id,
+            c.parent_id AS c_parent_id,
+            c.reg_date AS c_reg_date,
+            c.content AS c_content,
+            c.comment_state c_comment_state,
+            c.user_id AS c_user_id,
+            c.board_id AS c_board_id
+        FROM
+            comment_action ca
+        LEFT JOIN
+            comment c
+        ON
+            c.comment_id = ca.comment_id
+        WHERE
+            ca.user_id = #{userId}
+        AND
+            c.board_id = #{boardId}
+    </select>
+
     <update id="deleteCommentWithCommentIdAndBoardId" parameterType="hashmap">
         UPDATE
             comment
@@ -582,5 +621,14 @@
                 #{commentId}
             )
     </insert>
+
+    <delete id="deleteCommentRecommendation" parameterType="hashmap">
+        DELETE FROM
+            comment_action
+        WHERE
+            user_id = #{userId}
+        AND
+            comment_id = #{commentId}
+    </delete>
 
 </mapper>

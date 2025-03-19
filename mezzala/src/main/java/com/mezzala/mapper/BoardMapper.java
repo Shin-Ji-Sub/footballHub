@@ -45,4 +45,8 @@ public interface BoardMapper {
     void updateCommentWithCommentIdAndBoardId(@Param("commentId") int commentId, @Param("boardId") int boardId, @Param("content") String content, @Param("modifyDate") Timestamp modifyDate);
 
     void insertCommentAction(@Param("commentId") int commentId, @Param("userId") String userId);
+
+    List<CommentDto> selectCommentActions(@Param("boardId") int boardId, @Param("userId") String userId);
+
+    void deleteCommentRecommendation(@Param("commentId") int commentId, @Param("userId") String userId);
 }

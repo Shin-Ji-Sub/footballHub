@@ -38,4 +38,8 @@ public interface BoardService {
     void modifyCommentWithCommentIdAndBoardId(int commentId, int boardId, String content);
 
     void addCommentAction(int commentId, String userId);
+
+    List<CommentDto> findCommentActions(int boardId, String userId);
+
+    void deleteCommentRecommendation(int commentId, String userId);
 }

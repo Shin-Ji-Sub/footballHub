@@ -110,4 +110,14 @@ public class BoardServiceImpl implements BoardService {
         boardMapper.insertCommentAction(commentId, userId);
     }
 
+    @Override
+    public List<CommentDto> findCommentActions(int boardId, String userId) {
+        return boardMapper.selectCommentActions(boardId, userId);
+    }
+
+    @Override
+    public void deleteCommentRecommendation(int commentId, String userId) {
+        boardMapper.deleteCommentRecommendation(commentId, userId);
+    }
+
 }

@@ -87,118 +87,258 @@
 
 <th:block xmlns:th="http://www.thymeleaf.org" th:each="comment, commentStat : ${comments}">
     <div class="comment-content-item">
-        <div class="item-header" th:if="${comment.commentState == true}">
-            <span class="modifier bg-success display-none">BEST</span>
-            <span class="modifier bg-success" th:if="${session.user != null && comment.user.userId == session.user.userId}">글쓴이</span>
-            <span class="nickname-font" th:text="${comment.user.nickname}"></span>
-<!--            <span class="date-font" th:text="${#dates.format(comment.regDate, 'yy-MM-dd')}"></span>-->
-            <span class="date-font" th:text="${comment.getRegDateFormatted()}"></span>
-            <span class="comment-button-common comment-recommendation-button">
-                <i class="bi bi-hand-thumbs-up"></i>
-                <span th:text="${comment.commentActions.size()}"></span>
-            </span>
-            <span class="comment-button-common append-comment">
-                <i class="bi bi-chat-dots"></i>
-                댓글쓰기
-            </span>
-            <span class="comment-button-common modify-comment-button text-warning" th:if="${session.user != null && comment.user.userId == session.user.userId}">
-                <i class="bi bi-pencil-fill"></i>
-                수정
-            </span>
-            <span class="comment-button-common delete-comment-button text-danger" th:if="${session.user != null && comment.user.userId == session.user.userId}">
-                <i class="bi bi-trash-fill"></i>
-                삭제
-            </span>
-            <span class="comment-button-common dots-button">
-                <i class="bi bi-three-dots"></i>
-            </span>
-            <div class="report-container display-none">
-                <span class="comment-button-common report-button">
-                    <i class="bi bi-file-fill text-danger"></i>
-                    신고
+        <th:block th:if="${comment.commentState == true}">
+            <div class="item-header">
+                <span class="modifier bg-primary" th:if="${comment.commentId == bestCommentId}">BEST</span>
+                <span class="modifier bg-success" th:if="${session.user != null && comment.user.userId == session.user.userId}">글쓴이</span>
+                <span class="nickname-font" th:text="${comment.user.nickname}"></span>
+    <!--            <span class="date-font" th:text="${#dates.format(comment.regDate, 'yy-MM-dd')}"></span>-->
+                <span class="date-font" th:text="${comment.getRegDateFormatted()}"></span>
+                <!-- 추천 안된 상태 -->
+                <span class="comment-button-common comment-recommendation-button">
+                    <i class="bi bi-hand-thumbs-up"></i>
+                    <span th:text="${comment.commentActions.size()}"></span>
                 </span>
-                <span class="comment-button-common block-button">
-                    <i class="bi bi-file-fill text-warning"></i>
-                    차단
+                <!-- 추천 된 상태 -->
+                <span class="comment-button-common cancel-recommendation-button display-none">
+                    <i class="bi bi-hand-thumbs-up-fill" style="color : #228B22"></i>
+                    <span th:text="${comment.commentActions.size()}"></span>
                 </span>
-
-            </div>
-        </div>
-        <div class="item-content" th:text="${comment.content}" th:if="${comment.commentState == true}"></div>
-        <div class="comment-write-section display-none">
-            <textarea name="content" class="write-comment" th:text="${comment.content}"></textarea>
-            <div class="recomment-button-box">
-                <button class="comment-action-button bg-danger cancel-comment-button">
-                    <i class="bi bi-x-circle"></i>
-                    취소
-                </button>
-                <button class="comment-action-button bg-success modify-comment-function">
-                    <i class="bi bi-send-fill"></i>
+                <span class="comment-button-common append-comment">
+                    <i class="bi bi-chat-dots"></i>
+                    댓글쓰기
+                </span>
+                <span class="comment-button-common modify-comment-button text-warning" th:if="${session.user != null && comment.user.userId == session.user.userId}">
+                    <i class="bi bi-pencil-fill"></i>
                     수정
-                </button>
+                </span>
+                <span class="comment-button-common delete-comment-button text-danger" th:if="${session.user != null && comment.user.userId == session.user.userId}">
+                    <i class="bi bi-trash-fill"></i>
+                    삭제
+                </span>
+                <span class="comment-button-common dots-button">
+                    <i class="bi bi-three-dots"></i>
+                </span>
+                <div class="report-container display-none">
+                    <span class="comment-button-common report-button">
+                        <i class="bi bi-file-fill text-danger"></i>
+                        신고
+                    </span>
+                    <span class="comment-button-common block-button">
+                        <i class="bi bi-file-fill text-warning"></i>
+                        차단
+                    </span>
+
+                </div>
             </div>
-        </div>
-        <div class="write-comment-box" th:data-id="${comment.commentId}" th:if="${comment.commentState == true}"></div>
+            <div class="item-content" th:text="${comment.content}"></div>
+            <div class="comment-write-section display-none">
+                <textarea name="content" class="write-comment" th:text="${comment.content}"></textarea>
+                <div class="recomment-button-box">
+                    <button class="comment-action-button bg-danger cancel-comment-button">
+                        <i class="bi bi-x-circle"></i>
+                        취소
+                    </button>
+                    <button class="comment-action-button bg-success modify-comment-function">
+                        <i class="bi bi-send-fill"></i>
+                        수정
+                    </button>
+                </div>
+            </div>
+            <div class="write-comment-box" th:data-id="${comment.commentId}"></div>
+        </th:block>
+        <th:block th:if="${comment.commentState == false}">
+            <div class="item-header display-none">
+                <span class="modifier bg-success display-none">BEST</span>
+                <span class="modifier bg-success" th:if="${session.user != null && comment.user.userId == session.user.userId}">글쓴이</span>
+                <span class="nickname-font" th:text="${comment.user.nickname}"></span>
+                <!--            <span class="date-font" th:text="${#dates.format(comment.regDate, 'yy-MM-dd')}"></span>-->
+                <span class="date-font" th:text="${comment.getRegDateFormatted()}"></span>
+                <!-- 추천 안된 상태 -->
+                <span class="comment-button-common comment-recommendation-button">
+                    <i class="bi bi-hand-thumbs-up"></i>
+                    <span th:text="${comment.commentActions.size()}"></span>
+                </span>
+                <!-- 추천 된 상태 -->
+                <span class="comment-button-common cancel-recommendation-button display-none">
+                    <i class="bi bi-hand-thumbs-up-fill" style="color : #228B22"></i>
+                    <span th:text="${comment.commentActions.size()}"></span>
+                </span>
+                <span class="comment-button-common append-comment">
+                    <i class="bi bi-chat-dots"></i>
+                    댓글쓰기
+                </span>
+                <span class="comment-button-common modify-comment-button text-warning" th:if="${session.user != null && comment.user.userId == session.user.userId}">
+                    <i class="bi bi-pencil-fill"></i>
+                    수정
+                </span>
+                <span class="comment-button-common delete-comment-button text-danger" th:if="${session.user != null && comment.user.userId == session.user.userId}">
+                    <i class="bi bi-trash-fill"></i>
+                    삭제
+                </span>
+                <span class="comment-button-common dots-button">
+                    <i class="bi bi-three-dots"></i>
+                </span>
+                <div class="report-container display-none">
+                    <span class="comment-button-common report-button">
+                        <i class="bi bi-file-fill text-danger"></i>
+                        신고
+                    </span>
+                    <span class="comment-button-common block-button">
+                        <i class="bi bi-file-fill text-warning"></i>
+                        차단
+                    </span>
+
+                </div>
+            </div>
+            <div class="item-content display-none" th:text="${comment.content}"></div>
+            <div class="comment-write-section display-none">
+                <textarea name="content" class="write-comment" th:text="${comment.content}"></textarea>
+                <div class="recomment-button-box">
+                    <button class="comment-action-button bg-danger cancel-comment-button">
+                        <i class="bi bi-x-circle"></i>
+                        취소
+                    </button>
+                    <button class="comment-action-button bg-success modify-comment-function">
+                        <i class="bi bi-send-fill"></i>
+                        수정
+                    </button>
+                </div>
+            </div>
+            <div class="write-comment-box display-none" th:data-id="${comment.commentId}"></div>
+        </th:block>
         <div th:if="${comment.commentState == false}">삭제된 댓글입니다.</div>
         <input type="hidden" class="comment-id" th:value="${comment.commentId}"/>
     </div>
     <!-- 댓글 -->
     <div th:if="${comment.recomments != null}" th:each="recomment, recommentStat : ${comment.recomments}" class="comment-content-item recomment">
-        <div class="item-header" th:if="${recomment.commentState == true}">
-            <span class="modifier bg-success display-none">BEST</span>
-            <span class="modifier bg-success" th:if="${session.user != null && recomment.user.userId == session.user.userId}">글쓴이</span>
-            <span class="nickname-font" th:text="${recomment.user.nickname}"></span>
-            <span class="date-font" th:text="${comment.getRegDateFormatted()}"></span>
-            <span class="comment-button-common comment-recommendation-button">
-                <i class="bi bi-hand-thumbs-up"></i>
-                <span th:text="${recomment.commentActions.size()}"></span>
-            </span>
-            <span class="comment-button-common append-comment">
-                <i class="bi bi-chat-dots"></i>
-                댓글쓰기
-            </span>
-            <span class="comment-button-common modify-comment-button text-warning" th:if="${session.user != null && comment.user.userId == session.user.userId}">
-                <i class="bi bi-pencil-fill"></i>
-                수정
-            </span>
-            <span class="comment-button-common delete-comment-button text-danger" th:if="${session.user != null && comment.user.userId == session.user.userId}">
-                <i class="bi bi-trash-fill"></i>
-                삭제
-            </span>
-            <span class="comment-button-common close-comment display-none">
-                <i class="bi bi-x-circle"></i>
-                닫기
-            </span>
-            <span class="comment-button-common dots-button">
-                <i class="bi bi-three-dots"></i>
-            </span>
-            <div class="report-container display-none">
-                <span class="comment-button-common report-button">
-                    <i class="bi bi-file-fill text-danger"></i>
-                    신고
+        <th:block th:if="${recomment.commentState == true}">
+            <div class="item-header">
+                <span class="modifier bg-success display-none">BEST</span>
+                <span class="modifier bg-success" th:if="${session.user != null && recomment.user.userId == session.user.userId}">글쓴이</span>
+                <span class="nickname-font" th:text="${recomment.user.nickname}"></span>
+                <span class="date-font" th:text="${recomment.getRegDateFormatted()}"></span>
+                <!-- 추천 안된 상태(대댓글) -->
+                <span class="comment-button-common comment-recommendation-button">
+                    <i class="bi bi-hand-thumbs-up"></i>
+                    <span th:text="${recomment.commentActions.size()}"></span>
                 </span>
-                <span class="comment-button-common block-button">
-                    <i class="bi bi-file-fill text-warning"></i>
-                    차단
+                <!-- 추천 된 상태(대댓글) -->
+                <span class="comment-button-common cancel-recommendation-button display-none">
+                    <i class="bi bi-hand-thumbs-up-fill" style="color : #228B22"></i>
+                    <span th:text="${recomment.commentActions.size()}"></span>
                 </span>
-            </div>
-        </div>
-        <div class="item-content" th:text="${recomment.content}" th:if="${recomment.commentState == true}"></div>
-        <div class="comment-write-section display-none">
-            <textarea name="content" class="write-comment" th:text="${recomment.content}"></textarea>
-            <div class="recomment-button-box">
-                <button class="comment-action-button bg-danger cancel-comment-button">
-                    <i class="bi bi-x-circle"></i>
-                    취소
-                </button>
-                <button class="comment-action-button bg-success modify-comment-function">
-                    <i class="bi bi-send-fill"></i>
+                <span class="comment-button-common append-comment">
+                    <i class="bi bi-chat-dots"></i>
+                    댓글쓰기
+                </span>
+                <span class="comment-button-common modify-comment-button text-warning" th:if="${session.user != null && recomment.user.userId == session.user.userId}">
+                    <i class="bi bi-pencil-fill"></i>
                     수정
-                </button>
+                </span>
+                <span class="comment-button-common delete-comment-button text-danger" th:if="${session.user != null && recomment.user.userId == session.user.userId}">
+                    <i class="bi bi-trash-fill"></i>
+                    삭제
+                </span>
+                <span class="comment-button-common close-comment display-none">
+                    <i class="bi bi-x-circle"></i>
+                    닫기
+                </span>
+                <span class="comment-button-common dots-button">
+                    <i class="bi bi-three-dots"></i>
+                </span>
+                <div class="report-container display-none">
+                    <span class="comment-button-common report-button">
+                        <i class="bi bi-file-fill text-danger"></i>
+                        신고
+                    </span>
+                    <span class="comment-button-common block-button">
+                        <i class="bi bi-file-fill text-warning"></i>
+                        차단
+                    </span>
+                </div>
             </div>
-        </div>
-        <div class="write-comment-box" th:data-id="${comment.commentId}" th:if="${recomment.commentState == true}"></div>
+            <div class="item-content" th:text="${recomment.content}"></div>
+            <div class="comment-write-section display-none">
+                <textarea name="content" class="write-comment" th:text="${recomment.content}"></textarea>
+                <div class="recomment-button-box">
+                    <button class="comment-action-button bg-danger cancel-comment-button">
+                        <i class="bi bi-x-circle"></i>
+                        취소
+                    </button>
+                    <button class="comment-action-button bg-success modify-comment-function">
+                        <i class="bi bi-send-fill"></i>
+                        수정
+                    </button>
+                </div>
+            </div>
+            <div class="write-comment-box" th:data-id="${comment.commentId}"></div>
+        </th:block>
+        <th:block th:if="${recomment.commentState == false}">
+            <div class="item-header display-none">
+                <span class="modifier bg-success display-none">BEST</span>
+                <span class="modifier bg-success" th:if="${session.user != null && recomment.user.userId == session.user.userId}">글쓴이</span>
+                <span class="nickname-font" th:text="${recomment.user.nickname}"></span>
+                <span class="date-font" th:text="${recomment.getRegDateFormatted()}"></span>
+                <!-- 추천 안된 상태(대댓글) -->
+                <span class="comment-button-common comment-recommendation-button">
+                    <i class="bi bi-hand-thumbs-up"></i>
+                    <span th:text="${recomment.commentActions.size()}"></span>
+                </span>
+                <!-- 추천 된 상태(대댓글) -->
+                <span class="comment-button-common cancel-recommendation-button display-none">
+                    <i class="bi bi-hand-thumbs-up-fill" style="color : #228B22"></i>
+                    <span th:text="${recomment.commentActions.size()}"></span>
+                </span>
+                <span class="comment-button-common append-comment">
+                    <i class="bi bi-chat-dots"></i>
+                    댓글쓰기
+                </span>
+                <span class="comment-button-common modify-comment-button text-warning" th:if="${session.user != null && recomment.user.userId == session.user.userId}">
+                    <i class="bi bi-pencil-fill"></i>
+                    수정
+                </span>
+                <span class="comment-button-common delete-comment-button text-danger" th:if="${session.user != null && recomment.user.userId == session.user.userId}">
+                    <i class="bi bi-trash-fill"></i>
+                    삭제
+                </span>
+                <span class="comment-button-common close-comment display-none">
+                    <i class="bi bi-x-circle"></i>
+                    닫기
+                </span>
+                <span class="comment-button-common dots-button">
+                    <i class="bi bi-three-dots"></i>
+                </span>
+                <div class="report-container display-none">
+                    <span class="comment-button-common report-button">
+                        <i class="bi bi-file-fill text-danger"></i>
+                        신고
+                    </span>
+                    <span class="comment-button-common block-button">
+                        <i class="bi bi-file-fill text-warning"></i>
+                        차단
+                    </span>
+                </div>
+            </div>
+            <div class="item-content display-none" th:text="${recomment.content}"></div>
+            <div class="comment-write-section display-none">
+                <textarea name="content" class="write-comment" th:text="${recomment.content}"></textarea>
+                <div class="recomment-button-box">
+                    <button class="comment-action-button bg-danger cancel-comment-button">
+                        <i class="bi bi-x-circle"></i>
+                        취소
+                    </button>
+                    <button class="comment-action-button bg-success modify-comment-function">
+                        <i class="bi bi-send-fill"></i>
+                        수정
+                    </button>
+                </div>
+            </div>
+            <div class="write-comment-box display-none" th:data-id="${comment.commentId}"></div>
+        </th:block>
         <div th:if="${recomment.commentState == false}">삭제된 댓글입니다.</div>
         <input type="hidden" class="comment-id" th:value="${recomment.commentId}"/>
     </div>
 </th:block>
+<input type="hidden" class="comment-action" th:each="commentAction : ${commentActions}"
+       th:value="${commentAction.commentId}"/>

@@ -32,7 +32,7 @@
                         <span class="info-data" th:text="${board.user.nickname}"></span>
                         <span class="info-data" th:text="${#dates.format(board.regDate, 'yy-MM-dd')}"></span>
                         <span class="info-data" id="likeModuleBox">
-
+                            <!-- 좋아요 개수 -->
                         </span>
                         <span class="info-data">
                           <i class="bi bi-door-open"></i>
@@ -48,7 +48,8 @@
                 <!-- 이전글, 목록, 다음글 버튼 -->
                 <div class="content-button-list dividing-line">
                     <div class="top-button-list">
-
+                        <!-- 좋아요, 스크랩하기 버튼 -->
+                        <!-- userActionModule -->
                     </div>
                     <div class="bottom-button-list">
                         <th:block th:if="${index == 0 && pageNo == 1}">
@@ -101,10 +102,6 @@
                     </div>
                 </div>
             </div>
-            <!-- 전체 인기글 -->
-            <div class="section list-section">
-                전체 인기글
-            </div>
         </div>
         <input type="hidden" id="userId" th:if="${session.user != null}" th:value="${session.user.userId}">
         <input type="hidden" id="boardId" th:value="${board.boardId}">
@@ -149,7 +146,22 @@
         // 좋아요 Header LOAD
         likeModuleBox.load('/board/action-like?boardId=' + boardId);
         // 댓글 LOAD
-        commentModuleBox.load('/board/bring-comment?boardId=' + boardId);
+        const commentLoad = () => {
+            let commentIdArr = [];
+            $('.comment-id').each(function() {
+                commentIdArr.push($(this).val());
+            });
+            console.log(commentIdArr);
+            $('.comment-action').each(function() {
+                const index = commentIdArr.findIndex(value => value == $(this).val());
+                console.log(index);
+                if (index != -1) {
+                    $('.comment-recommendation-button').eq(index).addClass('display-none');
+                    $('.cancel-recommendation-button').eq(index).removeClass('display-none');
+                }
+            });
+        }
+        commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
 
         // 좋아요, 북마크 버튼 LOAD
         if (userActions[0].actionId == null) {
@@ -204,13 +216,15 @@
                 success : (response, status, xhr) => {
                     if (response == "login") {
                         alert("로그인 후 이용해주세요");
-                    } else {
+                    } else if (response == "success") {
                         topButtonList.load('/board/action-button?likeAction=cancelLike');
                         likeModuleBox.load('/board/action-like?boardId=' + boardId);
+                    } else {
+                        alert('추가하지 못하였습니다. 다시 시도해주세요.');
                     }
                 },
                 error : (xhr, status, err) => {
-                    alert('추가하지 못하였습니다.');
+                    alert('추가하지 못하였습니다. 다시 시도해주세요');
                 }
             });
         });
@@ -225,9 +239,11 @@
                 success : (response, status, xhr) => {
                     if (response == "login") {
                         alert("로그인 후 이용해주세요");
-                    } else {
+                    } else if (response == "success") {
                         topButtonList.load('/board/action-button?likeAction=like');
                         likeModuleBox.load('/board/action-like?boardId=' + boardId);
+                    } else {
+                        alert('취소하지 못하였습니다. 다시 시도해주세요.');
                     }
                 },
                 error : (xhr, status, err) => {
@@ -274,8 +290,10 @@
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == 'success') {
-                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId);
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
                             $('#writeComment').val("");
+                        } else {
+                            alert('댓글을 등록하지 못하였습니다. 다시 작성해주세요.');
                         }
                     },
                     error : (xhr, status, error) => {
@@ -290,11 +308,12 @@
             if (user == null) {
                 alert('로그인 후 댓글 등록이 가능합니다.');
             } else {
+                console.log(1);
                 $('.write-comment-box').empty();
-                $(e.currentTarget).closest("div").next().next(".write-comment-box").append(
+                $(e.currentTarget).parent('.item-header').siblings('.write-comment-box').append(
                     `
                     <div class="comment-write-section">
-                        <textarea name="#" class="write-comment" id="writeRecomment" placeholder="댓글을 작성해주세요"></textarea>
+                        <textarea name="content" class="write-comment" id="writeRecomment" placeholder="댓글을 작성해주세요"></textarea>
                         <div class="recomment-button-box">
                             <button class="comment-action-button bg-danger close-recomment">
                                 <i class="bi bi-x-circle"></i>
@@ -326,8 +345,10 @@
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == 'success') {
-                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId);
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
                             $('#writeComment').val("");
+                        } else {
+                            alert('댓글 등록하지 못하였습니다. 다시 작성해주세요.');
                         }
                     },
                     error : (xhr, status, error) => {
@@ -353,7 +374,9 @@
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == 'success') {
-                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId);
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
+                        } else {
+                            alert('댓글 삭제를 못하였습니다. 다시 시도해주세요.');
                         }
                     },
                     error : (xhr, status, error) => {
@@ -386,7 +409,9 @@
                 dataType : 'text',
                 success : (response, status, xhr) => {
                     if (response == 'success') {
-                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId);
+                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
+                    } else {
+                        alert('댓글 수정을 못하였습니다. 다시 시도해주세요.');
                     }
                 },
                 error : (xhr, status, error) => {
@@ -408,8 +433,9 @@
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == "success") {
-                            alert('추천 완료!');
-                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId);
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
+                        } else {
+                            alert('추천하지 못하였습니다. 다시 시도해주세요.');
                         }
                     },
                     error : (xhr, status, error) => {
@@ -417,6 +443,26 @@
                     }
                 });
             }
+        });
+
+        commentModuleBox.on('click', '.cancel-recommendation-button', (e) => {
+            const commentId = $(e.currentTarget).parent('.item-header').siblings('input.comment-id').val();
+            $.ajax({
+                url : '/board/cancel-comment-recommendation',
+                method : 'POST',
+                data : 'commentId=' + commentId + '&userId=' + userId,
+                dataType : 'text',
+                success : (response, status, xhr) => {
+                    if (response == "success") {
+                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
+                    } else {
+                        alert('추천 취소하지 못하였습니다. 다시 시도해주세요.');
+                    }
+                },
+                error : (xhr, status, error) => {
+                    alert('추천 취소하지 못하였습니다. 다시 시도해주세요.');
+                }
+            });
         });
 
     });

@@ -11,4 +11,7 @@ public class CommentActionDto {
     // Comment
     private int commentId;
 
+    // comment
+    CommentDto comment;
+
 }
