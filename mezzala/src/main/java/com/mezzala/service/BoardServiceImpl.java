@@ -120,4 +120,9 @@ public class BoardServiceImpl implements BoardService {
         boardMapper.deleteCommentRecommendation(commentId, userId);
     }
 
+    @Override
+    public void deleteContent(int boardId) {
+        boardMapper.deleteContent(boardId);
+    }
+
 }

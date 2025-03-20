@@ -339,6 +339,42 @@ public class BoardController {
         return "/board/content";
     }
 
+    @GetMapping(path = {"/modify-content"})
+    public String modifyContent(Model model,
+                                @RequestParam(name = "boardId") int boardId) {
+
+        List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
+        model.addAttribute("board", boards.get(0));
+        System.out.println("[board] : " + boards.get(0));
+
+        List<BoardLargeCategoryDto> largeCategories = boardService.findAllCategory();
+        model.addAttribute("largeCategories", largeCategories);
+
+        return "/board/modify";
+    }
+
+    @PostMapping(path = {"/before-delete"})
+    @ResponseBody
+    public String beforeDelete(@RequestParam(name = "writeUserId") String writeUserId,
+                               HttpSession session) {
+
+        UserDto user = (UserDto) session.getAttribute("user");
+        if (writeUserId.equals(user.getUserId())) {
+            return "success";
+        } else {
+            return "fail";
+        }
+
+    }
+
+    @GetMapping(path = {"/delete-content"})
+    public String deleteContent(@RequestParam(name = "boardId") int boardId) {
+
+        boardService.deleteContent(boardId);
+
+        return "redirect:/";
+    }
+
     @PostMapping(path = {"/action"})
     @ResponseBody
     public String action(@RequestParam(name = "actionCategory") String actionCategory,
@@ -410,7 +446,7 @@ public class BoardController {
         int best = -1;
         int bestCommentId = -1;
         for (CommentDto c : comments) {
-            if (best < c.getCommentActions().size() && c.getCommentActions().size() > 1) {
+            if (best < c.getCommentActions().size() && c.getCommentActions().size() > 10) {
                 best = c.getCommentActions().size();
                 bestCommentId = c.getCommentId();
             }

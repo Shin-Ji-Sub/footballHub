@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Text Editor -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Custom -->
+    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/write.css">
+    <title>FootballHub</title>
+</head>
+<body>
+    <div th:replace="~{/modules/header}"></div>
+
+    <form id="writeBoardForm" action="/board/write-board" method="POST" enctype="multipart/form-data">
+    <main>
+        <div class="main-container">
+            <div class="board-container">
+                <ul>
+                    <li>파일 형태 제한</li>
+                    <li>파일 크기 제한</li>
+                    <li>비하 자제</li>
+                </ul>
+                <div class="write-header">
+                    <!-- 큰 카테고리 -->
+                    <select name="largeCategoryId" class="form-select write-subject" id="writeLargeCategory" aria-label="Default select example">
+                        <th:block th:each="largeCategory : ${largeCategories}">
+                            <option th:if="${largeCategory.largeCategoryId == board.largeCategory.largeCategoryId}"
+                                    th:value="${largeCategory.largeCategoryId}"
+                                    th:text="${largeCategory.largeCategoryName}"
+                                    selected></option>
+                            <option th:if="${largeCategory.largeCategoryId != board.largeCategory.largeCategoryId}"
+                                    th:value="${largeCategory.largeCategoryId}"
+                                    th:text="${largeCategory.largeCategoryName}"></option>
+                        </th:block>
+                    </select>
+
+                    <!-- 일반 (작은 카테고리) -->
+                    <th:block th:if="${board.largeCategory.largeCategoryId == 1}">
+                        <select name="smallCategoryIndex" class="form-select write-subject" id="normalCategory" aria-label="Default select example">
+                            <th:block th:each="largeCategory : ${largeCategories}"
+                                      th:if="${largeCategory.largeCategoryId == 1}">
+                                <th:block th:each="smallCategory : ${largeCategory.smallCategories}">
+                                    <option th:if="${smallCategory.smallCategoryIndex == board.smallCategory.smallCategoryIndex}"
+                                            th:value="${smallCategory.smallCategoryIndex}"
+                                            th:text="${smallCategory.smallCategoryName}"
+                                            selected></option>
+                                    <option th:if="${smallCategory.smallCategoryIndex != board.smallCategory.smallCategoryIndex}"
+                                            th:value="${smallCategory.smallCategoryIndex}"
+                                            th:text="${smallCategory.smallCategoryName}"></option>
+                                </th:block>
+                            </th:block>
+                        </select>
+                    </th:block>
+                    <th:block th:if="${board.largeCategory.largeCategoryId != 1}">
+                        <select name="smallCategoryIndex" class="form-select write-subject display-none" id="normalCategory" aria-label="Default select example">
+                            <th:block th:each="largeCategory : ${largeCategories}"
+                                      th:if="${largeCategory.largeCategoryId == 1}">
+                                <th:block th:each="smallCategory : ${largeCategory.smallCategories}">
+                                    <option th:if="${smallCategory.smallCategoryIndex == board.smallCategory.smallCategoryIndex}"
+                                            th:value="${smallCategory.smallCategoryIndex}"
+                                            th:text="${smallCategory.smallCategoryName}"
+                                            selected></option>
+                                    <option th:if="${smallCategory.smallCategoryIndex != board.smallCategory.smallCategoryIndex}"
+                                            th:value="${smallCategory.smallCategoryIndex}"
+                                            th:text="${smallCategory.smallCategoryName}"></option>
+                                </th:block>
+                            </th:block>
+                        </select>
+                    </th:block>
+
+                    <!-- 선택된 팀 (공화국), (작은 카테고리) -->
+                    <th:block th:if="${board.largeCategory.largeCategoryId == 2}">
+                        <div class="input-group flex-nowrap" id="teamValueContainer">
+                            <input readonly type="text" id="teamValue" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping"
+                                    th:value="${board.smallCategory.smallCategoryName}">
+                            <input type="hidden" name="smallCategoryIndex" id="teamIndexValue"
+                                    th:value="${board.smallCategory.smallCategoryIndex}">
+                            <span class="input-group-text" id="addon-wrapping">
+                              <i class="bi bi-arrow-clockwise"></i>
+                            </span>
+                        </div>
+
+                        <div class="search-team-container display-none" id="fanCategory">
+                            <!-- 팀 검색 -->
+                            <input type="text" class="team-search-value" id="teamSearchValue" placeholder="팀 이름을 입력해주세요">
+                            <!-- 팀 선택 -->
+                            <div id="appendTeam">
+                                <th:block th:each="largeCategory : ${largeCategories}"
+                                          th:if="${largeCategory.largeCategoryId == 2}">
+                                    <div th:each="smallCategory : ${largeCategory.smallCategories}"
+                                         th:data-value="${smallCategory.smallCategoryIndex}"
+                                         th:text="${smallCategory.smallCategoryName}"
+                                         class="search-team"></div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${board.largeCategory.largeCategoryId != 2}">
+                        <div class="input-group flex-nowrap display-none" id="teamValueContainer">
+                            <input readonly type="text" id="teamValue" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping"
+                                   th:value="${board.smallCategory.smallCategoryName}">
+                            <input type="hidden" name="smallCategoryIndex" id="teamIndexValue"
+                                   th:value="${board.smallCategory.smallCategoryIndex}">
+                            <span class="input-group-text" id="addon-wrapping">
+                              <i class="bi bi-arrow-clockwise"></i>
+                            </span>
+                        </div>
+
+                        <div class="search-team-container display-none" id="fanCategory">
+                            <!-- 팀 검색 -->
+                            <input type="text" class="team-search-value" id="teamSearchValue" placeholder="팀 이름을 입력해주세요">
+                            <!-- 팀 선택 -->
+                            <div id="appendTeam">
+                                <th:block th:each="largeCategory : ${largeCategories}"
+                                          th:if="${largeCategory.largeCategoryId == 2}">
+                                    <div th:each="smallCategory : ${largeCategory.smallCategories}"
+                                         th:data-value="${smallCategory.smallCategoryIndex}"
+                                         th:text="${smallCategory.smallCategoryName}"
+                                         class="search-team"></div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+                <input type="text" class="write-subject" id="writeSubject" name="subject" placeholder="제목"
+                        th:value="${board.subject}">
+                <div id="content"></div>
+<!--                <div class="mb-3">-->
+<!--                    <label for="formFileMultiple" class="form-label">-->
+<!--                        첨부파일(mp4, webm, mov만 지원)은 최대 20MB까지 등록 가능합니다.-->
+<!--                    </label>-->
+<!--                    <input class="form-control" type="file" id="formFileMultiple" accept="video/mp4,video/webm,video/quicktime" multiple>-->
+<!--                    <button type="button" class="btn btn-primary mt-2" id="uploadButton">업로드</button>-->
+<!--                </div>-->
+            </div>
+            <button type="button" id="submitButton" class="write-button">글작성</button>
+        </div>
+    </main>
+    <div class="visibility-hidden" id="hiddenBox">
+        <input type="hidden" id="userId" name="userId" th:value="${session.user.userId}">
+    </div>
+    </form>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Text Editor -->
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+</body>
+<script type="text/javascript" th:inline="javascript">
+    $(window).on('load', function() {
+        const editor = new toastui.Editor({
+                el: document.querySelector('#content'), // 에디터를 적용할 요소 (컨테이너)
+                height: '500px',                        // 에디터 영역의 높이 값 (OOOpx || auto)
+                initialEditType: 'wysiwyg',            // 최초로 보여줄 에디터 타입 (markdown || wysiwyg)
+                previewStyle: 'vertical',                // 마크다운 프리뷰 스타일 (tab || vertical)
+                hideModeSwitch: true,
+                placeholder: "내용을 입력해 주세요.",
+                //useDefaultHTMLSanitizer: false,          // 🔥 기본 HTML 필터링 완전 비활성화
+                //customHTMLSanitizer: html => html,       // HTML 필터링 방지
+                hooks: {
+                    async addImageBlobHook(blob, callback) {     // 이미지 업로드 로직 커스텀
+                        try {
+
+                            // 1. 에디터에 업로드한 이미지를 FormData 객체에 저장
+                            // (이때, 컨트롤러 uploadEditorImage 메서드의 파라미터인 'image'와 formData에 append 하는 key('image')값은 동일해야 함)
+                            const formData = new FormData();
+                            formData.append('image', blob);
+
+                            // 2. FileApiController - uploadEditorImage 메서드 호출
+                            const response = await fetch('/board/image-upload', {
+                                method : 'POST',
+                                body : formData,
+                            });
+
+                            // 3. 컨트롤러에서 전달받은 디스크에 저장된 파일명
+                            const result = await response.json();
+                            console.log('서버에 저장된 파일명 : ', result.userFileName);
+                            console.log('원본 파일명 : ', result.savedFileName);
+
+                            $('#hiddenBox').append(
+                                `<div class='visibility-hidden image-file'
+                                data-file='{"userFileName": "${result.userFileName}", "savedFileName": "${result.savedFileName}"}'>
+                                </div>`
+                            );
+
+                            // 4. addImageBlobHook의 callback 함수를 통해, 디스크에 저장된 이미지를 에디터에 렌더링
+                            //const imageUrl = `/board/image-print?filename=${result.savedFileName}`;
+                            //callback(imageUrl, 'image alt attribute');
+
+                            callback(`/board/image-print?filename=${result.savedFileName}`);
+
+                        } catch (error) {
+                            console.error('업로드 실패 : ', error);
+                        }
+                    }
+                }
+        });
+        editor.setHTML(/*[[${board.content}]]*/'');
+
+        const writeSubject = $('#writeSubject');
+        const writeLargeCategory = $('#writeLargeCategory');
+        const normalCategory = $('#normalCategory');
+        const fanCategory = $('#fanCategory');
+        const teamValueContainer = $('#teamValueContainer');
+        const contentWidth = $('#content').width();
+        const appendTeam = $('#appendTeam');
+        const teamSearchValue = $('#teamSearchValue');
+        const refreshBtn = $('#addon-wrapping');
+        const deleteOption = $('#deleteOption');
+        const teamArrEl = $('.search-team');
+
+        // FORM 관련 변수
+        const writeBoardForm = $('#writeBoardForm');
+        const submitButton = $('#submitButton');
+        // 이미지 파일 정규식
+        const regex = /![]\(\/board\/image-print\?filename=([\w-]+\.png)\)/g;
+
+        const width = contentWidth / 2;
+
+        writeSubject.css('width', contentWidth);
+        writeLargeCategory.css('width', width);
+        normalCategory.css('width', width);
+        fanCategory.css('width', width);
+        teamValueContainer.css('width', width);
+
+        writeLargeCategory.on('change', () => {
+          const writeLargeCategoryValue = writeLargeCategory.val();
+          if (writeLargeCategoryValue == 1) {
+            deleteOption.remove();
+            normalCategory.removeAttr('disabled');
+            normalCategory.removeClass('display-none');
+            fanCategory.addClass('display-none');
+            teamValueContainer.addClass('display-none');
+          } else if (writeLargeCategoryValue == 2) {
+            fanCategory.removeClass('display-none');
+            normalCategory.addClass('display-none');
+
+            appendTeam.css({
+              'bottom' : writeLargeCategory.height() * 2,
+              'max-height': teamArrEl.outerHeight() * 5 + 'px',
+              'overflow-y': 'auto'
+            });
+          }
+        });
+
+        teamSearchValue.on('input', () => {
+          const searchValue = teamSearchValue.val();
+          const result = teamArrEl.filter((i, el) => $(el).text().trim().includes(searchValue));
+          appendTeam.empty();
+          for (let i = 0; i < result.length; i++) {
+            appendTeam.append(`<div class='search-team'>${$(result[i]).text()}</div>`);
+          }
+          if (searchValue.length == 0) {
+            for (let i = 0; i < teamArrEl.length; i++) {
+              appendTeam.append(`<div class='search-team'>${$(teamArrEl[i]).text()}</div>`);
+            }
+          }
+        });
+
+        appendTeam.on('click', '.search-team', (e) => {
+          const value = $(e.target).html();
+          const indexValue = $(e.target).data('value');
+          $('#teamValue').val(value);
+          $('#teamIndexValue').val(indexValue);
+          teamValueContainer.removeClass('display-none');
+          fanCategory.addClass('display-none');
+        });
+
+        refreshBtn.on('click', () => {
+          fanCategory.removeClass('display-none');
+          teamValueContainer.addClass('display-none');
+          appendTeam.css({
+            'bottom' : writeLargeCategory.height() * 2,
+            'max-height': teamArrEl.outerHeight() * 5 + 'px',
+            'overflow-y': 'auto'
+          });
+        });
+
+        // write ajax submit
+        submitButton.on('click', (e) => {
+            const writeBoardForm = $('#writeBoardForm');
+            const largeCategory = $('#writeLargeCategory').val();
+            const normalValue = $('#normalCategory').val();
+            const teamValue = $('#teamValue').val();
+            const subject = $('#writeSubject').val();
+            const content = editor.getHTML();
+            const userId = $('#userId').val();
+
+            const imageFiles = $('.image-file');
+            const ImageFilesArr = [];
+            if (imageFiles.length == 0) {
+                console.log("length = 0");
+            } else {
+                for (let i = 0; i < imageFiles.length; i++) {
+                    ImageFilesArr.push(imageFiles.eq(i).data('file'));
+                }
+            }
+            console.log(ImageFilesArr);
+
+            //const matches = [...content.matchAll(regex)].map(match => match[1]);
+
+            if (largeCategory == '카테고리') {
+                alert('카테고리를 선택해주세요');
+                e.preventDefault();
+                return;
+            }
+
+            if (largeCategory == 2) {
+                if (teamValue.length == 0) {
+                    alert('팀을 선택해주세요');
+                    teamSearchValue.focus();
+                    e.preventDefault();
+                    return;
+                }
+            }
+
+            if (subject.length == 0) {
+                alert('제목을 입력해주세요');
+                $('#writeSubject').focus();
+                e.preventDefault();
+                return;
+            }
+
+            if (editor.getMarkdown().length == 0) {
+                alert('내용을 입력해주세요');
+                e.preventDefault();
+                return;
+            }
+
+            const data = writeBoardForm.serializeArray();
+            //if (largeCategory == 1) data.splice(2, 1);
+            //if (largeCategory == 2) data.splice(1, 1);
+            data.push({
+                name : 'content',
+                value : content
+            });
+            if (ImageFilesArr.length != 0) {
+                data.push({
+                    name : 'ImageFilesArr',
+                    value : JSON.stringify(ImageFilesArr)
+                });
+            }
+            console.log(data);
+            $.ajax({
+                "url" : writeBoardForm.attr('action'),
+                "method" : writeBoardForm.attr('method'),
+                "data" : data,
+                "dataType" : "text",
+                "success" : (response, status, xhr) => {
+                    if (response == "success") {
+                        alert('작성되었습니다.');
+                        location.href="/";
+                    };
+                },
+                "error" : (xhr, status, err) => {
+                    alert("작성하지 못하였습니다. 다시 작성해주세요.");
+                }
+            });
+
+        });
+
+    });
+</script>
+</html>

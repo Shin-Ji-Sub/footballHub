@@ -42,4 +42,6 @@ public interface BoardService {
     List<CommentDto> findCommentActions(int boardId, String userId);
 
     void deleteCommentRecommendation(int commentId, String userId);
+
+    void deleteContent(int boardId);
 }

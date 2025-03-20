@@ -49,4 +49,6 @@ public interface BoardMapper {
     List<CommentDto> selectCommentActions(@Param("boardId") int boardId, @Param("userId") String userId);
 
     void deleteCommentRecommendation(@Param("commentId") int commentId, @Param("userId") String userId);
+
+    void deleteContent(int boardId);
 }

@@ -29,15 +29,27 @@
                         <button class="content-category" th:text="${board.smallCategory.smallCategoryName}"></button>
                     </div>
                     <div class="board-info">
-                        <span class="info-data" th:text="${board.user.nickname}"></span>
-                        <span class="info-data" th:text="${#dates.format(board.regDate, 'yy-MM-dd')}"></span>
-                        <span class="info-data" id="likeModuleBox">
-                            <!-- 좋아요 개수 -->
-                        </span>
-                        <span class="info-data">
-                          <i class="bi bi-door-open"></i>
-                          <span th:text="${board.visitCount}"></span>
-                        </span>
+                        <div class="content-info-container">
+                            <span class="info-data" th:text="${board.user.nickname}"></span>
+                            <span class="info-data" th:text="${#dates.format(board.regDate, 'yy-MM-dd')}"></span>
+                            <span class="info-data" id="likeModuleBox">
+                                <!-- 좋아요 개수 -->
+                            </span>
+                            <span class="info-data">
+                              <i class="bi bi-door-open"></i>
+                              <span th:text="${board.visitCount}"></span>
+                            </span>
+                        </div>
+                        <div class="content-info-container" th:if="${session.user != null && session.user.userId == board.user.userId}">
+                            <span class="comment-button-common text-warning" id="modifyContentButton">
+                                <i class="bi bi-pencil-fill"></i>
+                                수정
+                            </span>
+                            <span class="comment-button-common text-danger" id="deleteContentButton">
+                                <i class="bi bi-trash-fill"></i>
+                                삭제
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <!-- 본문 -->
@@ -104,6 +116,7 @@
             </div>
         </div>
         <input type="hidden" id="userId" th:if="${session.user != null}" th:value="${session.user.userId}">
+        <input type="hidden" id="writeUserId" th:value="${board.user.userId}">
         <input type="hidden" id="boardId" th:value="${board.boardId}">
         <input type="hidden" id="indexValue" th:value="${index}">
         <input type="hidden" id="pageNo" th:value="${pageNo}">
@@ -123,6 +136,7 @@
         const content = /*[[${board.content}]]*/'';
         const userActions = /*[[${actions}]]*/'';
         const boardId = $('#boardId').val();
+        const writeUserId = $('#writeUserId').val();
         const userId = $('#userId').val();
         const indexValue = Number($('#indexValue').val());
         const pageNo = Number($('#pageNo').val());
@@ -151,10 +165,8 @@
             $('.comment-id').each(function() {
                 commentIdArr.push($(this).val());
             });
-            console.log(commentIdArr);
             $('.comment-action').each(function() {
                 const index = commentIdArr.findIndex(value => value == $(this).val());
-                console.log(index);
                 if (index != -1) {
                     $('.comment-recommendation-button').eq(index).addClass('display-none');
                     $('.cancel-recommendation-button').eq(index).removeClass('display-none');
@@ -162,6 +174,34 @@
             });
         }
         commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
+
+        // 글 수정 기능
+        $('#modifyContentButton').on('click', (e) => {
+            location.href = '/board/modify-content?boardId=' + boardId;
+        });
+
+        // 글 삭제 기능
+        $('#deleteContentButton').on('click', (e) => {
+            const ok = window.confirm('글을 삭제하시겠습니까? 삭제하면 복구할 수 없습니다.');
+            if (ok) {
+                $.ajax({
+                    url : '/board/before-delete',
+                    method : 'POST',
+                    data : 'writeUserId=' + writeUserId,
+                    dataType : 'text',
+                    success : (response, status, xhr) => {
+                        if (response == "success") {
+                            location.href = '/board/delete-content?boardId=' + boardId;
+                        } else {
+                            alert('글을 삭제하지 못했습니다. 다시 한번 시도해주세요.');
+                        }
+                    },
+                    error : (xhr, status, error) => {
+                        alert('글을 삭제하지 못했습니다. 다시 한번 시도해주세요.');
+                    }
+                });
+            }
+        });
 
         // 좋아요, 북마크 버튼 LOAD
         if (userActions[0].actionId == null) {
