@@ -51,4 +51,8 @@ public interface BoardMapper {
     void deleteCommentRecommendation(@Param("commentId") int commentId, @Param("userId") String userId);
 
     void deleteContent(int boardId);
+
+    void modifyBoard(BoardDto board);
+
+    void deleteBoardAttachAll(@Param("imageFiles") List<Map<String, String>> imageFiles, @Param("boardId") int boardId);
 }

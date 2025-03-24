@@ -223,7 +223,7 @@ header nav {
   border-radius: 10px;
   background-color: lightgray;
   padding: 3px;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   display: inline-block;
   text-align: center;
 }
@@ -232,11 +232,12 @@ header nav {
   display: flex;
   column-gap: 1rem;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
 }
 
 .content .icon {
   display: flex;
+  column-gap: 2px;
   font-size: 1.2rem;
 }
 

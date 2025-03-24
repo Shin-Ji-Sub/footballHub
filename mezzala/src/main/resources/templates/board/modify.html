@@ -16,7 +16,7 @@
 <body>
     <div th:replace="~{/modules/header}"></div>
 
-    <form id="writeBoardForm" action="/board/write-board" method="POST" enctype="multipart/form-data">
+    <form id="writeBoardForm" action="/board/modify-board" method="POST" enctype="multipart/form-data">
     <main>
         <div class="main-container">
             <div class="board-container">
@@ -138,11 +138,12 @@
 <!--                    <button type="button" class="btn btn-primary mt-2" id="uploadButton">업로드</button>-->
 <!--                </div>-->
             </div>
-            <button type="button" id="submitButton" class="write-button">글작성</button>
+            <button type="button" id="submitButton" class="write-button">글수정</button>
         </div>
     </main>
     <div class="visibility-hidden" id="hiddenBox">
         <input type="hidden" id="userId" name="userId" th:value="${session.user.userId}">
+        <input type="hidden" id="boardId" name="boardId" th:value="${board.boardId}">
     </div>
     </form>
 
@@ -335,8 +336,8 @@
             }
 
             const data = writeBoardForm.serializeArray();
-            //if (largeCategory == 1) data.splice(2, 1);
-            //if (largeCategory == 2) data.splice(1, 1);
+            if (largeCategory == 1) data.splice(2, 1);
+            if (largeCategory == 2) data.splice(1, 1);
             data.push({
                 name : 'content',
                 value : content
@@ -349,18 +350,18 @@
             }
             console.log(data);
             $.ajax({
-                "url" : writeBoardForm.attr('action'),
-                "method" : writeBoardForm.attr('method'),
-                "data" : data,
-                "dataType" : "text",
-                "success" : (response, status, xhr) => {
+                url : writeBoardForm.attr('action'),
+                method : writeBoardForm.attr('method'),
+                data : data,
+                dataType : "text",
+                success : (response, status, xhr) => {
                     if (response == "success") {
-                        alert('작성되었습니다.');
+                        alert('수정되었습니다.');
                         location.href="/";
                     };
                 },
-                "error" : (xhr, status, err) => {
-                    alert("작성하지 못하였습니다. 다시 작성해주세요.");
+                error : (xhr, status, err) => {
+                    alert("수정하지 못하였습니다. 다시 수정해주세요.");
                 }
             });
 

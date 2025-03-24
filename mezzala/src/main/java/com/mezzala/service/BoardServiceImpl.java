@@ -32,6 +32,21 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    public void modifyBoard(BoardDto board, List<Map<String, String>> imageFiles) {
+        Date now = new Date();
+        Timestamp modifyDate = new Timestamp(now.getTime());
+        board.setRegDate(modifyDate);
+        boardMapper.modifyBoard(board);
+
+        int boardId = board.getBoardId();
+        boardMapper.deleteBoardAttachAll(imageFiles, boardId);
+
+        if (imageFiles != null && !imageFiles.isEmpty()) {
+            boardMapper.insertBoardAttach(imageFiles, boardId);
+        }
+    }
+
+    @Override
     public List<BoardDto> findBoardWithPaging(int start, String category, String searchValue) {
         List<BoardDto> boards = new ArrayList<>();
 
@@ -101,7 +116,6 @@ public class BoardServiceImpl implements BoardService {
     public void modifyCommentWithCommentIdAndBoardId(int commentId, int boardId, String content) {
         Date now = new Date();
         Timestamp modifyDate = new Timestamp(now.getTime());
-        System.out.println("modifyDate : " + modifyDate);
         boardMapper.updateCommentWithCommentIdAndBoardId(commentId, boardId, content, modifyDate);
     }
 

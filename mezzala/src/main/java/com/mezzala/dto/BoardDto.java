@@ -1,5 +1,6 @@
 package com.mezzala.dto;
 
+import com.mezzala.common.DateParsing;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -18,6 +19,7 @@ public class BoardDto {
     private int visitCount;
     // default(0)
     private int recommendationCount;
+    private int commentCount;
     // default(true)
     private boolean boardState;
 
@@ -34,5 +36,14 @@ public class BoardDto {
     BoardLargeCategoryDto largeCategory;
     BoardSmallCategoryDto smallCategory;
     List<UserActionDto> userActions;
+
+    // regDate를 변환하여 반환하는 getter
+    public String getRegDateFormatted() {
+        if (regDate == null) {
+            return null;
+        }
+        DateParsing dateParsing = new DateParsing();
+        return dateParsing.calculateTime(regDate);
+    }
 
 }

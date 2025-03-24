@@ -44,4 +44,6 @@ public interface BoardService {
     void deleteCommentRecommendation(int commentId, String userId);
 
     void deleteContent(int boardId);
+
+    void modifyBoard(BoardDto board, List<Map<String, String>> imageFiles);
 }

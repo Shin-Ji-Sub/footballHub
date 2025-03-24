@@ -165,6 +165,27 @@ public class BoardController {
         return "success";
     }
 
+    @PostMapping(path = {"/modify-board"})
+    @ResponseBody
+    public String modifyBoard(BoardDto board, @RequestParam(name = "ImageFilesArr", required = false) String ImageFilesArr) {
+        System.out.println("board : " + board);
+        List<Map<String, String>> imageFiles = new ArrayList<>();
+        if (ImageFilesArr != null && !ImageFilesArr.isEmpty()) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                imageFiles = objectMapper.readValue(ImageFilesArr, new TypeReference<List<Map<String, String>>>() {});
+                System.out.println("이미지 리스트: " + imageFiles);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "error";
+            }
+        }
+
+        boardService.modifyBoard(board, imageFiles);
+
+        return "success";
+    }
+
     private static class UploadResponse {
         public boolean success;
         public String url;

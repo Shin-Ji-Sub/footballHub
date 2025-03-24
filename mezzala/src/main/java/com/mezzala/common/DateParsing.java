@@ -26,7 +26,7 @@ public class DateParsing {
         } else if ((diffTime /= TIME_MAXIMUM.MIN) < TIME_MAXIMUM.HOUR) {
             // hour
             msg = (diffTime) + "시간 전";
-        } else if ((diffTime /= TIME_MAXIMUM.HOUR) < TIME_MAXIMUM.DAY) {
+        } else if ((diffTime /= TIME_MAXIMUM.HOUR) < 7) {
             // day
             msg = (diffTime) + "일 전";
         } else {

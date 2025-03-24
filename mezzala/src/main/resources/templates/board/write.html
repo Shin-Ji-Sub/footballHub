@@ -27,13 +27,14 @@
                 </ul>
                 <div class="write-header">
                     <select name="largeCategoryId" class="form-select write-subject" id="writeLargeCategory" aria-label="Default select example">
-                        <option selected>카테고리</option>
+                        <option selected id="deleteFirstOption">카테고리</option>
                         <option th:each="largeCategory : ${largeCategories}"
+                                th:if="${largeCategory.largeCategoryId != 3 && session.user.isAdmin != true}"
                                 th:value="${largeCategory.largeCategoryId}"
                                 th:text="${largeCategory.largeCategoryName}"></option>
                     </select>
                     <select disabled name="smallCategoryIndex" class="form-select write-subject" id="normalCategory" aria-label="Default select example">
-                        <option id="deleteOption" selected>카테고리</option>
+                        <option selected id="deleteSecondOption">카테고리</option>
                         <th:block th:each="largeCategory : ${largeCategories}"
                                   th:if="${largeCategory.largeCategoryId == 1}">
                             <option th:each="smallCategory : ${largeCategory.smallCategories}"
@@ -217,7 +218,8 @@
         const appendTeam = $('#appendTeam');
         const teamSearchValue = $('#teamSearchValue');
         const refreshBtn = $('#addon-wrapping');
-        const deleteOption = $('#deleteOption');
+        const deleteFirstOption = $('#deleteFirstOption');
+        const deleteSecondOption = $('#deleteSecondOption');
         const teamArrEl = $('.search-team');
 
         // FORM 관련 변수
@@ -237,12 +239,15 @@
         writeLargeCategory.on('change', () => {
           const writeLargeCategoryValue = writeLargeCategory.val();
           if (writeLargeCategoryValue == 1) {
-            deleteOption.remove();
+            deleteFirstOption.remove();
+            deleteSecondOption.remove();
             normalCategory.removeAttr('disabled');
             normalCategory.removeClass('display-none');
             fanCategory.addClass('display-none');
             teamValueContainer.addClass('display-none');
           } else if (writeLargeCategoryValue == 2) {
+            deleteFirstOption.remove();
+            deleteSecondOption.remove();
             fanCategory.removeClass('display-none');
             normalCategory.addClass('display-none');
 
@@ -294,16 +299,18 @@
 
             const imageFiles = $('.image-file');
             const ImageFilesArr = [];
-            if (imageFiles.length == 0) {
-                console.log("length = 0");
-            } else {
+            if (imageFiles.length != 0) {
                 for (let i = 0; i < imageFiles.length; i++) {
                     ImageFilesArr.push(imageFiles.eq(i).data('file'));
                 }
             }
-            console.log(ImageFilesArr);
-
-            //const matches = [...content.matchAll(regex)].map(match => match[1]);
+<!--            if (imageFiles.length == 0) {-->
+<!--                console.log("length = 0");-->
+<!--            } else {-->
+<!--                for (let i = 0; i < imageFiles.length; i++) {-->
+<!--                    ImageFilesArr.push(imageFiles.eq(i).data('file'));-->
+<!--                }-->
+<!--            }-->
 
             if (largeCategory == '카테고리') {
                 alert('카테고리를 선택해주세요');
@@ -334,8 +341,8 @@
             }
 
             const data = writeBoardForm.serializeArray();
-            //if (largeCategory == 1) data.splice(2, 1);
-            //if (largeCategory == 2) data.splice(1, 1);
+            if (largeCategory == 1) data.splice(2, 1);
+            if (largeCategory == 2) data.splice(1, 1);
             data.push({
                 name : 'content',
                 value : content
@@ -348,17 +355,17 @@
             }
             console.log(data);
             $.ajax({
-                "url" : writeBoardForm.attr('action'),
-                "method" : writeBoardForm.attr('method'),
-                "data" : data,
-                "dataType" : "text",
-                "success" : (response, status, xhr) => {
+                url : writeBoardForm.attr('action'),
+                method : writeBoardForm.attr('method'),
+                data : data,
+                dataType : "text",
+                success : (response, status, xhr) => {
                     if (response == "success") {
                         alert('작성되었습니다.');
                         location.href="/";
                     };
                 },
-                "error" : (xhr, status, err) => {
+                error : (xhr, status, err) => {
                     alert("작성하지 못하였습니다. 다시 작성해주세요.");
                 }
             });

@@ -21,6 +21,7 @@
         <result property="regDate" column="reg_date" />
         <result property="visitCount" column="visit_count" />
         <result property="recommendationCount" column="recommendationCount" />
+        <result property="commentCount" column="commentCount" />
         <result property="boardState" column="board_state" />
         <!-- 1:1 관계 user -->
         <association property="user" javaType="com.mezzala.dto.UserDto">
@@ -169,6 +170,26 @@
             </foreach>
     </insert>
 
+    <delete id="deleteBoardAttachAll" parameterType="hashmap">
+        DELETE FROM
+            board_attach
+        WHERE
+            board_id = #{boardId}
+    </delete>
+
+    <update id="modifyBoard" parameterType="BoardDto">
+        UPDATE
+            board
+        SET
+            subject = #{subject},
+            content = #{content},
+            reg_date = #{regDate},
+            large_category_id = #{largeCategoryId},
+            small_category_index = #{smallCategoryIndex}
+        WHERE
+            board_id = #{boardId}
+    </update>
+
     <select id="selectBoardWithPaging" parameterType="hashmap" resultMap="BoardResultMap">
         SELECT
             b.board_id,
@@ -176,7 +197,8 @@
             b.content,
             b.reg_date,
             b.visit_count,
-            COALESCE(COUNT(ua.board_id), 0) AS recommendationCount,
+            COALESCE(COUNT(DISTINCT ua.action_id), 0) AS recommendationCount,
+            COALESCE(COUNT(DISTINCT c.comment_id), 0) AS commentCount,
             b.board_state,
             u.user_id,
             u.nickname,
@@ -198,6 +220,10 @@
             user_action ua
         ON
             b.board_id = ua.board_id
+        LEFT JOIN
+            comment c
+        ON
+            b.board_id = c.board_id
         LEFT JOIN
             user u
         ON
@@ -241,7 +267,8 @@
             b.content,
             b.reg_date,
             b.visit_count,
-            COUNT(ua.board_id) AS recommendationCount,
+            COALESCE(COUNT(DISTINCT ua.action_id), 0) AS recommendationCount,
+            COALESCE(COUNT(DISTINCT c.comment_id), 0) AS commentCount,
             b.board_state,
             u.user_id,
             u.nickname,
@@ -263,6 +290,10 @@
             user_action ua
         ON
             b.board_id = ua.board_id
+        LEFT JOIN
+            comment c
+        ON
+            b.board_id = c.board_id
         LEFT JOIN
             user u
         ON
