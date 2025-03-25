@@ -1,0 +1,45 @@
+<div class="container written-content-container" xmlns:th="http://www.thymeleaf.org">
+    <div class="row written-content" th:each="board : ${boards}">
+        <div class="col-md-auto">
+            <img th:if="${#lists.isEmpty(board.boardAttaches)}"
+                 class="thumbnail-img"
+                 src="/img/empty_image.png" alt="Thumbnail">
+            <img th:if="${not #lists.isEmpty(board.boardAttaches)}"
+                 th:src="@{'/board-attachments/' + ${board.boardAttaches[0].savedFileName}}"
+                 class="thumbnail-img"
+                 alt="Thumbnail">
+        </div>
+        <div class="col-7">
+            <div th:text="${board.subject}"></div>
+            <div>
+                <span class="content-category" th:text="${board.largeCategory.largeCategoryName}"></span>
+                <span class="content-category" th:text="${board.smallCategory.smallCategoryName}"></span>
+            </div>
+        </div>
+        <div class="col-2 span-container">
+            <span class="icon">
+                <i class="bi bi-chat-dots"></i>
+                <span th:text="${board.commentCount}"></span>
+            </span>
+            <span class="icon">
+                <i class="bi bi-hand-thumbs-up"></i>
+                <span th:text="${board.recommendationCount}"></span>
+            </span>
+            <span class="icon">
+                <i class="bi bi-door-open"></i>
+                <span th:text="${board.visitCount}"></span>
+            </span>
+        </div>
+        <div class="col-2 span-container">
+            <span th:text="${board.user.nickname}"></span>
+            <span th:text="${board.getRegDateFormatted()}"></span>
+        </div>
+    </div>
+</div>
+<div class="page-button-container">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination paging" th:data-pageno='${ pageNo }' th:data-datacount="${ dataCount }">
+            [(${ pager })]
+        </ul>
+    </nav>
+</div>

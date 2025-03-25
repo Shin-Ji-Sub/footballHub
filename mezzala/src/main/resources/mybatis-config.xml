@@ -19,6 +19,7 @@
 	<mappers>
 		<mapper resource="com/mezzala/mapper/AccountMapper.xml"/>
 		<mapper resource="com/mezzala/mapper/BoardMapper.xml"/>
+		<mapper resource="com/mezzala/mapper/MypageMapper.xml"/>
 	</mappers>
 
 </configuration>

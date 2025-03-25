@@ -2,10 +2,8 @@ package com.mezzala.config;
 
 import com.mezzala.mapper.AccountMapper;
 import com.mezzala.mapper.BoardMapper;
-import com.mezzala.service.AccountService;
-import com.mezzala.service.AccountServiceImpl;
-import com.mezzala.service.BoardService;
-import com.mezzala.service.BoardServiceImpl;
+import com.mezzala.mapper.MypageMapper;
+import com.mezzala.service.*;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.core.env.Environment;
@@ -49,6 +47,13 @@ public class RootConfiguration {
         BoardServiceImpl boardService = new BoardServiceImpl();
         boardService.setBoardMapper(boardMapper);
         return boardService;
+    }
+
+    @Bean
+    public MypageService mypageService(MypageMapper mypageMapper) throws Exception {
+        MypageServiceImpl mypageService = new MypageServiceImpl();
+        mypageService.setMypageMapper(mypageMapper);
+        return mypageService;
     }
 
     @Bean

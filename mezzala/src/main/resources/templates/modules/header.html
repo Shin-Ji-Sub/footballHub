@@ -3,6 +3,9 @@
         <div></div>
         <div class="head"><a href="/">FootballHub</a></div>
         <div class="account-section">
+            <button th:if="${session.user != null}">
+                <a href="/mypage/myinfo">라커룸</a>
+            </button>
             <button th:if="${session.user != null}" id="logOut">
                 <a th:href="@{/account/log-out(socialMethod=${session.user.socialMethod})}">
                     로그아웃
