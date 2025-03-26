@@ -62,6 +62,35 @@
             <result property="boardId" column="board_id"/>
         </collection>
     </resultMap>
+    <resultMap id="CommentResultMap" type="com.mezzala.dto.CommentDto">
+        <id property="commentId" column="c_comment_id"/>
+        <result property="parentId" column="c_parent_id"/>
+        <result property="regDate" column="c_reg_date"/>
+        <result property="content" column="c_content"/>
+        <result property="commentState" column="c_comment_state"/>
+        <result property="userId" column="c_user_id"/>
+        <result property="boardId" column="c_board_id"/>
+        <association property="board" javaType="com.mezzala.dto.BoardDto">
+            <id property="boardId" column="b_board_id" />
+            <result property="subject" column="b_subject" />
+            <result property="content" column="b_content" />
+            <result property="regDate" column="b_reg_date" />
+            <result property="visitCount" column="b_visit_count" />
+            <result property="boardState" column="b_board_state" />
+            <result property="largeCategoryId" column="b_large_category_id"/>
+            <result property="smallCategoryIndex" column="b_small_category_index"/>
+            <!-- 1:1 관계 board_large_category -->
+            <association property="largeCategory" javaType="com.mezzala.dto.BoardLargeCategoryDto">
+                <id property="largeCategoryId" column="lc_large_category_id" />
+                <result property="largeCategoryName" column="lc_large_category_name" />
+            </association>
+            <!-- 1:1 관계 board_small_category -->
+            <association property="smallCategory" javaType="com.mezzala.dto.BoardSmallCategoryDto">
+                <id property="smallCategoryIndex" column="sc_small_category_index" />
+                <result property="smallCategoryName" column="sc_small_category_name" />
+            </association>
+        </association>
+    </resultMap>
 
     <update id="updateUserNickname" parameterType="hashmap">
         UPDATE
@@ -164,13 +193,224 @@
         WHERE
             b.board_state = true
         AND
-            u.user_id = #{userId}
+            b.user_id = #{userId}
         GROUP BY
             b.board_id
         ORDER BY
             b.reg_date DESC
         LIMIT
-            6
+            5
+        OFFSET
+            #{start}
+    </select>
+
+    <select id="selectCommentCountWithUserId" parameterType="String" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            comment
+        WHERE
+            user_id = #{userId}
+        AND
+            comment_state = true
+    </select>
+
+    <select id="selectCommentWithUserId" parameterType="hashmap" resultMap="CommentResultMap">
+        SELECT
+            c.comment_id AS c_comment_id,
+            c.parent_id AS c_parent_id,
+            c.reg_date AS c_reg_date,
+            c.content AS c_content,
+            c.comment_state AS c_comment_state,
+            c.user_id AS c_user_id,
+            c.board_id AS c_board_id,
+
+            b.board_id AS b_board_id,
+            b.subject AS b_subject,
+            b.content AS b_content,
+            b.reg_date AS b_reg_date,
+            b.visit_count AS b_visit_count,
+            b.board_state AS b_board_state,
+            b.user_id AS b_user_id,
+            b.large_category_id AS b_large_category_id,
+            b.small_category_index AS b_small_category_index,
+
+            lc.large_category_id AS lc_large_category_id,
+            lc.large_category_name AS lc_large_category_name,
+
+            sc.small_category_index AS sc_small_category_index,
+            sc.small_category_name AS sc_small_category_name
+        FROM
+            comment c
+        LEFT JOIN
+            board b
+        ON
+            c.board_id = b.board_id
+        LEFT JOIN
+            board_large_category lc
+        ON
+            b.large_category_id = lc.large_category_id
+        LEFT JOIN
+            board_small_category sc
+        ON
+            b.small_category_index = sc.small_category_index
+        WHERE
+            c.user_id = #{userId}
+        AND
+            c.comment_state = true
+        ORDER BY
+            c.reg_date DESC
+        LIMIT
+            5
+        OFFSET
+            #{start}
+    </select>
+
+    <select id="selectLikedBoardCountWithUserId" parameterType="String" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            board b
+        LEFT JOIN
+            user_action ua
+        ON
+            b.board_id = ua.board_id
+        WHERE
+            ua.user_id = #{userId}
+        AND
+            b.board_state = true
+    </select>
+
+    <select id="selectLikedBoardWithUserId" parameterType="hashmap" resultMap="BoardResultMap">
+        SELECT
+            b.board_id,
+            b.subject,
+            b.content,
+            b.reg_date,
+            b.visit_count,
+            COALESCE(COUNT(DISTINCT ua.action_id), 0) AS recommendationCount,
+            COALESCE(COUNT(DISTINCT c.comment_id), 0) AS commentCount,
+            b.board_state,
+            u.user_id,
+            u.nickname,
+            u.social_method,
+            u.join_date,
+            u.is_admin,
+            u.state,
+            MAX(ba.attach_id) AS attach_id,
+            MAX(ba.user_file_name) AS user_file_name,
+            MAX(ba.saved_file_name) AS saved_file_name,
+            MAX(ba.download_count) AS download_count,
+            lc.large_category_id,
+            lc.large_category_name,
+            sc.small_category_index,
+            sc.small_category_name
+        FROM
+            board b
+        LEFT JOIN
+            user_action ua
+        ON
+            b.board_id = ua.board_id
+        LEFT JOIN
+            comment c
+        ON
+            b.board_id = c.board_id
+        LEFT JOIN
+            user u
+        ON
+            b.user_id = u.user_id
+        LEFT JOIN
+            board_attach ba
+        ON
+            b.board_id = ba.board_id
+        LEFT JOIN
+            board_large_category lc
+        ON
+            b.large_category_id = lc.large_category_id
+        LEFT JOIN
+            board_small_category sc
+        ON
+            b.small_category_index = sc.small_category_index
+        WHERE
+            b.board_state = true
+        AND
+            ua.user_id = #{userId}
+        GROUP BY
+            b.board_id
+        ORDER BY
+            b.reg_date DESC
+        LIMIT
+            5
+        OFFSET
+            #{start}
+    </select>
+
+    <select id="selectLikedCommentCountWithUserId" parameterType="String" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            comment c
+        LEFT JOIN
+            comment_action ca
+        ON
+            c.comment_id = ca.comment_id
+        WHERE
+            ca.user_id = #{userId}
+        AND
+            c.comment_state = true
+    </select>
+
+    <select id="selectLikedCommentWithUserId" parameterType="hashmap" resultMap="CommentResultMap">
+        SELECT
+            c.comment_id AS c_comment_id,
+            c.parent_id AS c_parent_id,
+            c.reg_date AS c_reg_date,
+            c.content AS c_content,
+            c.comment_state AS c_comment_state,
+            c.user_id AS c_user_id,
+            c.board_id AS c_board_id,
+
+            b.board_id AS b_board_id,
+            b.subject AS b_subject,
+            b.content AS b_content,
+            b.reg_date AS b_reg_date,
+            b.visit_count AS b_visit_count,
+            b.board_state AS b_board_state,
+            b.user_id AS b_user_id,
+            b.large_category_id AS b_large_category_id,
+            b.small_category_index AS b_small_category_index,
+
+            lc.large_category_id AS lc_large_category_id,
+            lc.large_category_name AS lc_large_category_name,
+
+            sc.small_category_index AS sc_small_category_index,
+            sc.small_category_name AS sc_small_category_name
+        FROM
+            comment c
+        LEFT JOIN
+            comment_action ca
+        ON
+            c.comment_id = ca.comment_id
+        LEFT JOIN
+            board b
+        ON
+            c.board_id = b.board_id
+        LEFT JOIN
+            board_large_category lc
+        ON
+            b.large_category_id = lc.large_category_id
+        LEFT JOIN
+            board_small_category sc
+        ON
+            b.small_category_index = sc.small_category_index
+        WHERE
+            ca.user_id = 'P4mS2a7NkqMnWxZNBz69PbZJX5JI7Hx_kL_nQUY9tRk'
+        AND
+            c.comment_state = true
+        ORDER BY
+            c.reg_date DESC
+        LIMIT
+            5
         OFFSET
             #{start}
     </select>

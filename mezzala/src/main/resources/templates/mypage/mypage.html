@@ -68,6 +68,12 @@
                     mypageSectionEl.load('/mypage/get-myinfo');
                 } else if (index === 1) {
                     mypageSectionEl.load('/mypage/get-written-content?userId=' + userId);
+                } else if (index === 2) {
+                    mypageSectionEl.load('/mypage/get-written-comment?userId=' + userId);
+                } else if (index === 3) {
+                    mypageSectionEl.load('/mypage/get-liked-content?userId=' + userId);
+                } else if (index === 4) {
+                    mypageSectionEl.load('/mypage/get-liked-comment?userId=' + userId);
                 }
             });
 
@@ -102,10 +108,10 @@
                 }
             });
 
-            // pagination
-            mypageSectionEl.on('click', '.page-item', function(e) {
+            // 작성한 글 pagination
+            mypageSectionEl.on('click', '#writtenContentPaging .page-item', function(e) {
                 let pageNo = $('.paging').data('pageno');
-                const lastPageNo = Math.floor(($('.paging').data('datacount') / 6) + (($('.paging').data('datacount') % 6) > 0 ? 1 : 0));
+                const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
                 if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
                 if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
@@ -113,6 +119,50 @@
                 if (!isNaN($(this).text())) pageNo = $(this).text();
 
                 mypageSectionEl.load('/mypage/get-written-content?userId=' + userId + '&pageNo=' + pageNo);
+            });
+
+            // 작성한 댓글 pagination
+            mypageSectionEl.on('click', '#writtenCommentPaging .page-item', function(e) {
+                let pageNo = $('.paging').data('pageno');
+                const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
+                if (/«/.test($(this).text())) pageNo = 1;
+                if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
+                if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
+                if (/»/.test($(this).text())) pageNo = lastPageNo;
+                if (!isNaN($(this).text())) pageNo = $(this).text();
+
+                mypageSectionEl.load('/mypage/get-written-comment?userId=' + userId + '&pageNo=' + pageNo);
+            });
+
+            // 좋아요 한 글 pagination
+            mypageSectionEl.on('click', '#likedContentPaging .page-item', function(e) {
+                let pageNo = $('.paging').data('pageno');
+                const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
+                if (/«/.test($(this).text())) pageNo = 1;
+                if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
+                if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
+                if (/»/.test($(this).text())) pageNo = lastPageNo;
+                if (!isNaN($(this).text())) pageNo = $(this).text();
+
+                mypageSectionEl.load('/mypage/get-liked-content?userId=' + userId + '&pageNo=' + pageNo);
+            });
+
+            // 좋아요 한 댓글 pagination
+            mypageSectionEl.on('click', '#likedContentPaging .page-item', function(e) {
+                let pageNo = $('.paging').data('pageno');
+                const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
+                if (/«/.test($(this).text())) pageNo = 1;
+                if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
+                if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
+                if (/»/.test($(this).text())) pageNo = lastPageNo;
+                if (!isNaN($(this).text())) pageNo = $(this).text();
+
+                mypageSectionEl.load('/mypage/get-liked-comment?userId=' + userId + '&pageNo=' + pageNo);
+            });
+
+            mypageSectionEl.on('click', '.written-content', (e) => {
+                const boardId = $(e.currentTarget).data('boardid');
+                location.href = '/board/content?boardId=' + boardId + '&from=mypage';
             });
 
         });

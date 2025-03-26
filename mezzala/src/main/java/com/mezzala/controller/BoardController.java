@@ -280,12 +280,12 @@ public class BoardController {
 
     @GetMapping(path = {"content"})
     public String content(Model model, @RequestParam(name = "boardId") int boardId,
-                          @RequestParam(name = "index") int index,
-                          @RequestParam(name = "count") int count,
-                          @RequestParam(name = "pageNo") int pageNo,
+                          @RequestParam(name = "index", defaultValue = "0") int index,
+                          @RequestParam(name = "count", defaultValue = "0") int count,
+                          @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                          @RequestParam(name = "from", defaultValue = "none") String from,
                           @CookieValue(value = "visited", required = false) String visitedBoard,
-                          HttpServletResponse res,
-                          HttpSession session) {
+                          HttpServletResponse res, HttpSession session) {
         // 쿠키에 현재 boardId가 포함되어 있는지 확인
         if (visitedBoard == null || !visitedBoard.contains("[" + boardId + "]")) {
             boardService.incrementVisitedBoard(boardId); // 조회수 증가
@@ -299,7 +299,6 @@ public class BoardController {
         }
 
         List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
-
 
         UserDto user = (UserDto) session.getAttribute("user");
         List<UserActionDto> actions = new ArrayList<>();
@@ -316,6 +315,8 @@ public class BoardController {
         model.addAttribute("index", index);
         model.addAttribute("count", count);
         model.addAttribute("pageNo", pageNo);
+
+        model.addAttribute("from", from);
 
         return "/board/content";
     }

@@ -25,6 +25,8 @@ public class CommentDto {
     UserDto user;
     // comment_action
     List<CommentActionDto> commentActions;
+    // board
+    BoardDto board;
 
     // 자기참조
     List<CommentDto> recomments;

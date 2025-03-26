@@ -61,7 +61,7 @@ public class MypageController {
                                     @RequestParam(name = "userId") String userId,
                                     @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
         // paging
-        int pageSize = 6;
+        int pageSize = 5;
         int pagerSize = 5;
         int dataCount = mypageService.findBoardCountWithUserId(userId);
         String uri = req.getRequestURI();
@@ -79,6 +79,81 @@ public class MypageController {
         model.addAttribute("boards", boards);
 
         return "/mypage/modules/myWrittenContentModule";
+    }
+
+    @GetMapping(path = {"/get-written-comment"})
+    public String getWrittenComment(Model model, HttpServletRequest req,
+                                    @RequestParam(name = "userId") String userId,
+                                    @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
+        // paging
+        int pageSize = 5;
+        int pagerSize = 5;
+        int dataCount = mypageService.findCommentCountWithUserId(userId);
+        String uri = req.getRequestURI();
+        String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+        String queryString = req.getQueryString();
+
+        int start = pageSize * (pageNo - 1);
+
+        ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+        List<CommentDto> comments = mypageService.findCommentWithUserId(start, userId);
+
+        model.addAttribute("pager", pager);
+        model.addAttribute("pageNo", pageNo);
+        model.addAttribute("dataCount", dataCount);
+        model.addAttribute("comments", comments);
+
+        return "/mypage/modules/myWrittenCommentModule";
+    }
+
+    @GetMapping(path = {"/get-liked-content"})
+    public String getLikedContent(Model model, HttpServletRequest req,
+                                  @RequestParam(name = "userId") String userId,
+                                  @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
+        // paging
+        int pageSize = 5;
+        int pagerSize = 5;
+        int dataCount = mypageService.findLikedBoardCountWithUserId(userId);
+        String uri = req.getRequestURI();
+        String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+        String queryString = req.getQueryString();
+
+        int start = pageSize * (pageNo - 1);
+
+        ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+        List<BoardDto> boards = mypageService.findLikedBoardWithUserId(start, userId);
+
+        model.addAttribute("pager", pager);
+        model.addAttribute("pageNo", pageNo);
+        model.addAttribute("dataCount", dataCount);
+        model.addAttribute("boards", boards);
+
+        return "/mypage/modules/myLikedContentModule";
+    }
+
+    @GetMapping(path = {"/get-liked-comment"})
+    public String getLikedComment(Model model, HttpServletRequest req,
+                                  @RequestParam(name = "userId") String userId,
+                                  @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
+        // paging
+        int pageSize = 5;
+        int pagerSize = 5;
+        int dataCount = mypageService.findLikedCommentCountWithUserId(userId);
+        String uri = req.getRequestURI();
+        String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+        String queryString = req.getQueryString();
+
+        int start = pageSize * (pageNo - 1);
+
+        ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+        List<CommentDto> comments = mypageService.findLikedCommentWithUserId(start, userId);
+
+        model.addAttribute("pager", pager);
+        model.addAttribute("pageNo", pageNo);
+        model.addAttribute("dataCount", dataCount);
+        model.addAttribute("comments", comments);
+
+        return "/mypage/modules/myLikedCommentModule";
     }
 
 }

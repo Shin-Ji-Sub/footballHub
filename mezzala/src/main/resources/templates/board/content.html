@@ -63,7 +63,7 @@
                         <!-- 좋아요, 스크랩하기 버튼 -->
                         <!-- userActionModule -->
                     </div>
-                    <div class="bottom-button-list">
+                    <div class="bottom-button-list" th:if="${from == 'none'}">
                         <th:block th:if="${index == 0 && pageNo == 1}">
                             <button class="content-button" style="visibility : hidden">
                                 <i class="bi bi-arrow-bar-left"></i>
