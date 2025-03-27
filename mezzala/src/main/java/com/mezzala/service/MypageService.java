@@ -25,4 +25,8 @@ public interface MypageService {
     int findLikedCommentCountWithUserId(String userId);
 
     List<CommentDto> findLikedCommentWithUserId(int start, String userId);
+
+    int findBookmarkedBoardCountWithUserId(String userId);
+
+    List<BoardDto> findBookmarkedBoards(int start, String userId);
 }

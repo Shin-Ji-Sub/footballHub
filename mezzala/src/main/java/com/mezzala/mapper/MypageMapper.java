@@ -30,4 +30,8 @@ public interface MypageMapper {
     int selectLikedCommentCountWithUserId(String userId);
 
     List<CommentDto> selectLikedCommentWithUserId(@Param("start") int start, @Param("userId") String userId);
+
+    int selectBookmarkedBoardCountWithUserId(String userId);
+
+    List<BoardDto> selectBookmarkedBoards(@Param("start") int start, @Param("userId") String userId);
 }

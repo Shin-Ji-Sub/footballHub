@@ -12,15 +12,22 @@
         <result property="isAdmin" column="is_admin"/>
         <result property="state" column="state"/>
         <!-- 1:N 관계 user_action -->
-        <collection property="userActions" ofType="com.mezzala.dto.UserActionDto">
-            <id property="actionId" column="action_id"/>
-            <result property="actionCategory" column="action_category"/>
-            <result property="userId" column="user_id"/>
-            <result property="boardId" column="board_id"/>
+        <collection property="likeUserActions" ofType="com.mezzala.dto.UserActionDto">
+            <id property="actionId" column="like_action_id"/>
+            <result property="actionCategory" column="like_action_category"/>
+            <result property="userId" column="like_user_id"/>
+            <result property="boardId" column="like_board_id"/>
+        </collection>
+        <collection property="bookmarkUserActions" ofType="com.mezzala.dto.UserActionDto">
+            <id property="actionId" column="bookmark_action_id"/>
+            <result property="actionCategory" column="bookmark_action_category"/>
+            <result property="userId" column="bookmark_user_id"/>
+            <result property="boardId" column="bookmark_board_id"/>
         </collection>
     </resultMap>
 
     <select id="selectUser" parameterType="String" resultMap="UserResultMap">
+
         SELECT
             u.user_id,
             u.nickname,
@@ -28,16 +35,30 @@
             u.join_date,
             u.is_admin,
             u.state,
-            ua.action_id,
-            ua.action_category,
-            ua.user_id,
-            ua.board_id
+
+            ua_like.action_id AS like_action_id,
+            ua_like.action_category AS like_action_category,
+            ua_like.user_id AS like_user_id,
+            ua_like.board_id AS like_board_id,
+
+            ua_bookmark.action_id AS bookmark_action_id,
+            ua_bookmark.action_category AS bookmark_action_category,
+            ua_bookmark.user_id AS bookmark_user_id,
+            ua_bookmark.board_id AS bookmark_board_id
         FROM
             user u
         LEFT JOIN
-            user_action ua
+            user_action ua_like
         ON
-            u.user_id = ua.user_id
+            u.user_id = ua_like.user_id
+        AND
+            ua_like.action_category = 'like'
+        LEFT JOIN
+            user_action ua_bookmark
+        ON
+            u.user_id = ua_bookmark.user_id
+        AND
+            ua_bookmark.action_category = 'bookmark'
         WHERE
             u.user_id = #{userId}
         AND

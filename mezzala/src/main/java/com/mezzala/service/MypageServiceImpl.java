@@ -59,4 +59,14 @@ public class MypageServiceImpl implements MypageService{
         return mypageMapper.selectLikedCommentWithUserId(start, userId);
     }
 
+    @Override
+    public int findBookmarkedBoardCountWithUserId(String userId) {
+        return mypageMapper.selectBookmarkedBoardCountWithUserId(userId);
+    }
+
+    @Override
+    public List<BoardDto> findBookmarkedBoards(int start, String userId) {
+        return mypageMapper.selectBookmarkedBoards(start, userId);
+    }
+
 }

@@ -301,15 +301,23 @@ public class BoardController {
         List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
 
         UserDto user = (UserDto) session.getAttribute("user");
-        List<UserActionDto> actions = new ArrayList<>();
+        List<UserActionDto> likeActions = new ArrayList<>();
         if (user == null) {
             UserActionDto action = new UserActionDto();
-            actions.add(action);
+            likeActions.add(action);
         } else {
-            actions = user.getUserActions();
+            likeActions = user.getLikeUserActions();
+        }
+        List<UserActionDto> bookmarkActions = new ArrayList<>();
+        if (user == null) {
+            UserActionDto action = new UserActionDto();
+            bookmarkActions.add(action);
+        } else {
+            bookmarkActions = user.getBookmarkUserActions();
         }
 
-        model.addAttribute("actions", actions);
+        model.addAttribute("likeActions", likeActions);
+        model.addAttribute("bookmarkActions", bookmarkActions);
         model.addAttribute("board", boards.get(0));
 
         model.addAttribute("index", index);
@@ -327,17 +335,18 @@ public class BoardController {
                                    @RequestParam(name = "boardNo") int boardNo,
                                    @RequestParam(name = "index") int index,
                                    @RequestParam(name = "pageNo") int pageNo,
+                                   @RequestParam(name = "from", defaultValue = "none") String from,
                                    @RequestParam(name = "count") int count,
                                    HttpSession session) {
         List<BoardDto> boards = boardService.findBoardWithBoardNo(boardNo);
         BoardDto board = boards.get(0);
         UserDto user = (UserDto) session.getAttribute("user");
-        List<UserActionDto> actions = new ArrayList<>();
+        List<UserActionDto> likeActions = new ArrayList<>();
         if (user == null) {
             UserActionDto action = new UserActionDto();
-            actions.add(action);
+            likeActions.add(action);
         } else {
-            actions = user.getUserActions();
+            likeActions = user.getLikeUserActions();
         }
 
         // 쿠키에 현재 boardId가 포함되어 있는지 확인
@@ -352,7 +361,7 @@ public class BoardController {
             res.addCookie(cookie);
         }
 
-        model.addAttribute("actions", actions);
+        model.addAttribute("likeActions", likeActions);
         model.addAttribute("board", board);
 //        model.addAttribute("comments", board.getComments());
         model.addAttribute("index", index);
@@ -423,8 +432,11 @@ public class BoardController {
     }
 
     @GetMapping(path = {"/action-button"})
-    public String actionButton(Model model, @RequestParam(name = "likeAction") String likeAction) {
+    public String actionButton(Model model,
+                               @RequestParam(name = "likeAction") String likeAction,
+                               @RequestParam(name = "bookmarkAction") String bookmarkAction) {
         model.addAttribute("likeAction", likeAction);
+        model.addAttribute("bookmarkAction", bookmarkAction);
         return "/board/modules/userActionModule";
     }
 
@@ -434,6 +446,14 @@ public class BoardController {
         List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
         model.addAttribute("board", boards.get(0));
         return "/board/modules/likeModule";
+    }
+
+    @GetMapping(path = {"/action-bookmark"})
+    public String actionBookmark(@RequestParam("userId") String userId,
+                                 @RequestParam("category") String category) {
+
+
+        return "success";
     }
 
     @PostMapping(path = {"/write-comment"})

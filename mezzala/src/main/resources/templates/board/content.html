@@ -134,7 +134,8 @@
     $(window).on('load', function() {
         const user = /*[[${session.user}]]*/'';
         const content = /*[[${board.content}]]*/'';
-        const userActions = /*[[${actions}]]*/'';
+        const likeUserActions = /*[[${likeActions}]]*/'';
+        const bookmarkUserActions = /*[[${bookmarkActions}]]*/'';
         const boardId = $('#boardId').val();
         const writeUserId = $('#writeUserId').val();
         const userId = $('#userId').val();
@@ -204,16 +205,21 @@
         });
 
         // 좋아요, 북마크 버튼 LOAD
-        if (userActions[0].actionId == null) {
-            topButtonList.load('/board/action-button?likeAction=like');
+        let likeState = '';
+        let bookmarkState = '';
+        if (likeUserActions[0].actionId == null) {
+            likeState = "like";
         } else {
-            const result = userActions.find(e => e.boardId == boardId);
-            if (result != undefined) {
-                topButtonList.load('/board/action-button?likeAction=cancelLike');
-            } else {
-                topButtonList.load('/board/action-button?likeAction=like');
-            }
+            const likeResult = likeUserActions.find(e => e.boardId == boardId && e.actionCategory == "like");
+            likeState = likeResult != undefined ? "cancelLike" : "like";
         }
+        if (bookmarkUserActions[0].actionId == null) {
+            bookmarkState = "bookmark";
+        } else {
+            const bookmarkResult = bookmarkUserActions.find(e => e.boardId == boardId && e.actionCategory == "bookmark");
+            bookmarkState = bookmarkResult != undefined ? "cancelBookmark" : "bookmark";
+        }
+        topButtonList.load('/board/action-button?likeAction=' + likeState + '&bookmarkAction=' + bookmarkState);
 
         // 추천 버튼 애니메이션 (아이콘 커지게)
         topButtonList.on('mouseover', '.like-button', function() {
@@ -247,17 +253,18 @@
 
         // 좋아요 버튼
         topButtonList.on('click', '#likeButton', () => {
-            const actionCategory = $('#likeButton').data('value');
+            likeState = "cancelLike";
             $.ajax({
                 url : "/board/action",
                 method : "POST",
-                data : "actionCategory=" + actionCategory + "&boardId=" + boardId + "&state=add",
+                data : "actionCategory=like&boardId=" + boardId + "&state=add",
                 dataType : "text",
                 success : (response, status, xhr) => {
                     if (response == "login") {
                         alert("로그인 후 이용해주세요");
                     } else if (response == "success") {
-                        topButtonList.load('/board/action-button?likeAction=cancelLike');
+                        topButtonList.load('/board/action-button?likeAction=' + likeState + '&bookmarkAction=' + bookmarkState);
+                        //topButtonList.load('/board/action-button?likeAction=cancelLike');
                         likeModuleBox.load('/board/action-like?boardId=' + boardId);
                     } else {
                         alert('추가하지 못하였습니다. 다시 시도해주세요.');
@@ -270,17 +277,19 @@
         });
         // 좋아요 취소 버튼
         topButtonList.on('click', '#cancelLikeButton', () => {
-            const actionCategory = $('#cancelLikeButton').data('value');
+            likeState = "like";
+
             $.ajax({
                 url : "/board/action",
                 method : "POST",
-                data : "actionCategory=" + actionCategory + "&boardId=" + boardId + "&state=remove",
+                data : "actionCategory=like&boardId=" + boardId + "&state=remove",
                 dataType : "text",
                 success : (response, status, xhr) => {
                     if (response == "login") {
                         alert("로그인 후 이용해주세요");
                     } else if (response == "success") {
-                        topButtonList.load('/board/action-button?likeAction=like');
+                        topButtonList.load('/board/action-button?likeAction=' + likeState + '&bookmarkAction=' + bookmarkState);
+                        //topButtonList.load('/board/action-button?likeAction=like');
                         likeModuleBox.load('/board/action-like?boardId=' + boardId);
                     } else {
                         alert('취소하지 못하였습니다. 다시 시도해주세요.');
@@ -288,6 +297,59 @@
                 },
                 error : (xhr, status, err) => {
                     alert('취소하지 못하였습니다. 다시 시도해주세요.');
+                }
+            });
+        });
+
+        // 스크랩 버튼
+        topButtonList.on('click', '#bookmarkButton', (e) => {
+            if (writeUserId == userId) {
+                alert('본인 글은 스크랩을 할 수 없습니다.');
+                return;
+            } else {
+                bookmarkState = "cancelBookmark";
+
+                $.ajax({
+                    url : '/board/action',
+                    method : 'POST',
+                    data : "actionCategory=bookmark&boardId=" + boardId + "&state=add",
+                    dataType : 'text',
+                    success : (response, status, xhr) => {
+                        if (response == "login") {
+                            alert("로그인 후 이용해주세요");
+                        } else if (response == "success") {
+                            topButtonList.load('/board/action-button?likeAction=' + likeState + '&bookmarkAction=' + bookmarkState);
+                            //topButtonList.load('/board/action-button?bookmarkAction=cancelBookmark');
+                        } else {
+                            alert('스크랩하지 못하였습니다. 다시 시도해주세요.');
+                        }
+                    },
+                    error : (xhr, status, error) => {
+                        alert('스크랩하지 못하였습니다. 다시 시도해주세요.');
+                    }
+                });
+            }
+        });
+        // 스크랩 취소
+        topButtonList.on('click', '#cancelBookmarkButton', (e) => {
+            bookmarkState = "bookmark";
+
+            $.ajax({
+                url : '/board/action',
+                method : 'POST',
+                data : "actionCategory=bookmark&boardId=" + boardId + "&state=remove",
+                dataType : 'text',
+                success : (response, status, xhr) => {
+                    if (response == "login") {
+                        alert("로그인 후 이용해주세요");
+                    } else if (response == "success") {
+                        topButtonList.load('/board/action-button?likeAction=' + likeState + '&bookmarkAction=' + bookmarkState);
+                    } else {
+                        alert('스크랩 취소하지 못하였습니다. 다시 시도해주세요.');
+                    }
+                },
+                error : (xhr, status, error) => {
+                    alert('스크랩 취소하지 못하였습니다. 다시 시도해주세요.');
                 }
             });
         });

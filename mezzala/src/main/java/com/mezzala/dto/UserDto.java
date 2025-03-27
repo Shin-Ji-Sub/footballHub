@@ -18,7 +18,10 @@ public class UserDto {
     // default (true)
     private boolean state;
 
-    // UserAction
-    List<UserActionDto> userActions;
+    // UserAction - like
+    List<UserActionDto> likeUserActions;
+
+    // UserAction - bookmark
+    List<UserActionDto> bookmarkUserActions;
 
 }

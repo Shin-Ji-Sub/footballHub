@@ -220,6 +220,8 @@
             user_action ua
         ON
             b.board_id = ua.board_id
+        AND
+            ua.action_category = "like"
         LEFT JOIN
             comment c
         ON
@@ -290,6 +292,8 @@
             user_action ua
         ON
             b.board_id = ua.board_id
+        AND
+            ua.action_category = "like"
         LEFT JOIN
             comment c
         ON
@@ -366,6 +370,8 @@
             user_action ua
         ON
             b.board_id = ua.board_id
+        AND
+            ua.action_category = "like"
         LEFT JOIN
             user u
         ON
@@ -427,6 +433,8 @@
             user_action ua
         ON
             b.board_id = ua.board_id
+        AND
+            ua.action_category = "like"
         LEFT JOIN
             user u
         ON

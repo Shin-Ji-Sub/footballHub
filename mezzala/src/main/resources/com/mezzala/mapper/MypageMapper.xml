@@ -12,7 +12,7 @@
         <result property="isAdmin" column="is_admin"/>
         <result property="state" column="state"/>
         <!-- 1:N 관계 user_action -->
-        <collection property="userActions" ofType="com.mezzala.dto.UserActionDto">
+        <collection property="likeUserActions" ofType="com.mezzala.dto.UserActionDto">
             <id property="actionId" column="action_id"/>
             <result property="actionCategory" column="action_category"/>
             <result property="userId" column="user_id"/>
@@ -170,6 +170,8 @@
             user_action ua
         ON
             b.board_id = ua.board_id
+        AND
+            ua.action_category = "like"
         LEFT JOIN
             comment c
         ON
@@ -311,6 +313,8 @@
             user_action ua
         ON
             b.board_id = ua.board_id
+        AND
+            ua.action_category = "like"
         LEFT JOIN
             comment c
         ON
@@ -409,6 +413,83 @@
             c.comment_state = true
         ORDER BY
             c.reg_date DESC
+        LIMIT
+            5
+        OFFSET
+            #{start}
+    </select>
+
+    <select id="selectBookmarkedBoardCountWithUserId" parameterType="String" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            user_action
+        WHERE
+            user_id = #{userId}
+        AND
+            action_category = 'bookmark'
+    </select>
+
+    <select id="selectBookmarkedBoards" parameterType="hashmap" resultMap="BoardResultMap">
+        SELECT
+            b.board_id,
+            b.subject,
+            b.content,
+            b.reg_date,
+            b.visit_count,
+            COALESCE(COUNT(DISTINCT ua.action_id), 0) AS recommendationCount,
+            COALESCE(COUNT(DISTINCT c.comment_id), 0) AS commentCount,
+            b.board_state,
+            u.user_id,
+            u.nickname,
+            u.social_method,
+            u.join_date,
+            u.is_admin,
+            u.state,
+            MAX(ba.attach_id) AS attach_id,
+            MAX(ba.user_file_name) AS user_file_name,
+            MAX(ba.saved_file_name) AS saved_file_name,
+            MAX(ba.download_count) AS download_count,
+            lc.large_category_id,
+            lc.large_category_name,
+            sc.small_category_index,
+            sc.small_category_name
+        FROM
+            board b
+        LEFT JOIN
+            user_action ua
+        ON
+            b.board_id = ua.board_id
+        LEFT JOIN
+            comment c
+        ON
+            b.board_id = c.board_id
+        LEFT JOIN
+            user u
+        ON
+            b.user_id = u.user_id
+        LEFT JOIN
+            board_attach ba
+        ON
+            b.board_id = ba.board_id
+        LEFT JOIN
+            board_large_category lc
+        ON
+            b.large_category_id = lc.large_category_id
+        LEFT JOIN
+            board_small_category sc
+        ON
+            b.small_category_index = sc.small_category_index
+        WHERE
+            b.board_state = true
+        AND
+            ua.user_id = #{userId}
+        AND
+            ua.action_category = 'bookmark'
+        GROUP BY
+            b.board_id
+        ORDER BY
+            b.reg_date DESC
         LIMIT
             5
         OFFSET
