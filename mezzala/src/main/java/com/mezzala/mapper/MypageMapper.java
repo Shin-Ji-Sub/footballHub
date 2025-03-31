@@ -34,4 +34,10 @@ public interface MypageMapper {
     int selectBookmarkedBoardCountWithUserId(String userId);
 
     List<BoardDto> selectBookmarkedBoards(@Param("start") int start, @Param("userId") String userId);
+
+    List<Integer> selectRecommendationCount(@Param("start") int start, @Param("boards") List<BoardDto> boards);
+
+    int selectBlockUserCount(String userId);
+
+    List<UserDto> selectBlockUserWithUserId(@Param("start") int start, @Param("userId") String userId);
 }

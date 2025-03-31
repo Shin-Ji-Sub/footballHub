@@ -244,6 +244,15 @@
             b.small_category_index = sc.small_category_index
         WHERE
             b.board_state = true
+        AND
+            b.user_id NOT IN (
+                SELECT
+                    bu.block_user
+                FROM
+                    block_user bu
+                WHERE
+                    bu.user_id = #{userId}
+            )
         GROUP BY
             b.board_id
         ORDER BY
@@ -318,6 +327,15 @@
             b.subject LIKE CONCAT('%', #{searchValue}, '%')
         AND
             b.board_state = true
+        AND
+            b.user_id NOT IN (
+                SELECT
+                    bu.block_user
+                FROM
+                    block_user bu
+                WHERE
+                    bu.user_id = #{userId}
+            )
         GROUP BY
             b.board_id
         ORDER BY

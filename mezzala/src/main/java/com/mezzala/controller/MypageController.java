@@ -73,12 +73,17 @@ public class MypageController {
         ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
         List<BoardDto> boards = mypageService.findBoardWithUserId(start, userId);
 
-        model.addAttribute("pager", pager);
-        model.addAttribute("pageNo", pageNo);
-        model.addAttribute("dataCount", dataCount);
-        model.addAttribute("boards", boards);
+        if (!boards.isEmpty()) {
+            model.addAttribute("pager", pager);
+            model.addAttribute("pageNo", pageNo);
+            model.addAttribute("dataCount", dataCount);
+            model.addAttribute("boards", boards);
 
-        return "/mypage/modules/myWrittenContentModule";
+            return "/mypage/modules/myWrittenContentModule";
+        } else {
+            return "/mypage/modules/noDataModule";
+        }
+
     }
 
     @GetMapping(path = {"/get-written-comment"})
@@ -98,12 +103,17 @@ public class MypageController {
         ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
         List<CommentDto> comments = mypageService.findCommentWithUserId(start, userId);
 
-        model.addAttribute("pager", pager);
-        model.addAttribute("pageNo", pageNo);
-        model.addAttribute("dataCount", dataCount);
-        model.addAttribute("comments", comments);
+        if (!comments.isEmpty()) {
+            model.addAttribute("pager", pager);
+            model.addAttribute("pageNo", pageNo);
+            model.addAttribute("dataCount", dataCount);
+            model.addAttribute("comments", comments);
 
-        return "/mypage/modules/myWrittenCommentModule";
+            return "/mypage/modules/myWrittenCommentModule";
+        } else {
+            return "/mypage/modules/noDataModule";
+        }
+
     }
 
     @GetMapping(path = {"/get-liked-content"})
@@ -123,12 +133,17 @@ public class MypageController {
         ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
         List<BoardDto> boards = mypageService.findLikedBoardWithUserId(start, userId);
 
-        model.addAttribute("pager", pager);
-        model.addAttribute("pageNo", pageNo);
-        model.addAttribute("dataCount", dataCount);
-        model.addAttribute("boards", boards);
+        if (!boards.isEmpty()) {
+            model.addAttribute("pager", pager);
+            model.addAttribute("pageNo", pageNo);
+            model.addAttribute("dataCount", dataCount);
+            model.addAttribute("boards", boards);
 
-        return "/mypage/modules/myLikedContentModule";
+            return "/mypage/modules/myLikedContentModule";
+        } else {
+            return "/mypage/modules/noDataModule";
+        }
+
     }
 
     @GetMapping(path = {"/get-liked-comment"})
@@ -148,12 +163,17 @@ public class MypageController {
         ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
         List<CommentDto> comments = mypageService.findLikedCommentWithUserId(start, userId);
 
-        model.addAttribute("pager", pager);
-        model.addAttribute("pageNo", pageNo);
-        model.addAttribute("dataCount", dataCount);
-        model.addAttribute("comments", comments);
+        if (!comments.isEmpty()) {
+            model.addAttribute("pager", pager);
+            model.addAttribute("pageNo", pageNo);
+            model.addAttribute("dataCount", dataCount);
+            model.addAttribute("comments", comments);
 
-        return "/mypage/modules/myLikedCommentModule";
+            return "/mypage/modules/myLikedCommentModule";
+        } else {
+            return "/mypage/modules/noDataModule";
+        }
+
     }
 
     @GetMapping(path = {"/get-bookmarked-content"})
@@ -173,12 +193,47 @@ public class MypageController {
         ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
         List<BoardDto> boards = mypageService.findBookmarkedBoards(start, userId);
 
-        model.addAttribute("pager", pager);
-        model.addAttribute("pageNo", pageNo);
-        model.addAttribute("dataCount", dataCount);
-        model.addAttribute("boards", boards);
+        if (!boards.isEmpty()) {
+            model.addAttribute("pager", pager);
+            model.addAttribute("pageNo", pageNo);
+            model.addAttribute("dataCount", dataCount);
+            model.addAttribute("boards", boards);
 
-        return "/mypage/modules/myBookmarkedContentModule";
+            return "/mypage/modules/myBookmarkedContentModule";
+        } else {
+            return "/mypage/modules/noDataModule";
+        }
+
+    }
+
+    @GetMapping(path = {"/get-block-user"})
+    public String getBlockUser(Model model, HttpServletRequest req,
+                               @RequestParam(name = "userId") String userId,
+                               @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
+        // paging
+        int pageSize = 5;
+        int pagerSize = 5;
+        int dataCount = mypageService.findBlockUserCount(userId);
+        String uri = req.getRequestURI();
+        String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+        String queryString = req.getQueryString();
+
+        int start = pageSize * (pageNo - 1);
+
+        ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+        List<UserDto> users = mypageService.findBlockUserWithUserId(start, userId);
+
+        if (!users.isEmpty()) {
+            model.addAttribute("pager", pager);
+            model.addAttribute("pageNo", pageNo);
+            model.addAttribute("dataCount", dataCount);
+            model.addAttribute("users", users);
+
+            return "/mypage/modules/myBlockUserModule";
+        } else {
+            return "/mypage/modules/noDataModule";
+        }
+
     }
 
 }

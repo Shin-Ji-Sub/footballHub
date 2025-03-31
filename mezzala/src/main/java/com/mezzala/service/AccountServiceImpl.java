@@ -20,4 +20,14 @@ public class AccountServiceImpl implements AccountService{
 
         return user;
     }
+
+    @Override
+    public void addBlockUser(String blockUser, String userId) {
+        accountMapper.insertBlockUSer(blockUser, userId);
+    }
+
+    @Override
+    public void deleteBlockUser(String blockUserId, String userId) {
+        accountMapper.deleteBlockUser(blockUserId, userId);
+    }
 }

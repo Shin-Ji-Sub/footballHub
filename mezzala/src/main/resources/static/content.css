@@ -24,6 +24,32 @@
   font-size: 1.5rem;
 }
 
+.subject-line {
+  position: relative;
+}
+
+.board-dots-button {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.board-report-container {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  row-gap: 3px;
+  padding: 3px;
+  border: 1px solid #444;
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px #444;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: #fff;
+}
+
 .category-button {
   display: flex;
   flex-direction: row;

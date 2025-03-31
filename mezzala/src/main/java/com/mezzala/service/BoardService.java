@@ -13,7 +13,7 @@ public interface BoardService {
 
     void addBoard(BoardDto board, List<Map<String, String>> imageFiles);
 
-    List<BoardDto> findBoardWithPaging(int start, String category, String searchValue);
+    List<BoardDto> findBoardWithPaging(int start, String category, String searchValue, String userId);
 
     int findAllBoardCount();
 

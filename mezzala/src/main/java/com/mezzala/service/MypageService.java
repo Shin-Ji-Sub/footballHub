@@ -29,4 +29,8 @@ public interface MypageService {
     int findBookmarkedBoardCountWithUserId(String userId);
 
     List<BoardDto> findBookmarkedBoards(int start, String userId);
+
+    int findBlockUserCount(String userId);
+
+    List<UserDto> findBlockUserWithUserId(int start, String userId);
 }

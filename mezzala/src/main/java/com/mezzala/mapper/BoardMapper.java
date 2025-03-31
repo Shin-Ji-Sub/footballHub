@@ -16,13 +16,13 @@ public interface BoardMapper {
 
     void insertBoard(BoardDto board);
 
-    List<BoardDto> selectBoardWithPaging(@Param("start") int start, @Param("category") String category);
+    List<BoardDto> selectBoardWithPaging(@Param("start") int start, @Param("category") String category, @Param("userId") String userId);
 
     void insertBoardAttach(@Param("imageFiles") List<Map<String, String>> imageFiles, @Param("boardId") int boardId);
 
     int selectAllBoardCount();
 
-    List<BoardDto> selectBoardWithPagingAndSearch(@Param("start") int start, @Param("category") String category, @Param("searchValue") String searchValue);
+    List<BoardDto> selectBoardWithPagingAndSearch(@Param("start") int start, @Param("category") String category, @Param("searchValue") String searchValue, @Param("userId") String userId);
 
     List<BoardDto> selectBoardWithBoardId(int boardId);
 

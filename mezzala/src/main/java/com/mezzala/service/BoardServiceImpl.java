@@ -47,13 +47,13 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<BoardDto> findBoardWithPaging(int start, String category, String searchValue) {
+    public List<BoardDto> findBoardWithPaging(int start, String category, String searchValue, String userId) {
         List<BoardDto> boards = new ArrayList<>();
 
         if (searchValue.isEmpty()) {
-            boards = boardMapper.selectBoardWithPaging(start, category);
+            boards = boardMapper.selectBoardWithPaging(start, category, userId);
         } else {
-            boards = boardMapper.selectBoardWithPagingAndSearch(start, category, searchValue);
+            boards = boardMapper.selectBoardWithPagingAndSearch(start, category, searchValue, userId);
         }
 
         for (BoardDto b : boards) {

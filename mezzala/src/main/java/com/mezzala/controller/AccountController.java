@@ -11,9 +11,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -119,6 +117,31 @@ public class AccountController {
         session.setAttribute("user", users.get(0));
 
         return "redirect:" + state;
+    }
+
+    @PostMapping(path = {"/block-user"})
+    @ResponseBody
+    public String blockUser(@RequestParam(name = "blockUser") String blockUser,
+                            @RequestParam(name = "userId") String userId) {
+        String result = "";
+        try {
+            accountService.addBlockUser(blockUser, userId);
+            result = "success";
+        } catch (Exception e) {
+            result = "fail";
+        }
+
+        return result;
+    }
+
+    @PostMapping(path = {"/unblock-user"})
+    @ResponseBody
+    public String unblockUser(@RequestParam(name = "blockUserId") String blockUserId,
+                              @RequestParam(name = "userId") String userId) {
+
+        accountService.deleteBlockUser(blockUserId, userId);
+
+        return "success";
     }
 
 }

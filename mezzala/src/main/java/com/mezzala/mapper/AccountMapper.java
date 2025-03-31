@@ -11,4 +11,8 @@ public interface AccountMapper {
     List<UserDto> selectUser(String userId);
 
     void insertAccount(@Param("userId") String userId, @Param("nickname") String nickname, @Param("socialMethod") String socialMethod);
+
+    void insertBlockUSer(@Param("blockUser") String blockUser, @Param("userId") String userId);
+
+    void deleteBlockUser(@Param("blockUserId") String blockUserId, @Param("userId") String userId);
 }

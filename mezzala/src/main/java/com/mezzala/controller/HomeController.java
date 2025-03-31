@@ -1,9 +1,11 @@
 package com.mezzala.controller;
 
 import com.mezzala.dto.BoardDto;
+import com.mezzala.dto.UserDto;
 import com.mezzala.service.BoardService;
 import com.mezzala.ui.ThePager;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,7 +28,7 @@ public class HomeController {
     }
 
     @GetMapping(path = {"/content-list"})
-    public String contentList(Model model, HttpServletRequest req,
+    public String contentList(Model model, HttpServletRequest req, HttpSession session,
                               @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
                               @RequestParam(name = "category", defaultValue = "bestList") String category,
                               @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
@@ -41,7 +43,14 @@ public class HomeController {
         int start = pageSize * (pageNo - 1);
 
         ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
-        List<BoardDto> boards = boardService.findBoardWithPaging(start, category, searchValue);
+
+        UserDto user = (UserDto) session.getAttribute("user");
+        String userId = "";
+        if (user != null) {
+            userId = user.getUserId();
+        }
+
+        List<BoardDto> boards = boardService.findBoardWithPaging(start, category, searchValue, userId);
 
         model.addAttribute("pager", pager);
         model.addAttribute("pageNo", pageNo);

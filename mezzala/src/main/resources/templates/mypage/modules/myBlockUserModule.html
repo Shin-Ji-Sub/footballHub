@@ -1,0 +1,21 @@
+<div class="container written-content-container" xmlns:th="http://www.thymeleaf.org" th:each="blockUser : ${users}">
+    <div class="row block-user-container">
+        <div class="col block-item">
+            <div th:text="${#strings.substring(blockUser.userId, 0, 3) + '***'}"></div>
+        </div>
+        <div class="col block-item">
+            <div th:text="${blockUser.nickname}"></div>
+        </div>
+        <div class="col block-item">
+            <button class="unblock-button bg-success">차단 풀기</button>
+            <input type="hidden" class="block-user-id" th:value="${blockUser.userId}">
+        </div>
+    </div>
+</div>
+<div class="page-button-container">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination paging" id="blockUserPaging" th:data-pageno='${ pageNo }' th:data-datacount="${ dataCount }">
+            [(${ pager })]
+        </ul>
+    </nav>
+</div>

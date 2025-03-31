@@ -79,4 +79,25 @@
             );
     </insert>
 
+    <insert id="insertBlockUSer" parameterType="hashmap">
+        INSERT INTO
+            block_user (
+                block_user,
+                user_id
+            )
+        VALUES (
+                #{blockUser},
+                #{userId}
+            )
+    </insert>
+
+    <delete id="deleteBlockUser" parameterType="hashmap">
+        DELETE FROM
+            block_user
+        WHERE
+            block_user = #{blockUserId}
+        AND
+            user_id = #{userId}
+    </delete>
+
 </mapper>

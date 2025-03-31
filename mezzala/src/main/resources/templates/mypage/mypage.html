@@ -76,6 +76,8 @@
                     mypageSectionEl.load('/mypage/get-liked-comment?userId=' + userId);
                 } else if (index === 5) {
                     mypageSectionEl.load('/mypage/get-bookmarked-content?userId=' + userId);
+                } else if (index === 6) {
+                    mypageSectionEl.load('/mypage/get-block-user?userId=' + userId);
                 }
             });
 
@@ -162,6 +164,40 @@
                 mypageSectionEl.load('/mypage/get-liked-comment?userId=' + userId + '&pageNo=' + pageNo);
             });
 
+            // 차단한 사용자 pagination
+            mypageSectionEl.on('click', '#blockUserPaging .page-item', function(e) {
+                let pageNo = $('.paging').data('pageno');
+                const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
+                if (/«/.test($(this).text())) pageNo = 1;
+                if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
+                if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
+                if (/»/.test($(this).text())) pageNo = lastPageNo;
+                if (!isNaN($(this).text())) pageNo = $(this).text();
+
+                mypageSectionEl.load('/mypage/get-block-user?userId=' + userId + '&pageNo=' + pageNo);
+            });
+
+            // 차단 풀기 버튼
+            mypageSectionEl.on('click', '.unblock-button', (e) => {
+                const blockUserId = $(e.currentTarget).siblings('.block-user-id').val();
+                $.ajax({
+                    url : "/account/unblock-user",
+                    method : "POST",
+                    data : "blockUserId=" + blockUserId + "&userId=" + userId,
+                    dataType : "text",
+                    success : (response, status, xhr) => {
+                        if (response == "success") {
+                            alert('차단을 풀었습니다.');
+                            mypageSectionEl.load('/mypage/get-block-user?userId=' + userId);
+                        }
+                    },
+                    error : (xhr, status, error) => {
+                        alert('차단을 풀지 못했습니다. 다시 시도해주세요.');
+                    }
+                });
+            });
+
+            // 해당 글로 이동
             mypageSectionEl.on('click', '.written-content', (e) => {
                 const boardId = $(e.currentTarget).data('boardid');
                 location.href = '/board/content?boardId=' + boardId + '&from=mypage';
