@@ -10,4 +10,6 @@ public interface AccountService {
     void addBlockUser(String blockUser, String userId);
 
     void deleteBlockUser(String blockUserId, String userId);
+
+    void addReport(String reportCategory, int contentId, String userId);
 }

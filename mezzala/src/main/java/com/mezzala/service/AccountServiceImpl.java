@@ -30,4 +30,9 @@ public class AccountServiceImpl implements AccountService{
     public void deleteBlockUser(String blockUserId, String userId) {
         accountMapper.deleteBlockUser(blockUserId, userId);
     }
+
+    @Override
+    public void addReport(String reportCategory, int contentId, String userId) {
+        accountMapper.insertReport(reportCategory, contentId, userId);
+    }
 }

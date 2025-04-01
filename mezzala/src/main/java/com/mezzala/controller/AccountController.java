@@ -144,4 +144,20 @@ public class AccountController {
         return "success";
     }
 
+    @PostMapping(path = {"/report-content"})
+    @ResponseBody
+    public String reportContent(@RequestParam(name = "reportCategory") String reportCategory,
+                                @RequestParam(name = "contentId") int contentId,
+                                @RequestParam(name = "userId") String userId) {
+        String result = "";
+        try {
+            accountService.addReport(reportCategory, contentId, userId);
+            result = "success";
+        } catch (Exception e) {
+            result = "fail";
+        }
+
+        return result;
+    }
+
 }

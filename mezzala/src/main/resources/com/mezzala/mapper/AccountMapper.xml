@@ -100,4 +100,18 @@
             user_id = #{userId}
     </delete>
 
+    <insert id="insertReport" parameterType="hashmap">
+        INSERT INTO
+            report (
+                reported_content_id,
+                report_category,
+                user_id
+            )
+        VALUES (
+                #{contentId},
+                #{reportCategory},
+                #{userId}
+            )
+    </insert>
+
 </mapper>
