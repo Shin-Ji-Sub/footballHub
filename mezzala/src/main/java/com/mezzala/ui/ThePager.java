@@ -64,7 +64,7 @@ public class ThePager {
 			if (i > pageCount) break;
 			if (i == pageNo) {
 				linkString.append(String.format(
-						"<li class='page-item'><a class='page-link' style='background-color: gray; color: white;' href='javascript:'>%d</a></li>", i));
+						"<li class='page-item disabled'><a class='page-link' style='background-color: gray; color: white;' href='javascript:'>%d</a></li>", i));
 			} else {
 				linkString.append(String.format(
 						"<li class='page-item'><a class='page-link' href='javascript:'>%d</a></li>", i));

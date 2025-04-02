@@ -20,7 +20,7 @@ public interface BoardMapper {
 
     void insertBoardAttach(@Param("imageFiles") List<Map<String, String>> imageFiles, @Param("boardId") int boardId);
 
-    int selectAllBoardCount();
+    int selectAllBoardCount(String userId);
 
     List<BoardDto> selectBoardWithPagingAndSearch(@Param("start") int start, @Param("category") String category, @Param("searchValue") String searchValue, @Param("userId") String userId);
 

@@ -3,6 +3,7 @@ package com.mezzala.config;
 import com.mezzala.mapper.AccountMapper;
 import com.mezzala.mapper.BoardMapper;
 import com.mezzala.mapper.MypageMapper;
+import com.mezzala.mapper.NormalhubMapper;
 import com.mezzala.service.*;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -54,6 +55,13 @@ public class RootConfiguration {
         MypageServiceImpl mypageService = new MypageServiceImpl();
         mypageService.setMypageMapper(mypageMapper);
         return mypageService;
+    }
+
+    @Bean
+    public NormalhubService normalhubService(NormalhubMapper normalhubMapper) throws Exception {
+        NormalhubServiceImpl normalhubService = new NormalhubServiceImpl();
+        normalhubService.setNormalhubMapper(normalhubMapper);
+        return normalhubService;
     }
 
     @Bean

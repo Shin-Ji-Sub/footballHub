@@ -347,13 +347,22 @@
             #{start}
     </select>
 
-    <select id="selectAllBoardCount" resultType="int">
+    <select id="selectAllBoardCount" parameterType="String" resultType="int">
         SELECT
             COUNT(*)
         FROM
-            board
+            board b
         WHERE
-            board_state = true
+            b.board_state = true
+        AND
+            b.user_id NOT IN (
+                SELECT
+                    bu.block_user
+                FROM
+                    block_user bu
+                WHERE
+                    bu.user_id = #{userId}
+            )
     </select>
 
     <select id="selectBoardWithBoardId" parameterType="int" resultMap="BoardResultMap">

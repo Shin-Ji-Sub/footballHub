@@ -30,7 +30,7 @@ public class DateParsing {
             // day
             msg = (diffTime) + "일 전";
         } else {
-            SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd");
+            SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd");
             msg = sdf.format(date);
         }
         return msg;

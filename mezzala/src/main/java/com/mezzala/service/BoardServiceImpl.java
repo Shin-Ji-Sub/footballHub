@@ -63,8 +63,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public int findAllBoardCount() {
-        return boardMapper.selectAllBoardCount();
+    public int findAllBoardCount(String userId) {
+        return boardMapper.selectAllBoardCount(userId);
     }
 
     @Override

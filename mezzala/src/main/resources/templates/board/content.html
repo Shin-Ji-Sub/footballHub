@@ -384,6 +384,10 @@
 
         // 글 신고 기능
         boardReportButton.on('click', (e) => {
+            if (userId == undefined) {
+                alert('로그인 후 이용해주세요.');
+                return;
+            }
             if (writeUserId == userId) {
                 alert('본인은 신고할 수 없습니다.');
                 return;
@@ -414,6 +418,10 @@
 
         // 글 차단 기능
         boardBlockButton.on('click', (e) => {
+            if (userId == undefined) {
+                alert('로그인 후 이용해주세요.');
+                return;
+            }
             if (writeUserId == userId) {
                 alert('본인은 차단할 수 없습니다.');
                 return;
@@ -465,6 +473,11 @@
 
         // 댓글 신고 기능
         commentModuleBox.on('click', '.report-button', (e) => {
+            if (userId == undefined) {
+                alert('로그인 후 이용해주세요.');
+                return;
+            }
+
             const commentId = $(e.currentTarget).siblings('.identification').val();
             const blockUser = $(e.currentTarget).siblings('.comment-write-user').val();
 
@@ -498,6 +511,11 @@
 
         // 댓글 차단 기능
         commentModuleBox.on('click', '.block-button', (e) => {
+            if (userId == undefined) {
+                alert('로그인 후 이용해주세요.');
+                return;
+            }
+
             const blockUser = $(e.currentTarget).siblings('.comment-write-user').val();
             const blockUserNickname = $(e.currentTarget).siblings('.comment-write-nickname').val();
             if (blockUser == userId) {
