@@ -72,7 +72,7 @@ public class NormalhubController {
 
         model.addAttribute("boards", boards);
 
-        return "/normalhub/modules/content";
+        return "/normalhub/modules/hubList";
     }
 
 }

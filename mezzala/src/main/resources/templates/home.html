@@ -134,8 +134,10 @@
                 const index = $(e.currentTarget).data('index');
                 const count = $('.paging').data('datacount');
                 const pageNo = $('.paging').data('pageno');
+
                 location.href = '/board/content?boardId=' + boardId + '&index=' + index +
-                                                '&count=' + count + '&pageNo=' + pageNo;
+                                                '&count=' + count + '&pageNo=' + pageNo +
+                                                '&from=home';
             });
 
         });

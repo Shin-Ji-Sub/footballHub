@@ -50,8 +50,8 @@
             const moduleBox = $('#moduleBox');
             const sortButton = $('.sort-button');
             const categorySelect = $('#categorySelect');
-            let sortValue = ""; // 정렬값
-            let category = ""; // 카테고리값
+            let sortValue = "latest"; // 정렬값
+            let category = "all"; // 카테고리값
             const searchButton = $('#searchButton');
             let searchValue = "";
 
@@ -114,6 +114,16 @@
             });
 
             // 상세글로 이동
+            moduleBox.on('click', '.content', (e) => {
+                const index = $(e.currentTarget).data('index');
+                const count = $('.paging').data('datacount');
+                const pageNo = $('.paging').data('pageno');
+
+                location.href = '/board/hub-content?index=' + index + '&pageNo=' + pageNo +
+                                                    '&from=home' + '&sortValue=' + sortValue +
+                                                    '&category=' + category + '&fromPage=normalhub' +
+                                                    '&count=' + count;
+            });
         });
     </script>
 </body>

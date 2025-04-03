@@ -21,7 +21,7 @@ public interface BoardService {
 
     void incrementVisitedBoard(int boardId);
 
-    List<BoardDto> findBoardWithBoardNo(int boardNo);
+    List<BoardDto> findBoardWithBoardNo(int boardNo, String userId);
 
     void addUserAction(UserDto user, int boardId, String actionCategory);
 
@@ -46,4 +46,6 @@ public interface BoardService {
     void deleteContent(int boardId);
 
     void modifyBoard(BoardDto board, List<Map<String, String>> imageFiles);
+
+    List<BoardDto> findHubBoard(int boardNo, String sortValue, String category, int largeCategory, String userId);
 }

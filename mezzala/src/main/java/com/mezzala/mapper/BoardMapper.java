@@ -28,7 +28,7 @@ public interface BoardMapper {
 
     void updateVisitedBoard(int boardId);
 
-    List<BoardDto> selectBoardWithBoardNo(int boardNo);
+    List<BoardDto> selectBoardWithBoardNo(@Param("boardNo") int boardNo, @Param("userId") String userId);
 
     void insertUserAction(@Param("userId") String userId, @Param("boardId") int boardId, @Param("actionCategory") String actionCategory);
 
@@ -55,4 +55,8 @@ public interface BoardMapper {
     void modifyBoard(BoardDto board);
 
     void deleteBoardAttachAll(@Param("imageFiles") List<Map<String, String>> imageFiles, @Param("boardId") int boardId);
+
+    List<BoardDto> selectHubBoard(@Param("boardNo") int boardNo, @Param("sortValue") String sortValue,
+                                  @Param("category") String category, @Param("largeCategory") int largeCategory,
+                                  @Param("userId") String userId);
 }

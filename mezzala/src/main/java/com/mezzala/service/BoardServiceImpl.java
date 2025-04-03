@@ -78,8 +78,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<BoardDto> findBoardWithBoardNo(int boardNo) {
-        return boardMapper.selectBoardWithBoardNo(boardNo);
+    public List<BoardDto> findBoardWithBoardNo(int boardNo, String userId) {
+        return boardMapper.selectBoardWithBoardNo(boardNo, userId);
     }
 
     @Override
@@ -137,6 +137,16 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void deleteContent(int boardId) {
         boardMapper.deleteContent(boardId);
+    }
+
+    @Override
+    public List<BoardDto> findHubBoard(int boardNo, String sortValue, String category, int largeCategory, String userId) {
+        System.out.println(boardNo);
+        System.out.println(sortValue);
+        System.out.println(category);
+        System.out.println(largeCategory);
+        System.out.println(userId);
+        return boardMapper.selectHubBoard(boardNo, sortValue, category, largeCategory, userId);
     }
 
 }
