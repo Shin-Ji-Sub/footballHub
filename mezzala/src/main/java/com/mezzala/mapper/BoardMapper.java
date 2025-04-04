@@ -58,5 +58,5 @@ public interface BoardMapper {
 
     List<BoardDto> selectHubBoard(@Param("boardNo") int boardNo, @Param("sortValue") String sortValue,
                                   @Param("category") String category, @Param("largeCategory") int largeCategory,
-                                  @Param("userId") String userId);
+                                  @Param("userId") String userId, @Param("searchValue") String searchValue);
 }

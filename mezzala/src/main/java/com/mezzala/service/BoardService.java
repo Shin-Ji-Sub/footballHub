@@ -47,5 +47,5 @@ public interface BoardService {
 
     void modifyBoard(BoardDto board, List<Map<String, String>> imageFiles);
 
-    List<BoardDto> findHubBoard(int boardNo, String sortValue, String category, int largeCategory, String userId);
+    List<BoardDto> findHubBoard(int boardNo, String sortValue, String category, int largeCategory, String userId, String searchValue);
 }

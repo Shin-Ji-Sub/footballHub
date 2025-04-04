@@ -561,7 +561,8 @@ public class BoardController {
                              @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
                              @RequestParam(name = "category", defaultValue = "all") String category,
                              @RequestParam(name = "fromPage") String fromPage,
-                             @RequestParam(name = "count") int count
+                             @RequestParam(name = "count") int count,
+                             @RequestParam(name = "searchValue") String searchValue
                              ) {
 
         String userId = "";
@@ -576,7 +577,7 @@ public class BoardController {
             largeCategory = 1;
         }
 
-        List<BoardDto> boards = boardService.findHubBoard(boardNo, sortValue, category, largeCategory, userId);
+        List<BoardDto> boards = boardService.findHubBoard(boardNo, sortValue, category, largeCategory, userId, searchValue);
         BoardDto board = boards.get(0);
         List<UserActionDto> likeActions = new ArrayList<>();
         if (user == null) {
@@ -612,6 +613,7 @@ public class BoardController {
         model.addAttribute("sortValue", sortValue);
         model.addAttribute("fromPage", fromPage);
         model.addAttribute("count", count);
+        model.addAttribute("searchValue", searchValue);
 
         model.addAttribute("likeActions", likeActions);
         model.addAttribute("bookmarkActions", bookmarkActions);

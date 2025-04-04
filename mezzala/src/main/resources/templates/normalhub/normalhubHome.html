@@ -17,18 +17,30 @@
         <div class="main-container">
             <div class="container section content-container">
                 <div class="subject-select-container">
-                    <span class="subject sort-button underline" data-sort="latest">최신순</span>
-                    <span class="subject sort-button" data-sort="best">인기순</span>
+                    <th:block th:if="${sortValue == 'latest'}">
+                        <span class="subject sort-button underline" data-sort="latest">최신순</span>
+                        <span class="subject sort-button" data-sort="best">인기순</span>
+                    </th:block>
+                    <th:block th:if="${sortValue == 'best'}">
+                        <span class="subject sort-button" data-sort="latest">최신순</span>
+                        <span class="subject sort-button underline" data-sort="best">인기순</span>
+                    </th:block>
                     <select class="form-select" id="categorySelect" aria-label="Default select example">
-                        <option value="all" selected>전체</option>
+                        <option th:if="${category == 'all'}" value="all"
+                                th:selected="${category == 'all'}">전체</option>
                         <option th:each="smallCategory : ${smallCategories}"
                                 th:value="${smallCategory.smallCategoryIndex}"
-                                th:text="${smallCategory.smallCategoryName}"></option>
+                                th:text="${smallCategory.smallCategoryName}"
+                                th:selected="${category == smallCategory.smallCategoryIndex + ''}"></option>
                     </select>
                 </div>
                 <div class="search-write-container">
                     <div>
-                        <input type="text" id="searchValue" placeholder="글제목 검색">
+                        <input th:if="${searchValue.length == 0}"
+                                type="text" id="searchValue" placeholder="글제목 검색">
+                        <input th:unless="${searchValue.length == 0}"
+                               th:value="${searchValue}"
+                                type="text" id="searchValue" placeholder="글제목 검색">
                         <button class="search-write-button" id="searchButton">검색</button>
                     </div>
                     <button th:if="${session.user != null}" class="search-write-button">
@@ -41,6 +53,9 @@
             </div>
         </div>
     </main>
+    <input type="hidden" id="pageNo" th:value="${pageNo}">
+    <input type="hidden" id="sortValue" th:value="${sortValue}">
+    <input type="hidden" id="category" th:value="${category}">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -50,10 +65,11 @@
             const moduleBox = $('#moduleBox');
             const sortButton = $('.sort-button');
             const categorySelect = $('#categorySelect');
-            let sortValue = "latest"; // 정렬값
-            let category = "all"; // 카테고리값
+            let sortValue = $('#sortValue').val(); // 정렬값
+            let category = $('#category').val(); // 카테고리값
+            const pageNo = $('#pageNo').val();
             const searchButton = $('#searchButton');
-            let searchValue = "";
+            let searchValue = $('#searchValue').val();
 
             // 현재 page nav에 표시
             const locationCategories = $('.location-category');
@@ -66,7 +82,8 @@
             }
 
             // 글 load
-            moduleBox.load("/normalhub/get-contents");
+            moduleBox.load("/normalhub/get-contents?pageNo=" + pageNo + "&sortValue=" + sortValue +
+                                                    "&category=" + category + "&searchValue=" + searchValue);
 
             // 최신순, 인기순 정렬 버튼
             sortButton.on('click', (e) => {
@@ -122,7 +139,7 @@
                 location.href = '/board/hub-content?index=' + index + '&pageNo=' + pageNo +
                                                     '&from=home' + '&sortValue=' + sortValue +
                                                     '&category=' + category + '&fromPage=normalhub' +
-                                                    '&count=' + count;
+                                                    '&count=' + count + '&searchValue=' + searchValue;
             });
         });
     </script>

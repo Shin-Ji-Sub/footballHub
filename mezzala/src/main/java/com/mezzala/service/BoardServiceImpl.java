@@ -140,13 +140,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<BoardDto> findHubBoard(int boardNo, String sortValue, String category, int largeCategory, String userId) {
-        System.out.println(boardNo);
-        System.out.println(sortValue);
-        System.out.println(category);
-        System.out.println(largeCategory);
-        System.out.println(userId);
-        return boardMapper.selectHubBoard(boardNo, sortValue, category, largeCategory, userId);
+    public List<BoardDto> findHubBoard(int boardNo, String sortValue, String category, int largeCategory, String userId, String searchValue) {
+        return boardMapper.selectHubBoard(boardNo, sortValue, category, largeCategory, userId, searchValue);
     }
 
 }

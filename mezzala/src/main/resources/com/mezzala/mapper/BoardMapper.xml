@@ -779,6 +779,12 @@
                     ua2.action_category = "like"
                 WHERE
                     b2.board_state = true
+                <choose>
+                    <when test="searchValue.length != null and searchValue != ''">
+                        AND
+                            b2.subject LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                </choose>
                 AND
                     b2.user_id NOT IN (
                         SELECT
@@ -801,7 +807,7 @@
                 ORDER BY
                     <choose>
                         <when test="sortValue == 'best'">
-                            b2.visit_count + (COUNT(ua.board_id) * 2) DESC,
+                            b2.visit_count + (COUNT(ua2.board_id) * 2) DESC,
                             b2.reg_date DESC
                         </when>
                         <when test="sortValue == 'latest'">

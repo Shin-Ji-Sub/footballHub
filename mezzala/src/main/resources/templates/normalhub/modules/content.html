@@ -92,9 +92,10 @@
                                 <span>이전글</span>
                             </button>
                         </th:block>
-                        <button class="content-button">
+                        <button class="content-button" id="toList">
                             <i class="bi bi-list-task"></i>
-                            <span><a href="/">목록</a></span>
+<!--                            <span><a href="/">목록</a></span>-->
+                            <span>목록</span>
                         </button>
                         <th:block th:if="${(pageNo - 1) * 10 + (index + 1) == count}">
                             <button class="content-button" style="visibility : hidden">
@@ -142,6 +143,7 @@
         <input type="hidden" id="category" th:value="${category}">
         <input type="hidden" id="sortValue" th:value="${sortValue}">
         <input type="hidden" id="fromPage" th:value="${fromPage}">
+        <input type="hidden" id="searchValue" th:value="${searchValue}">
     </main>
 
     <!-- jQuery -->
@@ -151,6 +153,7 @@
     <!-- Text Editor -->
     <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 </body>
+</html>
 <script type="text/javascript" th:inline="javascript">
     $(window).on('load', function() {
         const user = /*[[${session.user}]]*/'';
@@ -162,8 +165,15 @@
         const writeUserNickname = $('#writeUserNickname').val();
         const userId = $('#userId').val();
         const indexValue = Number($('#indexValue').val());
-        const pageNo = Number($('#pageNo').val());
+        let pageNo = Number($('#pageNo').val());
         const count = Number($('#count').val());
+        const from = $('#from').val();
+        const category = $('#category').val();
+        const sortValue = $('#sortValue').val();
+        const fromPage = $('#fromPage').val();
+        const searchValue = $('#searchValue').val();
+
+        const toList = $('#toList');
         const nextButton = $('#nextButton');
         const previousButton = $('#previousButton');
         const topButtonList = $('.top-button-list');
@@ -183,6 +193,11 @@
             viewer : true,  // 읽기 전용 모드
             initialValue : content
         });
+
+        // 현재 page nav에 표시
+        const locationCategories = $('.location-category');
+        locationCategories.eq(0).addClass('active');
+        locationCategories.eq(0).addClass('text-primary');
 
         // 좋아요 Header LOAD
         likeModuleBox.load('/board/action-like?boardId=' + boardId);
@@ -261,20 +276,28 @@
             $(this).find('i').css('animation', '');
         });
 
+        // 목록 버튼
+        toList.on('click', () => {
+            location.href = '/normalhub/home?pageNo=' + pageNo + '&sortValue=' + sortValue +
+                                            '&category=' + category + '&searchValue=' + searchValue;
+        });
+
         // 다음글, 이전글 버튼
         nextButton.on('click', () => {
-            const boardNo = (pageNo - 1) * 10 + indexValue + 1;
             const index = indexValue + 1 == 10 ? 0 : indexValue + 1;
-            const page = indexValue + 1 == 10 ? pageNo + 1 : pageNo;
-            location.href = '/board/contentToContent?boardNo=' + boardNo + '&index=' + index +
-                                                    '&pageNo=' + page + '&count=' + count;
+            pageNo = indexValue + 1 == 10 ? pageNo + 1 : pageNo;
+            location.href = '/board/hub-content?index=' + index + '&pageNo=' + pageNo +
+                                                '&from=home' + '&sortValue=' + sortValue +
+                                                '&category=' + category + '&fromPage=normalhub' +
+                                                '&count=' + count + '&searchValue=' + searchValue;
         });
         previousButton.on('click', () => {
-            const boardNo = (pageNo - 1) * 10 + indexValue - 1;
             const index = indexValue - 1 == -1 ? 9 : indexValue - 1;
-            const page = indexValue - 1 == -1 ? pageNo - 1 : pageNo;
-            location.href = '/board/contentToContent?boardNo=' + boardNo + '&index=' + index +
-                                                    '&pageNo=' + page + '&count=' + count;
+            pageNo = indexValue - 1 == -1 ? pageNo - 1 : pageNo;
+            location.href = '/board/hub-content?index=' + index + '&pageNo=' + pageNo +
+                                                '&from=home' + '&sortValue=' + sortValue +
+                                                '&category=' + category + '&fromPage=normalhub' +
+                                                '&count=' + count + '&searchValue=' + searchValue;
         });
 
         // 좋아요 버튼
@@ -750,4 +773,3 @@
 
     });
 </script>
-</html>

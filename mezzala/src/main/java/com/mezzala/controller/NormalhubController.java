@@ -32,11 +32,19 @@ public class NormalhubController {
     private NormalhubService normalhubService;
 
     @GetMapping(path = {"/home"})
-    public String home(Model model) {
+    public String home(Model model,
+                       @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                       @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
+                       @RequestParam(name = "category", defaultValue = "all") String category,
+                       @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
 
         List<BoardSmallCategoryDto> smallCategories = normalhubService.findAllBoardSmallCategory();
 
         model.addAttribute("smallCategories", smallCategories);
+        model.addAttribute("pageNo", pageNo);
+        model.addAttribute("sortValue", sortValue);
+        model.addAttribute("category", category);
+        model.addAttribute("searchValue", searchValue);
 
         return "/normalhub/normalhubHome";
     }
