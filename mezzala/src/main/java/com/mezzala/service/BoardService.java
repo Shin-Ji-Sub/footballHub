@@ -15,7 +15,7 @@ public interface BoardService {
 
     List<BoardDto> findBoardWithPaging(int start, String category, String searchValue, String userId);
 
-    int findAllBoardCount(String userId);
+    int findAllBoardCount(String userId, String searchValue);
 
     List<BoardDto> findBoardWithBoardId(int boardId);
 

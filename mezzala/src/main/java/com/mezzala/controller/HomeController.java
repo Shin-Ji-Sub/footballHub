@@ -42,7 +42,7 @@ public class HomeController {
         // paging
         int pageSize = 10;
         int pagerSize = 5;
-        int dataCount = boardService.findAllBoardCount(userId);
+        int dataCount = boardService.findAllBoardCount(userId, searchValue);
         String uri = req.getRequestURI();
         String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
         String queryString = req.getQueryString();

@@ -1,7 +1,0 @@
-/* 일반HUB Section */
-.subject-select-container {
-  display: grid;
-  grid-template-columns: 0.5fr 0.5fr 1fr;
-  column-gap: 5rem;
-  font-size: 1.2rem;
-}

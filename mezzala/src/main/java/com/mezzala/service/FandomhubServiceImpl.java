@@ -2,34 +2,36 @@ package com.mezzala.service;
 
 import com.mezzala.dto.BoardDto;
 import com.mezzala.dto.BoardSmallCategoryDto;
-import com.mezzala.mapper.MypageMapper;
+import com.mezzala.mapper.FandomhubMapper;
 import com.mezzala.mapper.NormalhubMapper;
 import lombok.Setter;
 
+import javax.naming.directory.SearchControls;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NormalhubServiceImpl implements NormalhubService {
+public class FandomhubServiceImpl implements FandomhubService {
     @Setter
-    private NormalhubMapper normalhubMapper;
+    private FandomhubMapper fandomhubMapper;
+
 
     @Override
     public List<BoardSmallCategoryDto> findAllBoardSmallCategory() {
-        return normalhubMapper.selectAllBoardSmallCategory();
+        return fandomhubMapper.selectAllBoardSmallCategory();
     }
 
     @Override
     public int findAllBoardCount(String userId, String category, String searchValue) {
-        return normalhubMapper.selectAllBoardCountInNormalhub(userId, category, searchValue);
+        return fandomhubMapper.selectAllBoardCount(userId, category, searchValue);
     }
 
     @Override
     public List<BoardDto> findBoardWithPaging(int start, String category, String searchValue, String userId, String sortValue) {
         List<BoardDto> boards = new ArrayList<>();
         if (searchValue.isEmpty()) {
-            boards = normalhubMapper.selectBoardWithPaging(start, userId, sortValue, category);
+            boards = fandomhubMapper.selectBoardWithPaging(start, category, userId, sortValue);
         } else {
-            boards = normalhubMapper.selectBoardWithPagingAndSearch(start, userId, sortValue, category, searchValue);
+            boards = fandomhubMapper.selectBoardWithPagingAndSearch(start, userId, sortValue, category, searchValue);
         }
         return boards;
     }

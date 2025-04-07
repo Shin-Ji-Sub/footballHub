@@ -36,11 +36,20 @@ public class BoardController {
 //    private final String uploadDir = Paths.get("D:", "tui-editor", "upload").toString();
 
     @GetMapping(path = {"/write"})
-    public String write(Model model) {
+    public String write(Model model,
+                        @RequestParam(name = "fromPage", defaultValue = "home") String fromPage) {
 
         List<BoardLargeCategoryDto> largeCategories = boardService.findAllCategory();
+        String categoryText = "";
+        if (fromPage.equals("normalhub")) {
+            categoryText = "일반";
+        } else if (fromPage.equals("fandomhub")) {
+            categoryText = "공화국";
+        }
 
         model.addAttribute("largeCategories", largeCategories);
+        model.addAttribute("fromPage", fromPage);
+        model.addAttribute("categoryText", categoryText);
 
         return "/board/write";
     }
@@ -575,6 +584,8 @@ public class BoardController {
         int largeCategory = 0;
         if (fromPage.equals("normalhub")) {
             largeCategory = 1;
+        } else if (fromPage.equals("fandomhub")) {
+            largeCategory = 2;
         }
 
         List<BoardDto> boards = boardService.findHubBoard(boardNo, sortValue, category, largeCategory, userId, searchValue);

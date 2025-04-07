@@ -21,6 +21,7 @@
 		<mapper resource="com/mezzala/mapper/BoardMapper.xml"/>
 		<mapper resource="com/mezzala/mapper/MypageMapper.xml"/>
 		<mapper resource="com/mezzala/mapper/NormalhubMapper.xml"/>
+		<mapper resource="com/mezzala/mapper/FandomhubMapper.xml"/>
 	</mappers>
 
 </configuration>

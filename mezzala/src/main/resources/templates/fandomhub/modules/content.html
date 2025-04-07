@@ -40,13 +40,8 @@
                         </div>
                     </div>
                     <div class="category-button">
-                        <button class="content-category" id="largeCategoryButton"
-                                th:data-value="${board.largeCategory.largeCategoryId}"
-                                th:text="${board.largeCategory.largeCategoryName}"></button>
-                        <button class="content-category" id="smallCategoryButton"
-                                th:data-largevalue="${board.largeCategory.largeCategoryId}"
-                                th:data-value="${board.smallCategory.smallCategoryIndex}"
-                                th:text="${board.smallCategory.smallCategoryName}"></button>
+                        <button class="content-category" th:text="${board.largeCategory.largeCategoryName}"></button>
+                        <button class="content-category" th:text="${board.smallCategory.smallCategoryName}"></button>
                     </div>
                     <div class="board-info">
                         <div class="content-info-container">
@@ -97,9 +92,10 @@
                                 <span>이전글</span>
                             </button>
                         </th:block>
-                        <button class="content-button">
+                        <button class="content-button" id="toList">
                             <i class="bi bi-list-task"></i>
-                            <span><a href="/">목록</a></span>
+<!--                            <span><a href="/">목록</a></span>-->
+                            <span>목록</span>
                         </button>
                         <th:block th:if="${(pageNo - 1) * 10 + (index + 1) == count}">
                             <button class="content-button" style="visibility : hidden">
@@ -143,6 +139,11 @@
         <input type="hidden" id="indexValue" th:value="${index}">
         <input type="hidden" id="pageNo" th:value="${pageNo}">
         <input type="hidden" id="count" th:value="${count}">
+        <input type="hidden" id="from" th:value="${from}">
+        <input type="hidden" id="category" th:value="${category}">
+        <input type="hidden" id="sortValue" th:value="${sortValue}">
+        <input type="hidden" id="fromPage" th:value="${fromPage}">
+        <input type="hidden" id="searchValue" th:value="${searchValue}">
     </main>
 
     <!-- jQuery -->
@@ -152,6 +153,7 @@
     <!-- Text Editor -->
     <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 </body>
+</html>
 <script type="text/javascript" th:inline="javascript">
     $(window).on('load', function() {
         const user = /*[[${session.user}]]*/'';
@@ -163,8 +165,15 @@
         const writeUserNickname = $('#writeUserNickname').val();
         const userId = $('#userId').val();
         const indexValue = Number($('#indexValue').val());
-        const pageNo = Number($('#pageNo').val());
+        let pageNo = Number($('#pageNo').val());
         const count = Number($('#count').val());
+        const from = $('#from').val();
+        const category = $('#category').val();
+        const sortValue = $('#sortValue').val();
+        const fromPage = $('#fromPage').val();
+        const searchValue = $('#searchValue').val();
+
+        const toList = $('#toList');
         const nextButton = $('#nextButton');
         const previousButton = $('#previousButton');
         const topButtonList = $('.top-button-list');
@@ -177,8 +186,6 @@
         const boardReportContainer = $('#boardReportContainer');
         const boardBlockButton = $('#boardBlockButton');
         const boardReportButton = $('#boardReportButton');
-        const largeCategoryButton = $('#largeCategoryButton');
-        const smallCategoryButton = $('#smallCategoryButton');
 
         // Toast UI Viewer 사용하여 렌더링
         const viewer = new toastui.Editor.factory({
@@ -187,25 +194,10 @@
             initialValue : content
         });
 
-        // large category 버튼 기능
-        largeCategoryButton.on('click', (e) => {
-            const value = Number($(e.currentTarget).data('value'));
-            if (value == 1) {
-                location.href = "/normalhub/home";
-            } else if (value == 2) {
-                location.href = "/fandomhub/home";
-            }
-        });
-        // small category 버튼 기능
-        smallCategoryButton.on('click', (e) => {
-            const value = Number($(e.currentTarget).data('value'));
-            const largeValue = Number($(e.currentTarget).data('largevalue'));
-            if (largeValue == 1) {
-                location.href = "/normalhub/home?category=" + value;
-            } else if (largeValue == 2) {
-                location.href = "/fandomhub/home?category=" + value;
-            }
-        });
+        // 현재 page nav에 표시
+        const locationCategories = $('.location-category');
+        locationCategories.eq(1).addClass('active');
+        locationCategories.eq(1).addClass('text-primary');
 
         // 좋아요 Header LOAD
         likeModuleBox.load('/board/action-like?boardId=' + boardId);
@@ -284,20 +276,28 @@
             $(this).find('i').css('animation', '');
         });
 
+        // 목록 버튼
+        toList.on('click', () => {
+            location.href = '/fandomhub/home?pageNo=' + pageNo + '&sortValue=' + sortValue +
+                                            '&category=' + category + '&searchValue=' + searchValue;
+        });
+
         // 다음글, 이전글 버튼
         nextButton.on('click', () => {
-            const boardNo = (pageNo - 1) * 10 + indexValue + 1;
             const index = indexValue + 1 == 10 ? 0 : indexValue + 1;
-            const page = indexValue + 1 == 10 ? pageNo + 1 : pageNo;
-            location.href = '/board/contentToContent?boardNo=' + boardNo + '&index=' + index +
-                                                    '&pageNo=' + page + '&count=' + count;
+            pageNo = indexValue + 1 == 10 ? pageNo + 1 : pageNo;
+            location.href = '/board/hub-content?index=' + index + '&pageNo=' + pageNo +
+                                                '&from=home' + '&sortValue=' + sortValue +
+                                                '&category=' + category + '&fromPage=fandomhub' +
+                                                '&count=' + count + '&searchValue=' + searchValue;
         });
         previousButton.on('click', () => {
-            const boardNo = (pageNo - 1) * 10 + indexValue - 1;
             const index = indexValue - 1 == -1 ? 9 : indexValue - 1;
-            const page = indexValue - 1 == -1 ? pageNo - 1 : pageNo;
-            location.href = '/board/contentToContent?boardNo=' + boardNo + '&index=' + index +
-                                                    '&pageNo=' + page + '&count=' + count;
+            pageNo = indexValue - 1 == -1 ? pageNo - 1 : pageNo;
+            location.href = '/board/hub-content?index=' + index + '&pageNo=' + pageNo +
+                                                '&from=home' + '&sortValue=' + sortValue +
+                                                '&category=' + category + '&fromPage=fandomhub' +
+                                                '&count=' + count + '&searchValue=' + searchValue;
         });
 
         // 좋아요 버튼
@@ -773,4 +773,3 @@
 
     });
 </script>
-</html>

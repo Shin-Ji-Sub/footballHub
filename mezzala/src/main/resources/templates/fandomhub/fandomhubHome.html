@@ -25,13 +25,16 @@
                         <span class="subject sort-button" data-sort="latest">최신순</span>
                         <span class="subject sort-button underline" data-sort="best">인기순</span>
                     </th:block>
-                    <select class="form-select" id="categorySelect" aria-label="Default select example">
-                        <option value="all" th:selected="${category == 'all'}">전체</option>
-                        <option th:each="smallCategory : ${smallCategories}"
-                                th:value="${smallCategory.smallCategoryIndex}"
-                                th:text="${smallCategory.smallCategoryName}"
-                                th:selected="${category == smallCategory.smallCategoryIndex + ''}"></option>
-                    </select>
+                    <div class="input-group">
+                        <input th:if="${category == 'all'}" value="전체"
+                                readonly type="text" class="form-control" id="teamView">
+                        <input th:unless="${category == 'all'}" th:value="${findSmallCategory.smallCategoryName}"
+                               readonly type="text" class="form-control" id="teamView">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            팀 찾기
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="search-write-container">
                     <div>
@@ -52,6 +55,34 @@
             </div>
         </div>
     </main>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">선택창</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h2 class="fs-5">팀 검색</h2>
+                    <input type="text" class="team-search" id="teamSearchValue" placeholder="팀 이름을 입력해주세요.">
+                    <hr>
+                    <h2 class="fs-5">팀 목록</h2>
+                    <p class="fandom-item-container">
+                        <button type="button" class="btn btn-outline-primary fandom-item" data-value="all">전체</button>
+                        <button th:each="smallCategory : ${smallCategories}"
+                                th:text="${smallCategory.smallCategoryName}"
+                                th:data-value="${smallCategory.smallCategoryIndex}"
+                                type="button" class="btn btn-outline-primary fandom-item"></button>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
     <input type="hidden" id="pageNo" th:value="${pageNo}">
     <input type="hidden" id="sortValue" th:value="${sortValue}">
     <input type="hidden" id="category" th:value="${category}">
@@ -69,20 +100,52 @@
             const pageNo = $('#pageNo').val();
             const searchButton = $('#searchButton');
             let searchValue = $('#searchValue').val();
+            const teamSearchValue = $('#teamSearchValue');
+            const fandomItem = $('.fandom-item');
+            const teamView = $('#teamView');
             const writeBoardButton = $('#writeBoardButton');
 
             // 현재 page nav에 표시
             const locationCategories = $('.location-category');
-            locationCategories.eq(0).addClass('active');
-            locationCategories.eq(0).addClass('text-primary');
+            locationCategories.eq(1).addClass('active');
+            locationCategories.eq(1).addClass('text-primary');
 
             // 글 load
-            moduleBox.load("/normalhub/get-contents?pageNo=" + pageNo + "&sortValue=" + sortValue +
+            moduleBox.load("/fandomhub/get-contents?pageNo=" + pageNo + "&sortValue=" + sortValue +
                                                     "&category=" + category + "&searchValue=" + searchValue);
 
             // 글쓰기 버튼
             writeBoardButton.on('click', function() {
-                location.href = "/board/write?fromPage=normalhub";
+                location.href = "/board/write?fromPage=fandomhub";
+            });
+
+            // 팀 이름 검색
+            teamSearchValue.on('input', (e) => {
+                const keyword = $(e.currentTarget).val().trim();
+
+                $('.fandom-item').each(function() {
+                    const text = $(this).text();
+                    if (text.includes(keyword)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+            // 팀 선택 검색
+            fandomItem.on('click', function() {
+                // aria-hidden 경고
+                $('#teamSearchValue').focus();
+
+                category = $(this).data('value');
+                moduleBox.load("/fandomhub/get-contents?sortValue=" + sortValue + "&category=" + category);
+
+                teamView.val($(this).text());
+
+                // 모달창 닫기
+                const modalEl = $('.modal');
+                const modal = bootstrap.Modal.getInstance(modalEl); // 이미 열려있는 인스턴스 가져오기
+                modal.hide();
             });
 
             // 최신순, 인기순 정렬 버튼
@@ -91,19 +154,19 @@
                 $(e.currentTarget).addClass('underline');
 
                 sortValue = $(e.currentTarget).data('sort');
-                moduleBox.load("/normalhub/get-contents?sortValue=" + sortValue + "&category=" + category);
+                moduleBox.load("/fandomhub/get-contents?sortValue=" + sortValue + "&category=" + category);
             });
 
             // 카테고리별 정렬
             categorySelect.on('change', (e) => {
                 category = $('#categorySelect').val();
-                moduleBox.load("/normalhub/get-contents?sortValue=" + sortValue + "&category=" + category);
+                moduleBox.load("/fandomhub/get-contents?sortValue=" + sortValue + "&category=" + category);
             });
 
             // 글제목 검색 FUNCTION
             function search() {
                 searchValue = $('#searchValue').val();
-                moduleBox.load('/normalhub/get-contents?searchValue=' + searchValue + '&sortValue=' + sortValue +
+                moduleBox.load('/fandomhub/get-contents?searchValue=' + searchValue + '&sortValue=' + sortValue +
                                                         '&category=' + category);
             }
             // 글제목 검색
@@ -127,8 +190,8 @@
                 if (/»/.test($(this).text())) pageNo = lastPageNo;
                 if (!isNaN($(this).text())) pageNo = $(this).text();
 
-                moduleBox.load('/normalhub/get-contents?pageNo=' + pageNo + '&category=' + category +
-                                                        '&sortValue=' + sortValue + '&searchValue=' + searchValue);
+                moduleBox.load('/fandomhub/get-contents?pageNo=' + pageNo + '&category=' + categoryValue +
+                                                        '&searchValue=' + searchValue + '&searchValue=' + searchValue);
             });
 
             // 상세글로 이동
@@ -139,7 +202,7 @@
 
                 location.href = '/board/hub-content?index=' + index + '&pageNo=' + pageNo +
                                                     '&from=home' + '&sortValue=' + sortValue +
-                                                    '&category=' + category + '&fromPage=normalhub' +
+                                                    '&category=' + category + '&fromPage=fandomhub' +
                                                     '&count=' + count + '&searchValue=' + searchValue;
             });
         });

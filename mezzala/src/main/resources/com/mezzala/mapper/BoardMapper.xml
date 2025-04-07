@@ -347,7 +347,7 @@
             #{start}
     </select>
 
-    <select id="selectAllBoardCount" parameterType="String" resultType="int">
+    <select id="selectAllBoardCount" parameterType="hashmap" resultType="int">
         SELECT
             COUNT(*)
         FROM
@@ -363,6 +363,12 @@
                 WHERE
                     bu.user_id = #{userId}
             )
+        <choose>
+            <when test="searchValue.length != null and searchValue != ''">
+                AND
+                b.subject LIKE CONCAT('%', #{searchValue}, '%')
+            </when>
+        </choose>
     </select>
 
     <select id="selectBoardWithBoardId" parameterType="int" resultMap="BoardResultMap">

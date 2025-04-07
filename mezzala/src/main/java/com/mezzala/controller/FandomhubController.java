@@ -1,35 +1,29 @@
 package com.mezzala.controller;
 
-import com.mezzala.common.KakaoApi;
-import com.mezzala.common.NaverApi;
 import com.mezzala.dto.BoardDto;
 import com.mezzala.dto.BoardSmallCategoryDto;
 import com.mezzala.dto.UserDto;
-import com.mezzala.service.AccountService;
+import com.mezzala.service.FandomhubService;
 import com.mezzala.service.NormalhubService;
 import com.mezzala.ui.ThePager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
-@RequestMapping(path = {"normalhub"})
-public class NormalhubController {
+@RequestMapping(path = {"fandomhub"})
+public class FandomhubController {
 
     @Setter(onMethod_ = {@Autowired})
-    private NormalhubService normalhubService;
+    private FandomhubService fandomhubService;
 
     @GetMapping(path = {"/home"})
     public String home(Model model,
@@ -38,15 +32,24 @@ public class NormalhubController {
                        @RequestParam(name = "category", defaultValue = "all") String category,
                        @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
 
-        List<BoardSmallCategoryDto> smallCategories = normalhubService.findAllBoardSmallCategory();
+        List<BoardSmallCategoryDto> smallCategories = fandomhubService.findAllBoardSmallCategory();
+        BoardSmallCategoryDto findSmallCategory = null;
+        if (!category.equals("all")) {
+            for (BoardSmallCategoryDto sc : smallCategories) {
+                if (sc.getSmallCategoryIndex() == Integer.parseInt(category)) {
+                    findSmallCategory = sc;
+                }
+            }
+        }
 
         model.addAttribute("smallCategories", smallCategories);
+        model.addAttribute("findSmallCategory", findSmallCategory);
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("sortValue", sortValue);
         model.addAttribute("category", category);
         model.addAttribute("searchValue", searchValue);
 
-        return "/normalhub/normalhubHome";
+        return "/fandomhub/fandomhubHome";
     }
 
     @GetMapping(path = {"/get-contents"})
@@ -64,7 +67,7 @@ public class NormalhubController {
         // paging
         int pageSize = 10;
         int pagerSize = 5;
-        int dataCount = normalhubService.findAllBoardCount(userId, category, searchValue);
+        int dataCount = fandomhubService.findAllBoardCount(userId, category, searchValue);
         String uri = req.getRequestURI();
         String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
         String queryString = req.getQueryString();
@@ -72,7 +75,7 @@ public class NormalhubController {
         int start = pageSize * (pageNo - 1);
 
         ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
-        List<BoardDto> boards = normalhubService.findBoardWithPaging(start, category, searchValue, userId, sortValue);
+        List<BoardDto> boards = fandomhubService.findBoardWithPaging(start, category, searchValue, userId, sortValue);
 
         model.addAttribute("pager", pager);
         model.addAttribute("pageNo", pageNo);
@@ -80,7 +83,7 @@ public class NormalhubController {
 
         model.addAttribute("boards", boards);
 
-        return "/normalhub/modules/hubList";
+        return "/fandomhub/modules/hubList";
     }
 
 }

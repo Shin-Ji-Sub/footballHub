@@ -1,9 +1,6 @@
 package com.mezzala.config;
 
-import com.mezzala.mapper.AccountMapper;
-import com.mezzala.mapper.BoardMapper;
-import com.mezzala.mapper.MypageMapper;
-import com.mezzala.mapper.NormalhubMapper;
+import com.mezzala.mapper.*;
 import com.mezzala.service.*;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -62,6 +59,13 @@ public class RootConfiguration {
         NormalhubServiceImpl normalhubService = new NormalhubServiceImpl();
         normalhubService.setNormalhubMapper(normalhubMapper);
         return normalhubService;
+    }
+
+    @Bean
+    public FandomhubService fandomhubService(FandomhubMapper fandomhubMapper) throws Exception {
+        FandomhubServiceImpl fandomhubService = new FandomhubServiceImpl();
+        fandomhubService.setFandomhubMapper(fandomhubMapper);
+        return fandomhubService;
     }
 
     @Bean

@@ -3,7 +3,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.mezzala.mapper.NormalhubMapper">
+<mapper namespace="com.mezzala.mapper.FandomhubMapper">
     <resultMap id="BoardResultMap" type="com.mezzala.dto.BoardDto">
         <id property="boardId" column="board_id" />
         <result property="subject" column="subject" />
@@ -56,12 +56,12 @@
         FROM
             board_small_category
         WHERE
-            large_category_id = 1
+            large_category_id = 2
         ORDER BY
             small_category_index ASC
     </select>
 
-    <select id="selectAllBoardCountInNormalhub" parameterType="hashmap" resultType="int">
+    <select id="selectAllBoardCount" parameterType="hashmap" resultType="int">
         SELECT
             COUNT(*)
         FROM
@@ -86,7 +86,7 @@
                     bu.user_id = #{userId}
             )
         AND
-            b.large_category_id = 1
+            b.large_category_id = 2
         <choose>
             <when test="searchValue.length != null and searchValue != ''">
                 AND
@@ -165,7 +165,7 @@
                     bu.user_id = #{userId}
                 )
         AND
-            b.large_category_id = 1
+            b.large_category_id = 2
         <choose>
             <when test="category != 'all'">
                 AND
@@ -256,7 +256,7 @@
                     bu.user_id = #{userId}
             )
         AND
-            b.large_category_id = 1
+            b.large_category_id = 2
         <choose>
             <when test="category != 'all'">
                 AND

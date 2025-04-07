@@ -5,8 +5,7 @@ import com.mezzala.dto.BoardSmallCategoryDto;
 
 import java.util.List;
 
-public interface NormalhubService {
-
+public interface FandomhubService {
     List<BoardSmallCategoryDto> findAllBoardSmallCategory();
 
     int findAllBoardCount(String userId, String category, String searchValue);

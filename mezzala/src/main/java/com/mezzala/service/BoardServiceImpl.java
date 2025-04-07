@@ -63,8 +63,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public int findAllBoardCount(String userId) {
-        return boardMapper.selectAllBoardCount(userId);
+    public int findAllBoardCount(String userId, String searchValue) {
+        return boardMapper.selectAllBoardCount(userId, searchValue);
     }
 
     @Override
@@ -141,6 +141,12 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public List<BoardDto> findHubBoard(int boardNo, String sortValue, String category, int largeCategory, String userId, String searchValue) {
+        System.out.println("boardNo : " + boardNo);
+        System.out.println("sortValue : " + sortValue);
+        System.out.println("category : " + category);
+        System.out.println("largeCategory : " + largeCategory);
+        System.out.println("userId : " + userId);
+        System.out.println("searchValue : " + searchValue);
         return boardMapper.selectHubBoard(boardNo, sortValue, category, largeCategory, userId, searchValue);
     }
 

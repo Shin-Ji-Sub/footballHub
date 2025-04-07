@@ -27,11 +27,12 @@
                 </ul>
                 <div class="write-header">
                     <select name="largeCategoryId" class="form-select write-subject" id="writeLargeCategory" aria-label="Default select example">
-                        <option selected id="deleteFirstOption">카테고리</option>
+                        <option th:selected="${fromPage == 'home'}" id="deleteFirstOption">카테고리</option>
                         <option th:each="largeCategory : ${largeCategories}"
                                 th:if="${largeCategory.largeCategoryId != 3 && session.user.isAdmin != true}"
                                 th:value="${largeCategory.largeCategoryId}"
-                                th:text="${largeCategory.largeCategoryName}"></option>
+                                th:text="${largeCategory.largeCategoryName}"
+                                th:selected="${largeCategory.largeCategoryName == categoryText}"></option>
                     </select>
                     <select disabled name="smallCategoryIndex" class="form-select write-subject" id="normalCategory" aria-label="Default select example">
                         <option selected id="deleteSecondOption">카테고리</option>
@@ -79,6 +80,7 @@
         <input type="hidden" id="userId" name="userId" th:value="${session.user.userId}">
     </div>
     </form>
+    <input type="hidden" id="fromPage" th:value="${fromPage}">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -221,6 +223,7 @@
         const deleteFirstOption = $('#deleteFirstOption');
         const deleteSecondOption = $('#deleteSecondOption');
         const teamArrEl = $('.search-team');
+        const fromPage = $('#fromPage').val();
 
         // FORM 관련 변수
         const writeBoardForm = $('#writeBoardForm');
@@ -236,27 +239,35 @@
         fanCategory.css('width', width);
         teamValueContainer.css('width', width);
 
-        writeLargeCategory.on('change', () => {
-          const writeLargeCategoryValue = writeLargeCategory.val();
-          if (writeLargeCategoryValue == 1) {
-            deleteFirstOption.remove();
-            deleteSecondOption.remove();
-            normalCategory.removeAttr('disabled');
-            normalCategory.removeClass('display-none');
-            fanCategory.addClass('display-none');
-            teamValueContainer.addClass('display-none');
-          } else if (writeLargeCategoryValue == 2) {
-            deleteFirstOption.remove();
-            deleteSecondOption.remove();
-            fanCategory.removeClass('display-none');
-            normalCategory.addClass('display-none');
+        // 큰 카테고리 설정 함수
+        function setLargeCategory() {
+            const writeLargeCategoryValue = writeLargeCategory.val();
+            if (writeLargeCategoryValue == 1) {
+                deleteFirstOption.remove();
+                deleteSecondOption.remove();
+                normalCategory.removeAttr('disabled');
+                normalCategory.removeClass('display-none');
+                fanCategory.addClass('display-none');
+                teamValueContainer.addClass('display-none');
+            } else if (writeLargeCategoryValue == 2) {
+                deleteFirstOption.remove();
+                deleteSecondOption.remove();
+                fanCategory.removeClass('display-none');
+                normalCategory.addClass('display-none');
 
-            appendTeam.css({
-              'bottom' : writeLargeCategory.height() * 2,
-              'max-height': teamArrEl.outerHeight() * 5 + 'px',
-              'overflow-y': 'auto'
-            });
-          }
+                appendTeam.css({
+                  'bottom' : writeLargeCategory.height() * 2,
+                  'max-height': teamArrEl.outerHeight() * 5 + 'px',
+                  'overflow-y': 'auto'
+                });
+            }
+        }
+        // 초기 큰 카테고리 설정
+        setLargeCategory();
+
+        // 큰 카테고리 변경
+        writeLargeCategory.on('change', () => {
+            setLargeCategory();
         });
 
         teamSearchValue.on('input', () => {
@@ -341,8 +352,8 @@
             }
 
             const data = writeBoardForm.serializeArray();
-            if (largeCategory == 1) data.splice(2, 1);
-            if (largeCategory == 2) data.splice(1, 1);
+            //if (largeCategory == 1) data.splice(2, 1);
+            //if (largeCategory == 2) data.splice(1, 1);
             data.push({
                 name : 'content',
                 value : content
@@ -362,7 +373,7 @@
                 success : (response, status, xhr) => {
                     if (response == "success") {
                         alert('작성되었습니다.');
-                        location.href="/";
+                        location.href=`/${fromPage}`;
                     };
                 },
                 error : (xhr, status, err) => {
