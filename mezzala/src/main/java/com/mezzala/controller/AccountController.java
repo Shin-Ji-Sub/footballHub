@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -32,11 +33,12 @@ public class AccountController {
     private AccountService accountService;
 
     @GetMapping(path = {"/sign-up"})
-    public String signUp(Model model) {
+    public String signUp(Model model, @RequestParam(name = "returnUri", defaultValue = "/home") String returnUri) {
         model.addAttribute("kakaoApiKey", kakaoApi.getKakaoApiKey());
         model.addAttribute("redirectUri", kakaoApi.getKakaoRedirectUri());
         model.addAttribute("naverApiKey", naverApi.getNaverApiKey());
         model.addAttribute("naverRedirectUri", naverApi.getNaverRedirectUri());
+        model.addAttribute("returnUri", returnUri);
         return "/account/sign-up";
     }
 
@@ -62,7 +64,8 @@ public class AccountController {
     }
 
     @GetMapping(path = {"/log-out"})
-    public String logOut(HttpSession session, @RequestParam(name="socialMethod") String socialMethod) {
+    public String logOut(HttpSession session, @RequestParam(name="socialMethod") String socialMethod,
+                         @RequestParam(name = "returnUri", defaultValue = "/home") String returnUri) throws UnsupportedEncodingException {
 
 //        String accessToken = (String) session.getAttribute("accessToken");
         if (socialMethod.equals("kakao")) {
@@ -71,16 +74,19 @@ public class AccountController {
             String logoutUri = kakao.get("logoutUri");
             session.invalidate();
 
-            return "redirect:https://kauth.kakao.com/oauth/logout?client_id=" + clientId + "&logout_redirect_uri=" + logoutUri;
+            returnUri = URLEncoder.encode(returnUri, StandardCharsets.UTF_8.toString());
+
+            return "redirect:https://kauth.kakao.com/oauth/logout?client_id=" + clientId + "&logout_redirect_uri=" + logoutUri +
+                                                                 "&state=" + returnUri;
         } else {
             session.invalidate();
-            return "redirect:/";
+            return "redirect:" + returnUri;
         }
     }
 
     @GetMapping(path = {"/kakao/logout"})
-    public String logoutKakao() {
-        return "redirect:/";
+    public String logoutKakao(@RequestParam(name = "state", defaultValue = "home") String state) {
+        return "redirect:" + state;
     }
 
     @GetMapping(path = {"/sign-in"})

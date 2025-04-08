@@ -3,17 +3,37 @@
         <div></div>
         <div class="head"><a href="/">FootballHub</a></div>
         <div class="account-section">
-            <button th:if="${session.user != null}">
-                <a href="/mypage/myinfo">라커룸</a>
-            </button>
-            <button th:if="${session.user != null}" id="logOut">
-                <a th:href="@{/account/log-out(socialMethod=${session.user.socialMethod})}">
+            <th:block th:if="${session.user != null}">
+                <button>
+                    <a href="/mypage/myinfo">라커룸</a>
+                </button>
+                <button id="logOut" onclick="logOut()">
                     로그아웃
-                </a>
-            </button>
+<!--                    <a th:href="@{/account/log-out(socialMethod=${session.user.socialMethod})}">-->
+<!--                        로그아웃-->
+<!--                    </a>-->
+                </button>
+                <script type="text/javascript" th:inline="javascript">
+                    function logOut() {
+                        const socialMethod = /*[[${session.user.socialMethod}]]*/'';
+                        const url = new URL(window.location.href);
+                        const returnUri = url.pathname + url.search;
+                        location.href = '/account/log-out?returnUri=' + encodeURIComponent(returnUri) +
+                                                         '&socialMethod=' + socialMethod;
+                    }
+                </script>
+            </th:block>
             <th:block th:if="${session.user == null}">
                 <button id="signUp"><a href="/account/sign-up">회원가입</a></button>
-                <button id="signIn"><a href="/account/sign-in">로그인</a></button>
+                <button id="signIn" onclick="logIn()">로그인</button>
+                <script type="text/javascript">
+                    function logIn() {
+                        const url = new URL(window.location.href);
+                        const returnUri = url.pathname + url.search;
+                        location.href = '/account/sign-in?returnUri=' + encodeURIComponent(returnUri);
+                    }
+                </script>
+<!--                <button id="signIn"><a href="/account/sign-in">로그인</a></button>-->
             </th:block>
         </div>
     </div>

@@ -576,9 +576,7 @@
 
         // 로그인 버튼
         boardToLoginButton.on('click', (e) => {
-            const url = new URL(window.location.href);
-            const returnUri = url.pathname + url.search;
-            location.href = '/account/sign-in?returnUri=' + encodeURIComponent(returnUri);
+            logIn();
         });
 
         // 댓글 등록 버튼
