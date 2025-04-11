@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mezzala.mapper.RequestMapper">
+    <!-- <id> → <result> → <association> → <collection> 순서를 지켜야함!-->
+    <resultMap id="RequestBoardResultMap" type="com.mezzala.dto.RequestBoardDto">
+        <id property="boardId" column="board_id" />
+        <result property="subject" column="subject" />
+        <result property="content" column="content" />
+        <result property="category" column="category" />
+        <result property="regDate" column="reg_date" />
+        <result property="commentCount" column="commentCount" />
+        <result property="boardState" column="board_state" />
+        <!-- 1:1 관계 user -->
+        <association property="user" javaType="com.mezzala.dto.UserDto">
+            <id property="userId" column="user_id" />
+            <result property="nickname" column="nickname" />
+            <result property="socialMethod" column="social_method" />
+            <result property="joinDate" column="join_date" />
+            <result property="isAdmin" column="is_admin" />
+            <result property="state" column="state" />
+        </association>
+    </resultMap>
+    <resultMap id="CommentResultMap" type="com.mezzala.dto.CommentDto">
+        <id property="commentId" column="comment_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="regDate" column="reg_date"/>
+        <result property="content" column="content"/>
+        <result property="commentState" column="comment_state"/>
+        <result property="userId" column="user_id"/>
+        <result property="boardId" column="board_id"/>
+        <association property="user" javaType="com.mezzala.dto.UserDto">
+            <id property="userId" column="user_id" />
+            <result property="nickname" column="nickname" />
+            <result property="socialMethod" column="social_method" />
+            <result property="joinDate" column="join_date" />
+            <result property="isAdmin" column="is_admin" />
+            <result property="state" column="state" />
+        </association>
+        <collection property="recomments" ofType="com.mezzala.dto.CommentDto">
+            <id property="commentId" column="recomment_comment_id"/>
+            <result property="parentId" column="recomment_parent_id"/>
+            <result property="regDate" column="recomment_reg_date"/>
+            <result property="content" column="recomment_content"/>
+            <result property="commentState" column="recomment_comment_state"/>
+            <result property="userId" column="recomment_user_id"/>
+            <result property="boardId" column="recomment_board_id"/>
+            <association property="user" javaType="com.mezzala.dto.UserDto">
+                <id property="userId" column="recomment_user_id"/>
+                <result property="nickname" column="recomment_nickname"/>
+                <result property="socialMethod" column="recomment_social_method"/>
+                <result property="joinDate" column="recomment_join_date"/>
+                <result property="isAdmin" column="recomment_is_admin"/>
+                <result property="state" column="recomment_state"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <insert id="insertBoard" parameterType="RequestBoardDto">
+        INSERT INTO
+            request_board (
+                subject,
+                content,
+                category,
+                user_id
+            )
+        VALUES (
+                #{subject},
+                #{content},
+                #{category},
+                #{userId}
+            )
+    </insert>
+
+    <select id="selectAllRequestBoardCount" parameterType="hashmap" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            request_board
+        WHERE
+            board_status = true
+        <choose>
+            <when test="category != 'all'">
+                AND
+                    category = #{category}
+            </when>
+        </choose>
+        <choose>
+            <when test="searchValue.length != null and searchValue != ''">
+                AND
+                    subject LIKE CONCAT('%', #{searchValue}, '%')
+            </when>
+        </choose>
+    </select>
+
+    <select id="selectRequestBoardWithPaging" parameterType="hashmap" resultMap="RequestBoardResultMap">
+        SELECT
+            rb.board_id,
+            rb.subject,
+            rb.content,
+            rb.category,
+            rb.reg_date,
+            rb.board_status,
+
+            COALESCE(COUNT(DISTINCT rc.comment_id), 0) AS commentCount,
+
+            u.user_id,
+            u.nickname,
+            u.social_method,
+            u.join_date,
+            u.is_admin,
+            u.state
+        FROM
+            request_board rb
+        LEFT JOIN
+            user u
+        ON
+            rb.user_id = u.user_id
+        LEFT JOIN
+            request_comment rc
+        ON
+            rb.board_id = rc.board_id
+        WHERE
+            rb.board_status = true
+        <choose>
+            <when test="category != 'all'">
+                AND
+                    rb.category = #{category}
+            </when>
+        </choose>
+        <choose>
+            <when test="searchValue.length != null and searchValue != ''">
+                AND
+                    rb.subject LIKE CONCAT('%', #{searchValue}, '%')
+            </when>
+        </choose>
+        GROUP BY
+            rb.board_id
+        ORDER BY
+            <choose>
+                <when test="sortValue == 'late'">
+                    rb.reg_date ASC
+                </when>
+                <when test="sortValue == 'latest'">
+                    rb.reg_date DESC
+                </when>
+            </choose>
+        LIMIT
+            10
+        OFFSET
+            #{start}
+    </select>
+
+    <select id="selectRequestBoard" parameterType="hashmap" resultMap="RequestBoardResultMap">
+        SELECT
+            rb.board_id,
+            rb.subject,
+            rb.content,
+            rb.category,
+            rb.reg_date,
+            rb.board_status,
+
+            u.user_id,
+            u.nickname,
+            u.social_method,
+            u.join_date,
+            u.is_admin,
+            u.state
+        FROM
+            request_board rb
+        LEFT JOIN
+            user u
+        ON
+            rb.user_id = u.user_id
+        WHERE
+            rb.board_id = (
+                SELECT
+                    rb2.board_id
+                FROM
+                    request_board rb2
+                WHERE
+                    rb2.board_status = true
+                <choose>
+                    <when test="searchValue.length != null and searchValue != ''">
+                        AND
+                            rb2.subject LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                </choose>
+                <choose>
+                    <when test="category != 'all'">
+                        AND
+                            rb2.small_category_index = #{category}
+                    </when>
+                </choose>
+                GROUP BY
+                    rb2.board_id
+                ORDER BY
+                    <choose>
+                        <when test="sortValue == 'late'">
+                            rb2.reg_date ASC
+                        </when>
+                        <when test="sortValue == 'latest'">
+                            rb2.reg_date DESC
+                        </when>
+                    </choose>
+                LIMIT
+                    1
+                OFFSET
+                    #{boardNo}
+            )
+    </select>
+
+    <insert id="insertComment" parameterType="hashmap">
+        INSERT INTO
+            request_comment (
+                content,
+                user_id,
+                board_id
+            )
+        VALUES (
+                #{content},
+                #{userId},
+                #{boardId}
+            )
+    </insert>
+
+    <insert id="insertRecomment" parameterType="hashmap">
+        INSERT INTO
+            request_comment (
+                parent_id,
+                content,
+                user_id,
+                board_id
+            )
+        VALUES (
+                #{parentId},
+                #{content},
+                #{userId},
+                #{boardId}
+            )
+    </insert>
+
+    <select id="selectCommentsWithBoardId" parameterType="int" resultMap="CommentResultMap">
+        SELECT
+            c1.comment_id,
+            c1.parent_id,
+            c1.reg_date,
+            c1.content,
+            c1.comment_state,
+            c1.user_id,
+            c1.board_id,
+
+            u.user_id,
+            u.nickname,
+            u.social_method,
+            u.join_date,
+            u.is_admin,
+            u.state,
+
+            c2.comment_id AS recomment_comment_id,
+            c2.parent_id AS recomment_parent_id,
+            c2.reg_date AS recomment_reg_date,
+            c2.content AS recomment_content,
+            c2.comment_state AS recomment_comment_state,
+            c2.user_id AS recomment_user_id,
+            c2.board_id AS recomment_board_id,
+
+            u2.user_id AS recomment_user_id,
+            u2.nickname AS recomment_nickname,
+            u2.social_method AS recomment_social_method,
+            u2.join_date AS recomment_join_date,
+            u2.is_admin AS recomment_is_admin,
+            u2.state AS recomment_state
+        FROM
+            request_comment c1
+        LEFT JOIN
+            request_comment c2
+        ON
+            c1.comment_id = c2.parent_id
+        LEFT JOIN
+            user u
+        ON
+            c1.user_id = u.user_id
+        LEFT JOIN
+            user u2
+        ON
+            c2.user_id = u2.user_id
+        WHERE
+            c1.parent_id IS NULL
+        AND
+            c1.board_id = ${boardId}
+        ORDER BY
+            c1.comment_id ASC,
+            c2.comment_id ASC;
+    </select>
+
+    <update id="deleteCommentWithCommentIdAndBoardId" parameterType="hashmap">
+        UPDATE
+            request_comment
+        SET
+            comment_state = false
+        WHERE
+            comment_id = #{commentId}
+        AND
+            board_id = ${boardId}
+    </update>
+
+    <update id="updateCommentWithCommentIdAndBoardId" parameterType="hashmap">
+        UPDATE
+            request_comment
+        SET
+            content = #{content},
+            reg_date = #{modifyDate}
+        WHERE
+            comment_id = #{commentId}
+        AND
+            board_id = #{boardId}
+    </update>
+
+</mapper>

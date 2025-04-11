@@ -69,6 +69,13 @@ public class RootConfiguration {
     }
 
     @Bean
+    public RequestService requestService(RequestMapper requestMapper) throws Exception {
+        RequestServiceImpl requestService = new RequestServiceImpl();
+        requestService.setRequestMapper(requestMapper);
+        return requestService;
+    }
+
+    @Bean
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource(hikariConfig());
         return dataSource;

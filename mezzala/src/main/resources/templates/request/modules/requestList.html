@@ -1,0 +1,27 @@
+<div xmlns:th="http://www.thymeleaf.org" class="row content" th:each="board, boardState : ${boards}"
+     th:data-id="${board.boardId}"
+     th:data-index="${boardState.index}">
+    <div class="col">
+        <div th:text="${board.subject}"></div>
+        <div>
+            <span class="content-category" th:text="${board.category}"></span>
+        </div>
+    </div>
+    <div class="col-2 span-container">
+        <span class="icon">
+            <i class="bi bi-chat-dots"></i>
+            <span th:text="${board.commentCount}"></span>
+        </span>
+    </div>
+    <div class="col-2 span-container">
+        <span th:text="${board.user.nickname}"></span>
+        <span th:text="${board.getRegDateFormatted()}"></span>
+    </div>
+</div>
+<div class="page-button-container">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination paging" th:data-pageno='${ pageNo }' th:data-datacount="${ dataCount }">
+            [(${ pager })]
+        </ul>
+    </nav>
+</div>

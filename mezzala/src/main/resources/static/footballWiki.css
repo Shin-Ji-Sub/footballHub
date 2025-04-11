@@ -1,0 +1,51 @@
+/* Wiki Main Section */
+.announce-container {
+  font-size: 1.1rem;
+}
+
+.search-wiki-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.5fr;
+  column-gap: 10px;
+}
+
+.wiki-category-search {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid gray;
+  border-radius: 10px;
+}
+
+.category-item-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 1rem;
+  row-gap: 1rem;
+  height: 40vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}
+.category-item {
+  width: 100px;
+  height: 60px; /* 원하는 높이로 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  /* white-space: none; */
+  white-space: normal; /* 텍스트 줄바꿈 허용 */
+  word-break: keep-all; /* 단어 단위로 줄바꿈 */
+}
+
+.wiki-content {
+  border-top: 1px solid lightgray;
+  padding: 1rem 0 1rem 0;
+  cursor: pointer;
+}
+.wiki-content:hover {
+  box-shadow: inset 0px 0px 10px #666;
+}
+.wiki-content:last-child {
+  border-bottom: 1px solid lightgray;
+}
