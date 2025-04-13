@@ -103,8 +103,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<CommentDto> findCommentsWithBoardId(int boardId) {
-        return boardMapper.selectCommentsWithBoardId(boardId);
+    public List<CommentDto> findCommentsWithBoardId(int boardId, int start) {
+        return boardMapper.selectCommentsWithBoardId(boardId, start);
     }
 
     @Override
@@ -142,6 +142,11 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<BoardDto> findHubBoard(int boardNo, String sortValue, String category, int largeCategory, String userId, String searchValue) {
         return boardMapper.selectHubBoard(boardNo, sortValue, category, largeCategory, userId, searchValue);
+    }
+
+    @Override
+    public int findAllCommentCount(int boardId) {
+        return boardMapper.selectAllCommentCount(boardId);
     }
 
 }

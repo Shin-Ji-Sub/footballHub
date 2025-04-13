@@ -163,3 +163,10 @@
         <input type="hidden" class="comment-id" th:value="${recomment.commentId}"/>
     </div>
 </th:block>
+<div class="page-button-container">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination paging" th:data-pageno='${ pageNo }' th:data-datacount="${ dataCount }">
+            [(${ pager })]
+        </ul>
+    </nav>
+</div>

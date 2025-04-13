@@ -582,7 +582,7 @@
         )
     </insert>
 
-    <select id="selectCommentsWithBoardId" parameterType="int" resultMap="CommentResultMap">
+    <select id="selectCommentsWithBoardId" parameterType="hashmap" resultMap="CommentResultMap">
         SELECT
             c1.comment_id,
             c1.parent_id,
@@ -649,7 +649,11 @@
             c1.board_id = ${boardId}
         ORDER BY
             c1.comment_id ASC,
-            c2.comment_id ASC;
+            c2.comment_id ASC
+        LIMIT
+            10
+        OFFSET
+            #{start}
     </select>
 
     <select id="selectCommentActions" parameterType="hashmap" resultMap="CommentActionResultMap">
@@ -825,6 +829,15 @@
                 OFFSET
                     #{boardNo}
             )
+    </select>
+
+    <select id="selectAllCommentCount" parameterType="int" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            comment
+        WHERE
+            board_id = ${boardId}
     </select>
 
 </mapper>

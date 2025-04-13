@@ -29,7 +29,7 @@ public interface BoardService {
 
     void addComment(String content, int boardId, String userId);
 
-    List<CommentDto> findCommentsWithBoardId(int boardId);
+    List<CommentDto> findCommentsWithBoardId(int boardId, int start);
 
     void addRecomment(String content, int boardId, String userId, Integer parentId);
 
@@ -48,4 +48,6 @@ public interface BoardService {
     void modifyBoard(BoardDto board, List<Map<String, String>> imageFiles);
 
     List<BoardDto> findHubBoard(int boardNo, String sortValue, String category, int largeCategory, String userId, String searchValue);
+
+    int findAllCommentCount(int boardId);
 }

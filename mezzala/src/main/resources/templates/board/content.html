@@ -594,7 +594,7 @@
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == 'success') {
-                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + pageNo, commentLoad);
                             $('#writeComment').val("");
                         } else {
                             alert('댓글을 등록하지 못하였습니다. 다시 작성해주세요.');
@@ -649,7 +649,7 @@
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == 'success') {
-                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + pageNo, commentLoad);
                             $('#writeComment').val("");
                         } else {
                             alert('댓글 등록하지 못하였습니다. 다시 작성해주세요.');
@@ -678,7 +678,7 @@
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == 'success') {
-                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + pageNo, commentLoad);
                         } else {
                             alert('댓글 삭제를 못하였습니다. 다시 시도해주세요.');
                         }
@@ -713,7 +713,7 @@
                 dataType : 'text',
                 success : (response, status, xhr) => {
                     if (response == 'success') {
-                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
+                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + pageNo, commentLoad);
                     } else {
                         alert('댓글 수정을 못하였습니다. 다시 시도해주세요.');
                     }
@@ -737,7 +737,7 @@
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == "success") {
-                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + pageNo, commentLoad);
                         } else {
                             alert('추천하지 못하였습니다. 다시 시도해주세요.');
                         }
@@ -748,7 +748,7 @@
                 });
             }
         });
-
+        // 댓글 추천 취소
         commentModuleBox.on('click', '.cancel-recommendation-button', (e) => {
             const commentId = $(e.currentTarget).parent('.item-header').siblings('input.comment-id').val();
             $.ajax({
@@ -758,7 +758,7 @@
                 dataType : 'text',
                 success : (response, status, xhr) => {
                     if (response == "success") {
-                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
+                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + pageNo, commentLoad);
                     } else {
                         alert('추천 취소하지 못하였습니다. 다시 시도해주세요.');
                     }
@@ -767,6 +767,19 @@
                     alert('추천 취소하지 못하였습니다. 다시 시도해주세요.');
                 }
             });
+        });
+
+        // 댓글 pagination
+        commentModuleBox.on('click', '.page-item', function(e) {
+            let pageNo = $('.paging').data('pageno');
+            const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
+            if (/«/.test($(this).text())) pageNo = 1;
+            if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
+            if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
+            if (/»/.test($(this).text())) pageNo = lastPageNo;
+            if (!isNaN($(this).text())) pageNo = $(this).text();
+
+            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + pageNo, commentLoad);
         });
 
     });

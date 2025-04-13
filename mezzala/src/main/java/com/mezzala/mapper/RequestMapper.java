@@ -28,10 +28,12 @@ public interface RequestMapper {
     void insertRecomment(@Param("content") String content, @Param("boardId") int boardId,
                          @Param("userId") String userId, @Param("parentId") Integer parentId);
 
-    List<CommentDto> selectCommentsWithBoardId(int boardId);
+    List<CommentDto> selectCommentsWithBoardId(@Param("boardId") int boardId, @Param("start") int start);
 
     void deleteCommentWithCommentIdAndBoardId(@Param("commentId") int commentId, @Param("boardId") int boardId);
 
     void updateCommentWithCommentIdAndBoardId(@Param("commentId") int commentId, @Param("boardId") int boardId,
                                               @Param("content") String content, @Param("modifyDate") Timestamp modifyDate);
+
+    int selectAllRequestCommentCount(int boardId);
 }

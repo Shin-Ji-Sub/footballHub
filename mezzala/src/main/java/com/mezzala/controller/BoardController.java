@@ -6,6 +6,7 @@ import com.mezzala.common.Util;
 import com.mezzala.dto.*;
 import com.mezzala.service.AccountService;
 import com.mezzala.service.BoardService;
+import com.mezzala.ui.ThePager;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -494,8 +495,20 @@ public class BoardController {
     }
 
     @GetMapping(path = {"/bring-comment"})
-    public String bringComment(Model model, HttpSession session,
-                               @RequestParam(name = "boardId") int boardId) {
+    public String bringComment(Model model, HttpSession session, HttpServletRequest req,
+                               @RequestParam(name = "boardId") int boardId,
+                               @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
+        // paging
+        int pageSize = 10;
+        int pagerSize = 5;
+        int dataCount = boardService.findAllCommentCount(boardId);
+        String uri = req.getRequestURI();
+        String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+        String queryString = req.getQueryString();
+
+        int start = pageSize * (pageNo - 1);
+
+        ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
 
         UserDto user = (UserDto) session.getAttribute("user");
         if (user != null) {
@@ -505,7 +518,7 @@ public class BoardController {
 
         }
 
-        List<CommentDto> comments = boardService.findCommentsWithBoardId(boardId);
+        List<CommentDto> comments = boardService.findCommentsWithBoardId(boardId, start);
         int best = -1;
         int bestCommentId = -1;
         for (CommentDto c : comments) {
@@ -514,6 +527,10 @@ public class BoardController {
                 bestCommentId = c.getCommentId();
             }
         }
+
+        model.addAttribute("pager", pager);
+        model.addAttribute("pageNo", pageNo);
+        model.addAttribute("dataCount", dataCount);
 
         model.addAttribute("bestCommentId", bestCommentId);
         model.addAttribute("comments", comments);

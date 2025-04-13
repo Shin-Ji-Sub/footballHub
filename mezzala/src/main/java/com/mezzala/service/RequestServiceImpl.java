@@ -49,8 +49,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<CommentDto> findCommentsWithBoardId(int boardId) {
-        return requestMapper.selectCommentsWithBoardId(boardId);
+    public List<CommentDto> findCommentsWithBoardId(int boardId, int start) {
+        return requestMapper.selectCommentsWithBoardId(boardId, start);
     }
 
     @Override
@@ -63,5 +63,10 @@ public class RequestServiceImpl implements RequestService {
         Date now = new Date();
         Timestamp modifyDate = new Timestamp(now.getTime());
         requestMapper.updateCommentWithCommentIdAndBoardId(commentId, boardId, content, modifyDate);
+    }
+
+    @Override
+    public int findAllRequestCommentCount(int boardId) {
+        return requestMapper.selectAllRequestCommentCount(boardId);
     }
 }

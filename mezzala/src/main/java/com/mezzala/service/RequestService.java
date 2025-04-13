@@ -21,9 +21,11 @@ public interface RequestService {
 
     void addRecomment(String content, int boardId, String userId, Integer parentId);
 
-    List<CommentDto> findCommentsWithBoardId(int boardId);
+    List<CommentDto> findCommentsWithBoardId(int boardId, int start);
 
     void deleteCommentWithCommentIdAndBoardId(int commentId, int boardId);
 
     void modifyCommentWithCommentIdAndBoardId(int commentId, int boardId, String content);
+
+    int findAllRequestCommentCount(int boardId);
 }
