@@ -1,0 +1,58 @@
+/* Admin - Notice Section */
+.notice-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.notice-container h4 {
+  margin: 0 !important;
+}
+
+.content-list-container {
+  margin-top: 1rem;
+}
+
+.content-list-item {
+  display: grid;
+  grid-template-columns: 0.1fr 1fr;
+  border-top: 1px solid lightgray;
+}
+
+.controller-btn {
+  font-size: 1.5rem;
+  transition: all 0.2s;
+}
+.controller-btn:hover {
+  font-size: 2rem;
+}
+
+.notice-content {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  cursor: pointer;
+}
+.notice-content:hover {
+  box-shadow: inset 0px 0px 10px #666;
+}
+
+.list-subject {
+  align-self: center;
+}
+
+.notice-search-container {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+}
+
+.notice-search {
+  width: 20vw;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  padding: 5px;
+}
+.notice-search:focus {
+  outline: none;
+}

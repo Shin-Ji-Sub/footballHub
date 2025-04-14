@@ -76,6 +76,13 @@ public class RootConfiguration {
     }
 
     @Bean
+    public AdminService adminService(AdminMapper adminMapper) throws Exception {
+        AdminServiceImpl adminService = new AdminServiceImpl();
+        adminService.setAdminMapper(adminMapper);
+        return adminService;
+    }
+
+    @Bean
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource(hikariConfig());
         return dataSource;

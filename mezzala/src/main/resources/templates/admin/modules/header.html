@@ -4,17 +4,11 @@
         <div class="head"><a href="/">FootballHub</a></div>
         <div class="account-section">
             <th:block th:if="${session.user != null}">
-                <button th:if="${session.user.isAdmin == true}">
-                    <a href="/admin/notice">관리자</a>
-                </button>
                 <button>
                     <a href="/mypage/myinfo">라커룸</a>
                 </button>
                 <button id="logOut" onclick="logOut()">
                     로그아웃
-<!--                    <a th:href="@{/account/log-out(socialMethod=${session.user.socialMethod})}">-->
-<!--                        로그아웃-->
-<!--                    </a>-->
                 </button>
                 <script type="text/javascript" th:inline="javascript">
                     function logOut() {
@@ -36,27 +30,26 @@
                         location.href = '/account/sign-in?returnUri=' + encodeURIComponent(returnUri);
                     }
                 </script>
-<!--                <button id="signIn"><a href="/account/sign-in">로그인</a></button>-->
+                <!--                <button id="signIn"><a href="/account/sign-in">로그인</a></button>-->
             </th:block>
         </div>
     </div>
     <nav>
         <ul class="nav nav-underline justify-content-center">
             <li class="nav-item">
-<!--                <a class="nav-link active text-primary" aria-current="page" href="#">일반HUB</a>-->
-                <a class="nav-link location-category" id="normalhubLocation" href="/normalhub/home">일반HUB</a>
+                <a class="nav-link location-category" href="/admin/notice">공지사항</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link location-category" id="fandomhubLocation" href="/fandomhub/home">팬덤HUB</a>
+                <a class="nav-link location-category" href="/fandomhub/home">게시글 관리</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link location-category" id="wikiLocation" href="/footballWiki/home">FootballWiki</a>
+                <a class="nav-link location-category" href="/footballWiki/home">유저 관리</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link location-category" href="#">순위표</a>
+                <a class="nav-link location-category" href="#">Wiki 관리</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link location-category" href="/request/home">요청글</a>
+                <a class="nav-link location-category" href="/request/home">순위표 관리</a>
             </li>
         </ul>
     </nav>

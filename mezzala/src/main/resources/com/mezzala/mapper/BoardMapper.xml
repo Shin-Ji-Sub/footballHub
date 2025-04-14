@@ -47,7 +47,6 @@
             <id property="attachId" column="attach_id" />
             <result property="userFileName" column="user_file_name" />
             <result property="savedFileName" column="saved_file_name" />
-            <result property="downloadCount" column="download_count" />
         </collection>
         <!-- 1:N 관계 user_action -->
         <collection property="userActions" ofType="com.mezzala.dto.UserActionDto">
@@ -153,7 +152,7 @@
             )
     </insert>
 
-    <insert id="insertBoardAttach">
+    <insert id="insertBoardAttach" parameterType="hashmap">
         INSERT INTO
             board_attach (
                 user_file_name,
@@ -209,7 +208,6 @@
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
             MAX(ba.saved_file_name) AS saved_file_name,
-            MAX(ba.download_count) AS download_count,
             lc.large_category_id,
             lc.large_category_name,
             sc.small_category_index,
@@ -253,6 +251,8 @@
                 WHERE
                     bu.user_id = #{userId}
             )
+        AND
+            b.large_category_id != 3
         GROUP BY
             b.board_id
         ORDER BY
@@ -290,7 +290,6 @@
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
             MAX(ba.saved_file_name) AS saved_file_name,
-            MAX(ba.download_count) AS download_count,
             lc.large_category_id,
             lc.large_category_name,
             sc.small_category_index,
@@ -336,6 +335,8 @@
                 WHERE
                     bu.user_id = #{userId}
             )
+        AND
+            b.large_category_id != 3
         GROUP BY
             b.board_id
         ORDER BY
@@ -363,6 +364,8 @@
                 WHERE
                     bu.user_id = #{userId}
             )
+        AND
+            b.large_category_id != 3
         <choose>
             <when test="searchValue.length != null and searchValue != ''">
                 AND
@@ -388,7 +391,6 @@
             ba.attach_id,
             ba.user_file_name,
             ba.saved_file_name,
-            ba.download_count,
             lc.large_category_id,
             lc.large_category_name,
             sc.small_category_index,
@@ -451,7 +453,6 @@
             ba.attach_id,
             ba.user_file_name,
             ba.saved_file_name,
-            ba.download_count,
             lc.large_category_id,
             lc.large_category_name,
             sc.small_category_index,
@@ -742,7 +743,6 @@
             ba.attach_id,
             ba.user_file_name,
             ba.saved_file_name,
-            ba.download_count,
             lc.large_category_id,
             lc.large_category_name,
             sc.small_category_index,

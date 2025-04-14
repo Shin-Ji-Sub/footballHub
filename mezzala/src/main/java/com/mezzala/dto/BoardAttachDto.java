@@ -11,8 +11,6 @@ public class BoardAttachDto {
     private int attachId;
     private String userFileName;
     private String savedFileName;
-    // default(0)
-    private int downloadCount;
 
     // board
     private int boardId;
