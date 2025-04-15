@@ -149,4 +149,14 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.selectAllCommentCount(boardId);
     }
 
+    @Override
+    public int findAllNoticeBoardCount() {
+        return boardMapper.selectAllNoticeBoardCount();
+    }
+
+    @Override
+    public List<BoardDto> findNoticeBoardWithPaging(int start) {
+        return boardMapper.selectNoticeBoardWithPaging(start);
+    }
+
 }

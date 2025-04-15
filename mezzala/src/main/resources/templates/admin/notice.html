@@ -21,11 +21,8 @@
             <!-- 현재 표시되는 공지사항 -->
             <div class="container section content-container">
                 <div class="notice-container">
-                    <h4>현재 표시되는 공지사항</h4>
-                    <div>
-                        <button class="btn btn-success">저장</button>
-                        <button class="btn btn-primary" id="writeNoticeButton">글쓰기</button>
-                    </div>
+                    <h4>홈에 표시되는 공지사항</h4>
+                    <button class="btn btn-primary" id="writeNoticeButton">글쓰기</button>
                 </div>
                 <div id="currentNoticeModule">
                     <!-- 현재 표시되는 공지사항 -->
@@ -36,8 +33,8 @@
                 <div class="notice-container">
                     <h4>이전 공지사항</h4>
                     <div class="notice-search-container">
-                        <input type="text" class="notice-search" placeholder="글제목 검색">
-                        <button class="btn btn-primary">검색</button>
+                        <input type="text" class="notice-search" id="searchValue" placeholder="글제목 검색" th:value="${searchValue}">
+                        <button class="btn btn-primary" id="noticeSearchButton">검색</button>
                     </div>
                 </div>
                 <div id="pastNoticeModule">
@@ -46,6 +43,9 @@
             </div>
         </div>
     </main>
+    <input type="hidden" id="to" th:value="${to}">
+    <input type="hidden" id="pageNo" th:value="${pageNo}">
+    <input type="hidden" id="from" th:value="${from}">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -55,8 +55,15 @@
             const writeNoticeButton = $('#writeNoticeButton');
             const currentNoticeModule = $('#currentNoticeModule');
             const pastNoticeModule = $('#pastNoticeModule');
+
+            const noticeSearchButton = $('#noticeSearchButton');
+
             let currentPageNo = 1;
             let pastPageNo = 1;
+            let searchValue = $('#searchValue').val();
+            const pageNo = $('#pageNo').val();
+            const to = $('#to').val();
+            const from = $('#from').val();
 
             // 현재 page nav에 표시
             const locationCategories = $('.location-category');
@@ -69,8 +76,22 @@
             });
 
             // 공지사항 (현재, 이전) LOAD
-            currentNoticeModule.load("/admin/content-list?state=true&from=currentNoticeList&pageNo=" + currentPageNo);
-            pastNoticeModule.load("/admin/content-list?state=false&from=pastNoticeList&pageNo=" + pastPageNo);
+            if (to == "all") {
+                currentNoticeModule.load("/admin/content-list?state=true&from=currentNoticeList&pageNo=" + currentPageNo);
+                pastNoticeModule.load("/admin/content-list?state=false&from=pastNoticeList&pageNo=" + pastPageNo);
+            }
+            if (to == "currentNoticeList") {
+                currentPageNo = pageNo;
+                currentNoticeModule.load("/admin/content-list?state=true&from=currentNoticeList&pageNo=" + currentPageNo +
+                                                              "&searchValue=" + searchValue);
+                pastNoticeModule.load("/admin/content-list?state=false&from=pastNoticeList&pageNo=" + pastPageNo);
+            }
+            if (to == "pastNoticeList") {
+                pastPageNo = pageNo;
+                currentNoticeModule.load("/admin/content-list?state=true&from=currentNoticeList&pageNo=" + currentPageNo);
+                pastNoticeModule.load("/admin/content-list?state=false&from=pastNoticeList&pageNo=" + pastPageNo +
+                                                           "&searchValue=" + searchValue);
+            }
 
             // +, - 버튼
             currentNoticeModule.on('click', '.controller-btn', (e) => {
@@ -84,8 +105,12 @@
                     dataType : "text",
                     success : (response, status, xhr) => {
                         if (response == "success") {
-                            currentNoticeModule.load("/admin/content-list?state=true&from=currentNoticeList&pageNo=" + currentPageNo);
-                            pastNoticeModule.load("/admin/content-list?state=false&from=pastNoticeList&pageNo=" + pastPageNo);
+                            currentNoticeModule.load("/admin/content-list?state=true&from=currentNoticeList&pageNo=" + currentPageNo, () => {
+                                currentPageNo = $('.current .paging').data('pageno') == undefined ? 1 : $('.current .paging').data('pageno');
+                            });
+                            pastNoticeModule.load("/admin/content-list?state=false&from=pastNoticeList&pageNo=" + pastPageNo, () => {
+                                pastPageNo = $('.past .paging').data('pageno') == undefined ? 1 : $('.past .paging').data('pageno');
+                            });
                         }
                     },
                     error : (xhr, status, error) => {
@@ -95,6 +120,8 @@
             });
             pastNoticeModule.on('click', '.controller-btn', (e) => {
                 const boardId = $(e.currentTarget).parent('.content-list-item').data('id');
+                console.log("[past] current : " + currentPageNo);
+                console.log("[past] past : " + pastPageNo);
                 $.ajax({
                     url : "/admin/control-notice",
                     method : "POST",
@@ -102,8 +129,12 @@
                     dataType : "text",
                     success : (response, status, xhr) => {
                         if (response == "success") {
-                            currentNoticeModule.load("/admin/content-list?state=true&from=currentNoticeList&pageNo=" + currentPageNo);
-                            pastNoticeModule.load("/admin/content-list?state=false&from=pastNoticeList&pageNo=" + pastPageNo);
+                            currentNoticeModule.load("/admin/content-list?state=true&from=currentNoticeList&pageNo=" + currentPageNo, () => {
+                                currentPageNo = $('.current .paging').data('pageno') == undefined ? 1 : $('.current .paging').data('pageno');
+                            });
+                            pastNoticeModule.load("/admin/content-list?state=false&from=pastNoticeList&pageNo=" + pastPageNo, () => {
+                                pastPageNo = $('.past .paging').data('pageno') == undefined ? 1 : $('.past .paging').data('pageno');
+                            });
                         }
                     },
                     error : (xhr, status, error) => {
@@ -138,71 +169,34 @@
                 pastNoticeModule.load("/admin/content-list?state=false&from=pastNoticeList&pageNo=" + pastPageNo);
             });
 
-<!--            const moduleBox = $('#moduleBox');-->
-<!--            const bestList = $('#bestList');-->
-<!--            const latestList = $('#latestList');-->
-<!--            let categoryValue = 'bestList';-->
-<!--            const searchButton = $('#searchButton');-->
-<!--            let searchValue = '';-->
+            // 글제목 검색
+            function search() {
+                searchValue = $('#searchValue').val();
+                pastNoticeModule.load("/admin/content-list?state=false&from=pastNoticeList&searchValue=" + searchValue);
+            }
+            noticeSearchButton.on('click', (e) => {
+                search();
+            });
+            // 글제목 검색 Enter
+            $('#searchValue').on('keyup', (key) => {
+                if (key.keyCode == 13) {
+                    search();
+                }
+            });
 
-<!--            // 처음 list select-->
-<!--            moduleBox.load('content-list');-->
+            // 상세글로 이동
+            currentNoticeModule.on('click', '.notice-content', (e) => {
+                const boardId = $(e.currentTarget).parent('.content-list-item').data('id');
 
-<!--            // 인기글, 최신글-->
-<!--            bestList.on('click', (e) => {-->
-<!--                bestList.addClass('underline');-->
-<!--                latestList.removeClass('underline');-->
-<!--                categoryValue = 'bestList';-->
-<!--                moduleBox.load('content-list?category=' + categoryValue);-->
-<!--            });-->
-<!--            latestList.on('click', (e) => {-->
-<!--                latestList.addClass('underline');-->
-<!--                bestList.removeClass('underline');-->
-<!--                categoryValue = 'latestList';-->
-<!--                moduleBox.load('content-list?category=' + categoryValue);-->
-<!--            });-->
+                location.href = '/admin/content?boardId=' + boardId + '&pageNo=' + currentPageNo +
+                                                '&searchValue=' + searchValue + '&from=admin&to=currentNoticeList';
+            });
+            pastNoticeModule.on('click', '.notice-content', (e) => {
+                const boardId = $(e.currentTarget).parent('.content-list-item').data('id');
 
-<!--            // 글제목 검색 FUNCTION-->
-<!--            function search() {-->
-<!--                searchValue = $('#searchValue').val();-->
-<!--                moduleBox.load('content-list?searchValue=' + searchValue);-->
-<!--            }-->
-<!--            // 글제목 검색-->
-<!--            searchButton.on('click', (e) => {-->
-<!--                search();-->
-<!--            });-->
-<!--            // 글제목 검색 Enter-->
-<!--            $('#searchValue').on('keyup', (key) => {-->
-<!--                if (key.keyCode == 13) {-->
-<!--                    search();-->
-<!--                }-->
-<!--            });-->
-
-<!--            // pagination-->
-<!--            moduleBox.on('click', '.page-item', function(e) {-->
-<!--                let pageNo = $('.paging').data('pageno');-->
-<!--                const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));-->
-<!--                if (/«/.test($(this).text())) pageNo = 1;-->
-<!--                if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;-->
-<!--                if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;-->
-<!--                if (/»/.test($(this).text())) pageNo = lastPageNo;-->
-<!--                if (!isNaN($(this).text())) pageNo = $(this).text();-->
-
-<!--                moduleBox.load('content-list?pageNo=' + pageNo + '&category=' + categoryValue +-->
-<!--                               '&searchValue=' + searchValue);-->
-<!--            });-->
-
-<!--            // 상세글로 이동-->
-<!--            moduleBox.on('click', '.content', (e) => {-->
-<!--                const boardId = $(e.currentTarget).data('id');-->
-<!--                const index = $(e.currentTarget).data('index');-->
-<!--                const count = $('.paging').data('datacount');-->
-<!--                const pageNo = $('.paging').data('pageno');-->
-
-<!--                location.href = '/board/content?boardId=' + boardId + '&index=' + index +-->
-<!--                                                '&count=' + count + '&pageNo=' + pageNo +-->
-<!--                                                '&from=home';-->
-<!--            });-->
+                location.href = '/admin/content?boardId=' + boardId + '&pageNo=' + pastPageNo +
+                                                '&searchValue=' + searchValue + '&from=admin&to=pastNoticeList';
+            });
 
         });
     </script>

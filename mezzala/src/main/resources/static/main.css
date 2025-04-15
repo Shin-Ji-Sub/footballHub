@@ -76,6 +76,25 @@ header nav {
   border-bottom: 1px solid black;
 }
 
+/* No Data Section */
+.no-data-container {
+  display: flex;
+  flex-direction: row;
+  column-gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin: 10px;
+  padding: 10px;
+}
+
+.no-data-container span {
+  font-size: 1.5rem;
+}
+
+.no-data-container i {
+  font-size: 2rem;
+}
 
 /* Sign Up Section */
 .sign-up-main-container {
@@ -207,6 +226,13 @@ header nav {
   border: 1px solid gray;
   border-radius: 10px;
   padding: 1rem;
+}
+
+.notice-subject {
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 .content-container {

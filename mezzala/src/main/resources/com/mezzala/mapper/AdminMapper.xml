@@ -47,7 +47,6 @@
             <id property="attachId" column="attach_id" />
             <result property="userFileName" column="user_file_name" />
             <result property="savedFileName" column="saved_file_name" />
-            <result property="downloadCount" column="download_count" />
         </collection>
         <!-- 1:N 관계 user_action -->
         <collection property="userActions" ofType="com.mezzala.dto.UserActionDto">
@@ -252,6 +251,77 @@
             board_state = #{state}
         WHERE
             board_id = #{boardId}
+    </update>
+
+    <update id="updateVisitedBoard" parameterType="int">
+        UPDATE
+            board
+        SET
+            visit_count = visit_count + 1
+        WHERE
+            board_id = #{boardId}
+    </update>
+
+    <select id="selectBoardWithBoardId" parameterType="int" resultMap="BoardResultMap">
+        SELECT
+            b.board_id,
+            b.subject,
+            b.content,
+            b.reg_date,
+            b.visit_count,
+            b.board_state,
+            u.user_id,
+            u.nickname,
+            u.social_method,
+            u.join_date,
+            u.is_admin,
+            u.state,
+            ba.attach_id,
+            ba.user_file_name,
+            ba.saved_file_name,
+            lc.large_category_id,
+            lc.large_category_name,
+            ua.action_id,
+            ua.action_category,
+            ua.user_id,
+            ua.board_id
+        FROM
+            board b
+        LEFT JOIN
+            user_action ua
+        ON
+            b.board_id = ua.board_id
+        AND
+            ua.action_category = "like"
+        LEFT JOIN
+            user u
+        ON
+            b.user_id = u.user_id
+        LEFT JOIN
+            board_attach ba
+        ON
+            b.board_id = ba.board_id
+        LEFT JOIN
+            board_large_category lc
+        ON
+            b.large_category_id = lc.large_category_id
+        WHERE
+            b.board_id = #{boardId}
+    </select>
+
+    <update id="updateBoardsState" parameterType="list">
+        UPDATE
+            board
+        SET
+            board_state = true
+        WHERE
+            large_category_id = 3
+        AND
+            board_id
+        IN
+            <foreach collection="list" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
     </update>
 
 </mapper>

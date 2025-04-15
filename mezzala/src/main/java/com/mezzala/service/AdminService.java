@@ -16,4 +16,10 @@ public interface AdminService {
     List<BoardDto> findBoardWithPaging(int start, String searchValue, boolean state);
 
     void modifyBoardState(int boardId, boolean state);
+
+    void incrementVisitedBoard(int boardId);
+
+    List<BoardDto> findBoardWithBoardId(int boardId);
+
+    void modifyBoardsState(List<Integer> contentIds);
 }

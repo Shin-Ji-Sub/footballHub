@@ -16,33 +16,8 @@
         <div class="main-container">
             <div class="container section content-container">
                 <h3>공지사항</h3>
-                <div class="row content">
-                    <div class="col-md-auto">
-                        <img src="./img/btnG_naver_logo.png" alt="Thumbnail">
-                    </div>
-                    <div class="col-7">
-                        <div>
-                            공지사항공지사항공지사항
-                        </div>
-                        <div>
-                            <span class="content-category">category</span>
-                        </div>
-                    </div>
-                    <div class="col-2 span-container">
-                        <span class="icon">
-                          <i class="bi bi-chat-dots"></i>30
-                        </span>
-                        <span class="icon">
-                          <i class="bi bi-hand-thumbs-up"></i>20
-                        </span>
-                        <span class="icon">
-                          <i class="bi bi-door-open"></i>50
-                        </span>
-                    </div>
-                    <div class="col-2 span-container">
-                        <span>닉네임</span>
-                        <span>23시간 전</span>
-                    </div>
+                <div id="noticeModule">
+                    <!-- 공지사항 모듈 -->
                 </div>
             </div>
             <div class="section">
@@ -75,6 +50,7 @@
     <script type="text/javascript" th:inline="javascript">
         $(window).on('load', function() {
             const moduleBox = $('#moduleBox');
+            const noticeModule = $('#noticeModule');
             const bestList = $('#bestList');
             const latestList = $('#latestList');
             let categoryValue = 'bestList';
@@ -83,6 +59,9 @@
 
             // 처음 list select
             moduleBox.load('content-list');
+
+            // 공지사항 LOAD
+            noticeModule.load("notice-list");
 
             // 인기글, 최신글
             bestList.on('click', (e) => {

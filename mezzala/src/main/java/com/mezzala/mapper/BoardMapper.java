@@ -61,4 +61,8 @@ public interface BoardMapper {
                                   @Param("userId") String userId, @Param("searchValue") String searchValue);
 
     int selectAllCommentCount(int boardId);
+
+    int selectAllNoticeBoardCount();
+
+    List<BoardDto> selectNoticeBoardWithPaging(int start);
 }

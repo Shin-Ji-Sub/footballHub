@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mezzala.dto.BoardDto;
 import com.mezzala.service.AdminService;
 import com.mezzala.ui.ThePager;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +27,16 @@ public class AdminController {
     private AdminService adminService;
 
     @GetMapping(path = {"/notice"})
-    public String notice() {
+    public String notice(Model model,
+                         @RequestParam(name = "to", defaultValue = "all") String to,
+                         @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                         @RequestParam(name = "from", defaultValue = "admin") String from,
+                         @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
 
-
+        model.addAttribute("to", to);
+        model.addAttribute("pageNo", pageNo);
+        model.addAttribute("from", from);
+        model.addAttribute("searchValue", searchValue);
         return "/admin/notice";
     }
 
@@ -84,13 +93,17 @@ public class AdminController {
             pageNo = pageNo - 1;
             start = pageSize * (pageNo - 1);
             pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
-            boards = adminService.findBoardWithPaging(start, searchValue, state);
+            try {
+                boards = adminService.findBoardWithPaging(start, searchValue, state);
+            } catch (Exception e) {
+                return "/modules/noDataModule";
+            }
         }
 
         model.addAttribute("pager", pager);
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("dataCount", dataCount);
-        System.out.println("[BOARDS] : " + boards.size());
+
         model.addAttribute("boards", boards);
 
         return "/admin/modules/" + from;
@@ -103,6 +116,51 @@ public class AdminController {
 
         adminService.modifyBoardState(boardId, state);
 
+        return "success";
+    }
+
+    @GetMapping(path = {"/content"})
+    public String content(Model model, @RequestParam(name = "boardId") int boardId,
+                          @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                          @RequestParam(name = "searchValue", defaultValue = "") String searchValue,
+                          @RequestParam(name = "from") String from,
+                          @RequestParam(name = "to", required = false) String to,
+                          @RequestParam(name = "index", defaultValue = "0") int index,
+                          @RequestParam(name = "count", defaultValue = "0") int count,
+                          @CookieValue(value = "visited", required = false) String visitedBoard,
+                          HttpServletResponse res, HttpSession session) {
+        // 쿠키에 현재 boardId가 포함되어 있는지 확인
+        if (visitedBoard == null || !visitedBoard.contains("[" + boardId + "]")) {
+            adminService.incrementVisitedBoard(boardId); // 조회수 증가
+
+            // 쿠키에 현재 boardId 추가
+            visitedBoard = (visitedBoard == null ? "" : visitedBoard) + "[" + boardId + "]";
+            Cookie cookie = new Cookie("visited", visitedBoard);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효 기간(1일)
+            res.addCookie(cookie);
+        }
+
+        List<BoardDto> boards = adminService.findBoardWithBoardId(boardId);
+        BoardDto board = boards.get(0);
+
+        model.addAttribute("board", board);
+
+        model.addAttribute("pageNo", pageNo);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("from", from);
+        model.addAttribute("to", to);
+        model.addAttribute("index", index);
+        model.addAttribute("count", count);
+
+        return "/admin/content";
+    }
+
+    @PostMapping(path = {"/save-notice"})
+    @ResponseBody
+    public String saveNotice(@RequestBody Map<String, List<Integer>> request) {
+        List<Integer> contentIds = request.get("contentIds");
+        adminService.modifyBoardsState(contentIds);
         return "success";
     }
 

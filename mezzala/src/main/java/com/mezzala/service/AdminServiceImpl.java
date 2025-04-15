@@ -42,4 +42,19 @@ public class AdminServiceImpl implements AdminService {
     public void modifyBoardState(int boardId, boolean state) {
         adminMapper.updateBoardState(boardId, state);
     }
+
+    @Override
+    public void incrementVisitedBoard(int boardId) {
+        adminMapper.updateVisitedBoard(boardId);
+    }
+
+    @Override
+    public List<BoardDto> findBoardWithBoardId(int boardId) {
+        return adminMapper.selectBoardWithBoardId(boardId);
+    }
+
+    @Override
+    public void modifyBoardsState(List<Integer> contentIds) {
+        adminMapper.updateBoardsState(contentIds);
+    }
 }

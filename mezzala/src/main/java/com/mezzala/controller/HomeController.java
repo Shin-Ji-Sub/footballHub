@@ -62,4 +62,29 @@ public class HomeController {
         return "modules/home-pagination";
     }
 
+    @GetMapping(path = {"/notice-list"})
+    public String noticeList(Model model, HttpServletRequest req,
+                             @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
+        // paging
+        int pageSize = 5;
+        int pagerSize = 5;
+        int dataCount = boardService.findAllNoticeBoardCount();
+        String uri = req.getRequestURI();
+        String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+        String queryString = req.getQueryString();
+
+        int start = pageSize * (pageNo - 1);
+
+        ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+        List<BoardDto> boards = boardService.findNoticeBoardWithPaging(start);
+
+        model.addAttribute("pager", pager);
+        model.addAttribute("pageNo", pageNo);
+        model.addAttribute("dataCount", dataCount);
+
+        model.addAttribute("boards", boards);
+
+        return "/modules/homeNoticeList";
+    }
+
 }

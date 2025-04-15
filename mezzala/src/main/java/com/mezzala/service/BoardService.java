@@ -50,4 +50,8 @@ public interface BoardService {
     List<BoardDto> findHubBoard(int boardNo, String sortValue, String category, int largeCategory, String userId, String searchValue);
 
     int findAllCommentCount(int boardId);
+
+    int findAllNoticeBoardCount();
+
+    List<BoardDto> findNoticeBoardWithPaging(int start);
 }

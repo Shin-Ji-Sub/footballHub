@@ -22,4 +22,10 @@ public interface AdminMapper {
                                          @Param("state") boolean state);
 
     void updateBoardState(@Param("boardId") int boardId, @Param("state") boolean state);
+
+    void updateVisitedBoard(int boardId);
+
+    List<BoardDto> selectBoardWithBoardId(int boardId);
+
+    void updateBoardsState(List<Integer> contentIds);
 }
