@@ -4,7 +4,9 @@
             <div th:text="${comment.board.subject}"></div>
             <div>
                 <span class="content-category" th:text="${comment.board.largeCategory.largeCategoryName}"></span>
-                <span class="content-category" th:text="${comment.board.smallCategory.smallCategoryName}"></span>
+                <span class="content-category"
+                      th:if="${comment.board.smallCategory != null}"
+                      th:text="${comment.board.smallCategory.smallCategoryName}"></span>
             </div>
         </div>
         <div class="col span-container">

@@ -159,4 +159,9 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.selectNoticeBoardWithPaging(start);
     }
 
+    @Override
+    public List<BoardDto> findNoticeBoard(int boardNo, String fromPage) {
+        return boardMapper.selectNoticeBoard(boardNo, fromPage);
+    }
+
 }

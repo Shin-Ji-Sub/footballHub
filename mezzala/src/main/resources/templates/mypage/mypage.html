@@ -164,6 +164,19 @@
                 mypageSectionEl.load('/mypage/get-liked-comment?userId=' + userId + '&pageNo=' + pageNo);
             });
 
+            // 북마크한 글 pagination
+            mypageSectionEl.on('click', '#bookmarkedContent .page-item', function(e) {
+                let pageNo = $('.paging').data('pageno');
+                const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
+                if (/«/.test($(this).text())) pageNo = 1;
+                if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
+                if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
+                if (/»/.test($(this).text())) pageNo = lastPageNo;
+                if (!isNaN($(this).text())) pageNo = $(this).text();
+
+                mypageSectionEl.load('/mypage/get-bookmarked-content?userId=' + userId + '&pageNo=' + pageNo););
+            });
+
             // 차단한 사용자 pagination
             mypageSectionEl.on('click', '#blockUserPaging .page-item', function(e) {
                 let pageNo = $('.paging').data('pageno');

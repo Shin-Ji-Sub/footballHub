@@ -125,8 +125,6 @@ public class AdminController {
                           @RequestParam(name = "searchValue", defaultValue = "") String searchValue,
                           @RequestParam(name = "from") String from,
                           @RequestParam(name = "to", required = false) String to,
-                          @RequestParam(name = "index", defaultValue = "0") int index,
-                          @RequestParam(name = "count", defaultValue = "0") int count,
                           @CookieValue(value = "visited", required = false) String visitedBoard,
                           HttpServletResponse res, HttpSession session) {
         // 쿠키에 현재 boardId가 포함되어 있는지 확인
@@ -150,8 +148,6 @@ public class AdminController {
         model.addAttribute("searchValue", searchValue);
         model.addAttribute("from", from);
         model.addAttribute("to", to);
-        model.addAttribute("index", index);
-        model.addAttribute("count", count);
 
         return "/admin/content";
     }

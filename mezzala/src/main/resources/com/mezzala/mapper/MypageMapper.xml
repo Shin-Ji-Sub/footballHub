@@ -52,7 +52,6 @@
             <id property="attachId" column="attach_id" />
             <result property="userFileName" column="user_file_name" />
             <result property="savedFileName" column="saved_file_name" />
-            <result property="downloadCount" column="download_count" />
         </collection>
         <!-- 1:N 관계 user_action -->
         <collection property="userActions" ofType="com.mezzala.dto.UserActionDto">
@@ -159,7 +158,6 @@
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
             MAX(ba.saved_file_name) AS saved_file_name,
-            MAX(ba.download_count) AS download_count,
             lc.large_category_id,
             lc.large_category_name,
             sc.small_category_index,
@@ -302,7 +300,6 @@
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
             MAX(ba.saved_file_name) AS saved_file_name,
-            MAX(ba.download_count) AS download_count,
             lc.large_category_id,
             lc.large_category_name,
             sc.small_category_index,
@@ -408,7 +405,7 @@
         ON
             b.small_category_index = sc.small_category_index
         WHERE
-            ca.user_id = 'P4mS2a7NkqMnWxZNBz69PbZJX5JI7Hx_kL_nQUY9tRk'
+            ca.user_id = #{userId}
         AND
             c.comment_state = true
         ORDER BY
@@ -449,7 +446,6 @@
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
             MAX(ba.saved_file_name) AS saved_file_name,
-            MAX(ba.download_count) AS download_count,
             lc.large_category_id,
             lc.large_category_name,
             sc.small_category_index,
@@ -505,13 +501,12 @@
             user_action ua
         ON
             b.board_id = ua.board_id
+        AND
+            ua.action_category = 'like'
         WHERE
             b.board_state = true
         AND
-            ua.action_category = 'like'
-        AND
-            ua.board_id
-        IN
+            b.board_id IN
             <foreach collection="boards" item="board" index="index" separator="," open="(" close=")">
                 #{board.boardId}
             </foreach>
@@ -522,7 +517,35 @@
         LIMIT
             5
         OFFSET
-            #{start}
+            0;
+<!--        SELECT-->
+<!--            COALESCE(COUNT(DISTINCT ua.action_id), 0) AS recommendationCount-->
+<!--        FROM-->
+<!--            board b-->
+<!--        LEFT JOIN-->
+<!--            user_action ua-->
+<!--        ON-->
+<!--            b.board_id = ua.board_id-->
+<!--        AND-->
+<!--            ua.action_category = 'like'-->
+<!--        ON-->
+<!--            b.board_id = ua.board_id-->
+<!--        WHERE-->
+<!--            b.board_state = true-->
+<!--        AND-->
+<!--            ua.board_id-->
+<!--        IN-->
+<!--            <foreach collection="boards" item="board" index="index" separator="," open="(" close=")">-->
+<!--                #{board.boardId}-->
+<!--            </foreach>-->
+<!--        GROUP BY-->
+<!--            b.board_id-->
+<!--        ORDER BY-->
+<!--            b.reg_date DESC-->
+<!--        LIMIT-->
+<!--            5-->
+<!--        OFFSET-->
+<!--            #{start}-->
     </select>
 
     <select id="selectBlockUserCount" parameterType="String" resultType="int">

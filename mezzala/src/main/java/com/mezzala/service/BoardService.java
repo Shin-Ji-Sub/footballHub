@@ -54,4 +54,6 @@ public interface BoardService {
     int findAllNoticeBoardCount();
 
     List<BoardDto> findNoticeBoardWithPaging(int start);
+
+    List<BoardDto> findNoticeBoard(int boardNo, String fromPage);
 }

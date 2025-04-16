@@ -512,13 +512,12 @@ public class BoardController {
 
         UserDto user = (UserDto) session.getAttribute("user");
         if (user != null) {
-
             List<CommentDto> commentActions = boardService.findCommentActions(boardId, user.getUserId());
             model.addAttribute("commentActions", commentActions);
-
         }
 
         List<CommentDto> comments = boardService.findCommentsWithBoardId(boardId, start);
+        System.out.println("[COMMENTS] : " + comments);
         int best = -1;
         int bestCommentId = -1;
         for (CommentDto c : comments) {
@@ -649,6 +648,73 @@ public class BoardController {
         model.addAttribute("board", board);
 
         return "/" + fromPage + "/modules/content";
+    }
+
+    @GetMapping(path = {"/notice-content"})
+    public String noticeContent(Model model, HttpServletResponse res, HttpSession session,
+                             @CookieValue(value = "visited", required = false) String visitedBoard,
+                             @RequestParam(name = "index") int index,
+                             @RequestParam(name = "count") int count,
+                             @RequestParam(name = "pageNo") int pageNo,
+                             @RequestParam(name = "fromPage") String fromPage,
+//                             @RequestParam(name = "from", defaultValue = "none") String from,
+//                             @RequestParam(name = "category", defaultValue = "all") String category,
+                             @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
+                             @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+
+        String userId = "";
+        UserDto user = (UserDto) session.getAttribute("user");
+        if (user != null) {
+            userId = user.getUserId();
+        }
+
+        int boardNo = 0;
+        if (fromPage.equals("home")) {
+            boardNo = (pageNo - 1) * 5 + index;
+        }
+        List<BoardDto> boards = boardService.findNoticeBoard(boardNo, fromPage);
+        BoardDto board = boards.get(0);
+
+        List<UserActionDto> likeActions = new ArrayList<>();
+        if (user == null) {
+            UserActionDto action = new UserActionDto();
+            likeActions.add(action);
+        } else {
+            likeActions = user.getLikeUserActions();
+        }
+        List<UserActionDto> bookmarkActions = new ArrayList<>();
+        if (user == null) {
+            UserActionDto action = new UserActionDto();
+            bookmarkActions.add(action);
+        } else {
+            bookmarkActions = user.getBookmarkUserActions();
+        }
+
+        // 쿠키에 현재 boardId가 포함되어 있는지 확인
+        if (visitedBoard == null || !visitedBoard.contains("[" + board.getBoardId() + "]")) {
+            boardService.incrementVisitedBoard(board.getBoardId()); // 조회수 증가
+
+            // 쿠키에 현재 boardId 추가
+            visitedBoard = (visitedBoard == null ? "" : visitedBoard) + "[" + board.getBoardId() + "]";
+            Cookie cookie = new Cookie("visited", visitedBoard);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효 기간(1일)
+            res.addCookie(cookie);
+        }
+
+        model.addAttribute("index", index);
+        model.addAttribute("pageNo", pageNo);
+        model.addAttribute("sortValue", sortValue);
+        model.addAttribute("fromPage", fromPage);
+        model.addAttribute("count", count);
+        model.addAttribute("searchValue", searchValue);
+
+        model.addAttribute("likeActions", likeActions);
+        model.addAttribute("bookmarkActions", bookmarkActions);
+
+        model.addAttribute("board", board);
+
+        return "/board/noticeContent";
     }
 
 

@@ -1,6 +1,8 @@
 <div xmlns:th="http://www.thymeleaf.org">
     <div th:each="board, boardState : ${boards}"
-         th:data-id="${board.boardId}" class="row content">
+         th:data-id="${board.boardId}"
+         th:data-index="${boardState.index}"
+         class="row content notice-content">
         <div class="col-6 notice-subject">
             <div th:text="${board.subject}"></div>
         </div>
@@ -23,7 +25,7 @@
             <span th:text="${board.getRegDateFormatted()}"></span>
         </div>
     </div>
-    <div class="page-button-container current-notice past">
+    <div class="page-button-container notice-paging">
         <nav aria-label="Page navigation example">
             <ul class="pagination paging" th:data-pageno='${ pageNo }' th:data-datacount="${ dataCount }">
                 [(${ pager })]

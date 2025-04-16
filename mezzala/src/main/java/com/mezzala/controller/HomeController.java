@@ -24,7 +24,9 @@ public class HomeController {
     private BoardService boardService;
 
     @RequestMapping(path = {"/", "/home"})
-    public String home() {
+    public String home(Model model,
+                       @RequestParam(name = "noticePageNo", defaultValue = "1") int noticePageNo) {
+        model.addAttribute("noticePageNo", noticePageNo);
         return "home";
     }
 
@@ -59,7 +61,7 @@ public class HomeController {
 
         model.addAttribute("boards", boards);
 
-        return "modules/home-pagination";
+        return "/modules/home-pagination";
     }
 
     @GetMapping(path = {"/notice-list"})

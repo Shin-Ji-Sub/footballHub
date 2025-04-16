@@ -37,7 +37,6 @@
             <id property="attachId" column="attach_id" />
             <result property="userFileName" column="user_file_name" />
             <result property="savedFileName" column="saved_file_name" />
-            <result property="downloadCount" column="download_count" />
         </collection>
         <!-- 1:N 관계 user_action -->
         <collection property="userActions" ofType="com.mezzala.dto.UserActionDto">
@@ -120,7 +119,6 @@
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
             MAX(ba.saved_file_name) AS saved_file_name,
-            MAX(ba.download_count) AS download_count,
             lc.large_category_id,
             lc.large_category_name,
             sc.small_category_index,
@@ -209,7 +207,6 @@
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
             MAX(ba.saved_file_name) AS saved_file_name,
-            MAX(ba.download_count) AS download_count,
             lc.large_category_id,
             lc.large_category_name,
             sc.small_category_index,

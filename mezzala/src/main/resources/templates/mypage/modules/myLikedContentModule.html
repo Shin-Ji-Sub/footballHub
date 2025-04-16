@@ -13,7 +13,9 @@
             <div th:text="${board.subject}"></div>
             <div>
                 <span class="content-category" th:text="${board.largeCategory.largeCategoryName}"></span>
-                <span class="content-category" th:text="${board.smallCategory.smallCategoryName}"></span>
+                <span class="content-category"
+                      th:if="${board.smallCategory != null}"
+                      th:text="${board.smallCategory.smallCategoryName}"></span>
             </div>
         </div>
         <div class="col-2 span-container">

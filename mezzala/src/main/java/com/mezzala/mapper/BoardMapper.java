@@ -65,4 +65,6 @@ public interface BoardMapper {
     int selectAllNoticeBoardCount();
 
     List<BoardDto> selectNoticeBoardWithPaging(int start);
+
+    List<BoardDto> selectNoticeBoard(@Param("boardNo") int boardNo, @Param("fromPage") String fromPage);
 }

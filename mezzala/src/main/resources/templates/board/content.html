@@ -44,6 +44,7 @@
                                 th:data-value="${board.largeCategory.largeCategoryId}"
                                 th:text="${board.largeCategory.largeCategoryName}"></button>
                         <button class="content-category" id="smallCategoryButton"
+                                th:if="${board.smallCategory != null}"
                                 th:data-largevalue="${board.largeCategory.largeCategoryId}"
                                 th:data-value="${board.smallCategory.smallCategoryIndex}"
                                 th:text="${board.smallCategory.smallCategoryName}"></button>
@@ -158,6 +159,7 @@
         const content = /*[[${board.content}]]*/'';
         const likeUserActions = /*[[${likeActions}]]*/'';
         const bookmarkUserActions = /*[[${bookmarkActions}]]*/'';
+
         const boardId = $('#boardId').val();
         const writeUserId = $('#writeUserId').val();
         const writeUserNickname = $('#writeUserNickname').val();
@@ -165,6 +167,8 @@
         const indexValue = Number($('#indexValue').val());
         const pageNo = Number($('#pageNo').val());
         const count = Number($('#count').val());
+        let commentPageNo = 1;
+
         const nextButton = $('#nextButton');
         const previousButton = $('#previousButton');
         const topButtonList = $('.top-button-list');
@@ -582,6 +586,7 @@
         // 댓글 등록 버튼
         writeCommentButton.on('click', (e) => {
             const content = encodeURIComponent($('#writeComment').val());
+            const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
             if (content.length == 0) {
                 alert('댓글을 써주세요.');
                 $('#writeComment').focus();
@@ -594,7 +599,7 @@
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == 'success') {
-                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + pageNo, commentLoad);
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + lastPageNo, commentLoad);
                             $('#writeComment').val("");
                         } else {
                             alert('댓글을 등록하지 못하였습니다. 다시 작성해주세요.');
@@ -649,7 +654,7 @@
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == 'success') {
-                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + pageNo, commentLoad);
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + commentPageNo, commentLoad);
                             $('#writeComment').val("");
                         } else {
                             alert('댓글 등록하지 못하였습니다. 다시 작성해주세요.');
@@ -678,7 +683,7 @@
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == 'success') {
-                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + pageNo, commentLoad);
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + commentPageNo, commentLoad);
                         } else {
                             alert('댓글 삭제를 못하였습니다. 다시 시도해주세요.');
                         }
@@ -713,7 +718,7 @@
                 dataType : 'text',
                 success : (response, status, xhr) => {
                     if (response == 'success') {
-                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + pageNo, commentLoad);
+                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + commentPageNo, commentLoad);
                     } else {
                         alert('댓글 수정을 못하였습니다. 다시 시도해주세요.');
                     }
@@ -737,7 +742,7 @@
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == "success") {
-                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + pageNo, commentLoad);
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + commentPageNo, commentLoad);
                         } else {
                             alert('추천하지 못하였습니다. 다시 시도해주세요.');
                         }
@@ -758,7 +763,7 @@
                 dataType : 'text',
                 success : (response, status, xhr) => {
                     if (response == "success") {
-                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + pageNo, commentLoad);
+                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + commentPageNo, commentLoad);
                     } else {
                         alert('추천 취소하지 못하였습니다. 다시 시도해주세요.');
                     }
@@ -771,15 +776,15 @@
 
         // 댓글 pagination
         commentModuleBox.on('click', '.page-item', function(e) {
-            let pageNo = $('.paging').data('pageno');
+            commentPageNo = $('.paging').data('pageno');
             const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
-            if (/«/.test($(this).text())) pageNo = 1;
-            if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
-            if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
-            if (/»/.test($(this).text())) pageNo = lastPageNo;
-            if (!isNaN($(this).text())) pageNo = $(this).text();
+            if (/«/.test($(this).text())) commentPageNo = 1;
+            if ($(this).text() == '<') commentPageNo = commentPageNo - 1 < 1 ? 1 : commentPageNo - 1;
+            if ($(this).text() == '>') commentPageNo = commentPageNo + 1 > lastPageNo ? lastPageNo : commentPageNo + 1;
+            if (/»/.test($(this).text())) commentPageNo = lastPageNo;
+            if (!isNaN($(this).text())) commentPageNo = $(this).text();
 
-            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + pageNo, commentLoad);
+            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + commentPageNo, commentLoad);
         });
 
     });

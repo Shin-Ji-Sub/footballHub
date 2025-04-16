@@ -43,6 +43,7 @@
             </div>
         </div>
     </main>
+    <input type="hidden" id="noticePageNo" th:value="${noticePageNo}">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -56,12 +57,38 @@
             let categoryValue = 'bestList';
             const searchButton = $('#searchButton');
             let searchValue = '';
+            let noticePageNo = $('#noticePageNo').val();
 
             // 처음 list select
             moduleBox.load('content-list');
 
             // 공지사항 LOAD
-            noticeModule.load("notice-list");
+            noticeModule.load("notice-list?pageNo=" + noticePageNo);
+
+            // 공지사항 pagination
+            noticeModule.on('click', '.notice-paging .page-item', function(e) {
+                noticePageNo = $('.notice-paging .paging').data('pageno');
+                const lastPageNo = Math.floor(($('.notice-paging .paging').data('datacount') / 5) + (($('.notice-paging .paging').data('datacount') % 5) > 0 ? 1 : 0));
+                if (/«/.test($(this).text())) noticePageNo = 1;
+                if ($(this).text() == '<') noticePageNo = noticePageNo - 1 < 1 ? 1 : noticePageNo - 1;
+                if ($(this).text() == '>') noticePageNo = noticePageNo + 1 > lastPageNo ? lastPageNo : noticePageNo + 1;
+                if (/»/.test($(this).text())) noticePageNo = lastPageNo;
+                if (!isNaN($(this).text())) noticePageNo = $(this).text();
+
+                noticeModule.load("notice-list?pageNo=" + noticePageNo);
+            });
+
+            // 공지사항 상세글
+            noticeModule.on('click', '.notice-content', (e) => {
+                const index = $(e.currentTarget).data('index');
+                const count = $('.notice-paging .paging').data('datacount');
+
+<!--                console.log("index : " + index);-->
+<!--                console.log("pageNo : " + noticePageNo);-->
+
+                location.href = '/board/notice-content?index=' + index + '&pageNo=' + noticePageNo +
+                                                       '&count=' + count + '&fromPage=home';
+            });
 
             // 인기글, 최신글
             bestList.on('click', (e) => {
@@ -94,9 +121,9 @@
             });
 
             // pagination
-            moduleBox.on('click', '.page-item', function(e) {
-                let pageNo = $('.paging').data('pageno');
-                const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
+            moduleBox.on('click', '.main-paging .page-item', function(e) {
+                let pageNo = $('.main-paging .paging').data('pageno');
+                const lastPageNo = Math.floor(($('.main-paging .paging').data('datacount') / 10) + (($('.main-paging .paging').data('datacount') % 10) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
                 if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
                 if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;

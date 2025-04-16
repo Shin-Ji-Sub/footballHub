@@ -644,6 +644,8 @@
             user u2
         ON
             c2.user_id = u2.user_id
+<!--        WHERE-->
+<!--            c1.board_id = ${boardId}-->
         WHERE
             c1.parent_id IS NULL
         AND
@@ -908,6 +910,97 @@
             5
         OFFSET
             #{start}
+    </select>
+
+    <select id="selectNoticeBoard" parameterType="hashmap" resultMap="BoardResultMap">
+        SELECT
+            b.board_id,
+            b.subject,
+            b.content,
+            b.reg_date,
+            b.visit_count,
+            b.board_state,
+            u.user_id,
+            u.nickname,
+            u.social_method,
+            u.join_date,
+            u.is_admin,
+            u.state,
+            ba.attach_id,
+            ba.user_file_name,
+            ba.saved_file_name,
+            lc.large_category_id,
+            lc.large_category_name,
+            ua.action_id,
+            ua.action_category,
+            ua.user_id,
+            ua.board_id
+        FROM
+            board b
+        LEFT JOIN
+            user_action ua
+        ON
+            b.board_id = ua.board_id
+        AND
+            ua.action_category = "like"
+        LEFT JOIN
+            user u
+        ON
+            b.user_id = u.user_id
+        LEFT JOIN
+            board_attach ba
+        ON
+            b.board_id = ba.board_id
+        LEFT JOIN
+            board_large_category lc
+        ON
+            b.large_category_id = lc.large_category_id
+        WHERE
+            b.board_id = (
+                SELECT
+                    b2.board_id
+                FROM
+                    board b2
+                LEFT JOIN
+                    user_action ua2
+                ON
+                    b2.board_id = ua2.board_id
+                AND
+                    ua2.action_category = "like"
+                WHERE
+                    b2.large_category_id = 3
+                <choose>
+                    <when test="fromPage == 'home'">
+                        AND
+                            b2.board_state = true
+                    </when>
+                </choose>
+<!--                <choose>-->
+<!--                    <when test="searchValue.length != null and searchValue != ''">-->
+<!--                        AND-->
+<!--                            b2.subject LIKE CONCAT('%', #{searchValue}, '%')-->
+<!--                    </when>-->
+<!--                </choose>-->
+                GROUP BY
+                    b2.board_id
+                ORDER BY
+                    <choose>
+                        <when test="fromPage">
+                            b2.reg_date DESC
+                        </when>
+                        <when test="sortValue == 'best'">
+                            b2.visit_count + (COUNT(ua2.board_id) * 2) DESC,
+                            b2.reg_date DESC
+                        </when>
+                        <when test="sortValue == 'latest'">
+                            b2.reg_date DESC
+                        </when>
+                    </choose>
+                LIMIT
+                    1
+                OFFSET
+                    #{boardNo}
+            )
     </select>
 
 </mapper>
