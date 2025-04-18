@@ -288,72 +288,83 @@ public class BoardController {
 //        }
 //    }
 
+//    @GetMapping(path = {"content"})
+//    public String content(Model model, @RequestParam(name = "boardId") int boardId,
+//                          @RequestParam(name = "index", defaultValue = "0") int index,
+//                          @RequestParam(name = "count", defaultValue = "0") int count,
+//                          @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+//                          @RequestParam(name = "from", defaultValue = "none") String from,
+//                          @RequestParam(name = "tabNo", required = false) Integer tabNo,
+//                          @CookieValue(value = "visited", required = false) String visitedBoard,
+//                          HttpServletResponse res, HttpSession session) {
+//
+//        // 쿠키에 현재 boardId가 포함되어 있는지 확인
+//        if (visitedBoard == null || !visitedBoard.contains("[" + boardId + "]")) {
+//            boardService.incrementVisitedBoard(boardId); // 조회수 증가
+//
+//            // 쿠키에 현재 boardId 추가
+//            visitedBoard = (visitedBoard == null ? "" : visitedBoard) + "[" + boardId + "]";
+//            Cookie cookie = new Cookie("visited", visitedBoard);
+//            cookie.setPath("/");
+//            cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효 기간(1일)
+//            res.addCookie(cookie);
+//        }
+//
+//        List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
+//
+//        UserDto user = (UserDto) session.getAttribute("user");
+//        List<UserActionDto> likeActions = new ArrayList<>();
+//        if (user == null) {
+//            UserActionDto action = new UserActionDto();
+//            likeActions.add(action);
+//        } else {
+//            likeActions = user.getLikeUserActions();
+//        }
+//        List<UserActionDto> bookmarkActions = new ArrayList<>();
+//        if (user == null) {
+//            UserActionDto action = new UserActionDto();
+//            bookmarkActions.add(action);
+//        } else {
+//            bookmarkActions = user.getBookmarkUserActions();
+//        }
+//
+//        model.addAttribute("likeActions", likeActions);
+//        model.addAttribute("bookmarkActions", bookmarkActions);
+//        model.addAttribute("board", boards.get(0));
+//
+//        model.addAttribute("index", index);
+//        model.addAttribute("count", count);
+//        model.addAttribute("pageNo", pageNo);
+//        if (tabNo != null) {
+//            model.addAttribute("tabNo", tabNo);
+//        }
+//        model.addAttribute("from", from);
+//
+//        return "/board/content";
+//    }
+
     @GetMapping(path = {"content"})
-    public String content(Model model, @RequestParam(name = "boardId") int boardId,
-                          @RequestParam(name = "index", defaultValue = "0") int index,
-                          @RequestParam(name = "count", defaultValue = "0") int count,
-                          @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
-                          @RequestParam(name = "from", defaultValue = "none") String from,
-                          @CookieValue(value = "visited", required = false) String visitedBoard,
-                          HttpServletResponse res, HttpSession session) {
+    public String content(Model model, HttpServletResponse res, HttpSession session,
+                          @RequestParam(name = "index") int index,
+                          @RequestParam(name = "pageNo") int pageNo,
+                          @RequestParam(name = "from") String from,
+                          @RequestParam(name = "count") int count,
+                          @RequestParam(name = "sortValue") String sortValue,
+                          @RequestParam(name = "searchValue") String searchValue,
+                          @RequestParam(name = "tabNo", required = false) Integer tabNo,
+                          @CookieValue(value = "visited", required = false) String visitedBoard) {
 
-        // 쿠키에 현재 boardId가 포함되어 있는지 확인
-        if (visitedBoard == null || !visitedBoard.contains("[" + boardId + "]")) {
-            boardService.incrementVisitedBoard(boardId); // 조회수 증가
-
-            // 쿠키에 현재 boardId 추가
-            visitedBoard = (visitedBoard == null ? "" : visitedBoard) + "[" + boardId + "]";
-            Cookie cookie = new Cookie("visited", visitedBoard);
-            cookie.setPath("/");
-            cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효 기간(1일)
-            res.addCookie(cookie);
-        }
-
-        List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
+        int boardNo = (pageNo - 1) * 10 + index;
 
         UserDto user = (UserDto) session.getAttribute("user");
-        List<UserActionDto> likeActions = new ArrayList<>();
-        if (user == null) {
-            UserActionDto action = new UserActionDto();
-            likeActions.add(action);
-        } else {
-            likeActions = user.getLikeUserActions();
-        }
-        List<UserActionDto> bookmarkActions = new ArrayList<>();
-        if (user == null) {
-            UserActionDto action = new UserActionDto();
-            bookmarkActions.add(action);
-        } else {
-            bookmarkActions = user.getBookmarkUserActions();
+        String userId = "";
+        if (user != null) {
+            userId = user.getUserId();
         }
 
-        model.addAttribute("likeActions", likeActions);
-        model.addAttribute("bookmarkActions", bookmarkActions);
-        model.addAttribute("board", boards.get(0));
-
-        model.addAttribute("index", index);
-        model.addAttribute("count", count);
-        model.addAttribute("pageNo", pageNo);
-
-        model.addAttribute("from", from);
-
-        return "/board/content";
-    }
-
-    @GetMapping(path = {"contentToContent"})
-    public String contentToContent(Model model, HttpServletResponse res, HttpSession session,
-                                   @CookieValue(value = "visited", required = false) String visitedBoard,
-                                   @RequestParam(name = "boardNo") int boardNo,
-                                   @RequestParam(name = "index") int index,
-                                   @RequestParam(name = "pageNo") int pageNo,
-                                   @RequestParam(name = "from", defaultValue = "none") String from,
-                                   @RequestParam(name = "count") int count
-                                   ) {
-
-        UserDto user = (UserDto) session.getAttribute("user");
-
-        List<BoardDto> boards = boardService.findBoardWithBoardNo(boardNo, user.getUserId());
+        List<BoardDto> boards = boardService.findBoardWithBoardNo(boardNo, userId, sortValue, searchValue);
         BoardDto board = boards.get(0);
+
         List<UserActionDto> likeActions = new ArrayList<>();
         if (user == null) {
             UserActionDto action = new UserActionDto();
@@ -384,13 +395,70 @@ public class BoardController {
         model.addAttribute("likeActions", likeActions);
         model.addAttribute("bookmarkActions", bookmarkActions);
         model.addAttribute("board", board);
-//        model.addAttribute("comments", board.getComments());
+
         model.addAttribute("index", index);
         model.addAttribute("count", count);
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("from", from);
+        model.addAttribute("sortValue", sortValue);
+        model.addAttribute("searchValue", searchValue);
+        if (tabNo != null) {
+            model.addAttribute("tabNo", tabNo);
+        }
+
         return "/board/content";
     }
+
+//    @GetMapping(path = {"contentToContent"})
+//    public String contentToContent(Model model, HttpServletResponse res, HttpSession session,
+//                                   @CookieValue(value = "visited", required = false) String visitedBoard,
+//                                   @RequestParam(name = "boardNo") int boardNo,
+//                                   @RequestParam(name = "index") int index,
+//                                   @RequestParam(name = "pageNo") int pageNo,
+//                                   @RequestParam(name = "from", defaultValue = "none") String from,
+//                                   @RequestParam(name = "count") int count) {
+//
+//        UserDto user = (UserDto) session.getAttribute("user");
+//
+//        List<BoardDto> boards = boardService.findBoardWithBoardNo(boardNo, user.getUserId());
+//        BoardDto board = boards.get(0);
+//        List<UserActionDto> likeActions = new ArrayList<>();
+//        if (user == null) {
+//            UserActionDto action = new UserActionDto();
+//            likeActions.add(action);
+//        } else {
+//            likeActions = user.getLikeUserActions();
+//        }
+//        List<UserActionDto> bookmarkActions = new ArrayList<>();
+//        if (user == null) {
+//            UserActionDto action = new UserActionDto();
+//            bookmarkActions.add(action);
+//        } else {
+//            bookmarkActions = user.getBookmarkUserActions();
+//        }
+//
+//        // 쿠키에 현재 boardId가 포함되어 있는지 확인
+//        if (visitedBoard == null || !visitedBoard.contains("[" + board.getBoardId() + "]")) {
+//            boardService.incrementVisitedBoard(board.getBoardId()); // 조회수 증가
+//
+//            // 쿠키에 현재 boardId 추가
+//            visitedBoard = (visitedBoard == null ? "" : visitedBoard) + "[" + board.getBoardId() + "]";
+//            Cookie cookie = new Cookie("visited", visitedBoard);
+//            cookie.setPath("/");
+//            cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효 기간(1일)
+//            res.addCookie(cookie);
+//        }
+//
+//        model.addAttribute("likeActions", likeActions);
+//        model.addAttribute("bookmarkActions", bookmarkActions);
+//        model.addAttribute("board", board);
+////        model.addAttribute("comments", board.getComments());
+//        model.addAttribute("index", index);
+//        model.addAttribute("count", count);
+//        model.addAttribute("pageNo", pageNo);
+//        model.addAttribute("from", from);
+//        return "/board/content";
+//    }
 
     @GetMapping(path = {"/modify-content"})
     public String modifyContent(Model model,
@@ -517,7 +585,13 @@ public class BoardController {
         }
 
         List<CommentDto> comments = boardService.findCommentsWithBoardId(boardId, start);
-        System.out.println("[COMMENTS] : " + comments);
+//        System.out.println("[DATACOUNT] : " + dataCount);
+//        System.out.println("[PAGENO] : " + pageNo);
+//        System.out.println("[PAGESIZE] : " + pageSize);
+//        System.out.println("[PAGERSIZE] : " + pagerSize);
+//        System.out.println("[LINKURL] : " + linkUrl);
+//        System.out.println("[QUERYSTRING] : " + queryString);
+//        System.out.println("[COMMENT SIZE] : " + comments.size());
         int best = -1;
         int bestCommentId = -1;
         for (CommentDto c : comments) {

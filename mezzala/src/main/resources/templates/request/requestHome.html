@@ -34,15 +34,21 @@
             </div>
             <div class="container section content-container">
                 <div class="subject-select-container">
-                    <span class="subject sort-button underline" data-value="latest">최신순</span>
-                    <span class="subject sort-button" data-value="late">오래된순</span>
+                    <th:block th:if="${sortValue == 'latest'}">
+                        <span class="subject sort-button underline" data-value="latest">최신순</span>
+                        <span class="subject sort-button" data-value="late">오래된순</span>
+                    </th:block>
+                    <th:block th:if="${sortValue == 'late'}">
+                        <span class="subject sort-button" data-value="latest">최신순</span>
+                        <span class="subject sort-button underline" data-value="late">오래된순</span>
+                    </th:block>
                     <select class="form-select" id="categorySelect" aria-label="Default select example">
-                        <option value="all" selected>전체</option>
-                        <option value="일반HUB">일반HUB</option>
-                        <option value="팬덤HUB">팬덤HUB</option>
-                        <option value="FootballWiki">FootballWiki</option>
-                        <option value="순위표">순위표</option>
-                        <option value="기타">기타</option>
+                        <option value="all" th:selected="${category == 'all'}">전체</option>
+                        <option value="일반HUB" th:selected="${category == '일반HUB'}">일반HUB</option>
+                        <option value="팬덤HUB" th:selected="${category == '팬덤HUB'}">팬덤HUB</option>
+                        <option value="FootballWiki" th:selected="${category == 'FootaballWiki'}">FootballWiki</option>
+                        <option value="순위표" th:selected="${category == '순위표'}">순위표</option>
+                        <option value="기타" th:selected="${category == '기타'}">기타</option>
                     </select>
                 </div>
                 <div class="search-write-container">

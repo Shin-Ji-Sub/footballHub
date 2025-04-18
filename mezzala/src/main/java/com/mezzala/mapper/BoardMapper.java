@@ -16,19 +16,20 @@ public interface BoardMapper {
 
     void insertBoard(BoardDto board);
 
-    List<BoardDto> selectBoardWithPaging(@Param("start") int start, @Param("category") String category, @Param("userId") String userId);
+    List<BoardDto> selectBoardWithPaging(@Param("start") int start, @Param("sortValue") String sortValue, @Param("userId") String userId);
 
     void insertBoardAttach(@Param("imageFiles") List<Map<String, String>> imageFiles, @Param("boardId") int boardId);
 
     int selectAllBoardCount(String userId, String searchValue);
 
-    List<BoardDto> selectBoardWithPagingAndSearch(@Param("start") int start, @Param("category") String category, @Param("searchValue") String searchValue, @Param("userId") String userId);
+    List<BoardDto> selectBoardWithPagingAndSearch(@Param("start") int start, @Param("sortValue") String sortValue, @Param("searchValue") String searchValue, @Param("userId") String userId);
 
     List<BoardDto> selectBoardWithBoardId(int boardId);
 
     void updateVisitedBoard(int boardId);
 
-    List<BoardDto> selectBoardWithBoardNo(@Param("boardNo") int boardNo, @Param("userId") String userId);
+    List<BoardDto> selectBoardWithBoardNo(@Param("boardNo") int boardNo, @Param("userId") String userId,
+                                          @Param("sortValue") String sortValue, @Param("searchValue") String searchValue);
 
     void insertUserAction(@Param("userId") String userId, @Param("boardId") int boardId, @Param("actionCategory") String actionCategory);
 

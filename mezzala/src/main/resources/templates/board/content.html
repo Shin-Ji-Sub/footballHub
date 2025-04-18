@@ -98,9 +98,9 @@
                                 <span>이전글</span>
                             </button>
                         </th:block>
-                        <button class="content-button">
+                        <button class="content-button" id="toList">
                             <i class="bi bi-list-task"></i>
-                            <span><a href="/">목록</a></span>
+                            <span>목록</span>
                         </button>
                         <th:block th:if="${(pageNo - 1) * 10 + (index + 1) == count}">
                             <button class="content-button" style="visibility : hidden">
@@ -114,6 +114,20 @@
                                 <i class="bi bi-arrow-bar-right"></i>
                             </button>
                         </th:block>
+                    </div>
+                    <div class="bottom-button-list" th:unless="${from == 'home'}">
+                        <button class="content-button" style="visibility : hidden">
+                            <i class="bi bi-arrow-bar-left"></i>
+                            <span>이전글</span>
+                        </button>
+                        <button class="content-button" id="toList">
+                            <i class="bi bi-list-task"></i>
+                            <span>목록</span>
+                        </button>
+                        <button class="content-button" style="visibility : hidden">
+                            <span>다음글</span>
+                            <i class="bi bi-arrow-bar-right"></i>
+                        </button>
                     </div>
                 </div>
                 <!-- 댓글 -->
@@ -144,6 +158,10 @@
         <input type="hidden" id="indexValue" th:value="${index}">
         <input type="hidden" id="pageNo" th:value="${pageNo}">
         <input type="hidden" id="count" th:value="${count}">
+        <input type="hidden" id="from" th:value="${from}">
+        <input type="hidden" id="tabNo" th:value="${tabNo}">
+        <input type="hidden" id="sortValue" th:value="${sortValue}">
+        <input type="hidden" id="searchValue" th:value="${searchValue}">
     </main>
 
     <!-- jQuery -->
@@ -167,6 +185,10 @@
         const indexValue = Number($('#indexValue').val());
         const pageNo = Number($('#pageNo').val());
         const count = Number($('#count').val());
+        const from = $('#from').val();
+        const tabNo = $('#tabNo').val();
+        const sortValue = $('#sortValue').val();
+        const searchValue = $('#searchValue').val();
         let commentPageNo = 1;
 
         const nextButton = $('#nextButton');
@@ -183,6 +205,7 @@
         const boardReportButton = $('#boardReportButton');
         const largeCategoryButton = $('#largeCategoryButton');
         const smallCategoryButton = $('#smallCategoryButton');
+        const toList = $('#toList');
 
         // Toast UI Viewer 사용하여 렌더링
         const viewer = new toastui.Editor.factory({
@@ -208,6 +231,15 @@
                 location.href = "/normalhub/home?category=" + value;
             } else if (largeValue == 2) {
                 location.href = "/fandomhub/home?category=" + value;
+            }
+        });
+
+        // 목록 버튼
+        toList.on('click', (e) => {
+            if (from == "mypage") {
+                location.href = "/mypage/myinfo?tabNo=" + tabNo + "&pageNo=" + pageNo;
+            } else {
+                location.href = "/home?mainPageNo=" + pageNo + "&sortValue=" + sortValue +  "&searchValue=" + searchValue;
             }
         });
 
@@ -290,18 +322,20 @@
 
         // 다음글, 이전글 버튼
         nextButton.on('click', () => {
-            const boardNo = (pageNo - 1) * 10 + indexValue + 1;
+            //const boardNo = (pageNo - 1) * 10 + indexValue + 1;
             const index = indexValue + 1 == 10 ? 0 : indexValue + 1;
             const page = indexValue + 1 == 10 ? pageNo + 1 : pageNo;
-            location.href = '/board/contentToContent?boardNo=' + boardNo + '&index=' + index +
-                                                    '&pageNo=' + page + '&count=' + count;
+            location.href = '/board/content?index=' + index + '&pageNo=' + page +
+                                            '&count=' + count + '&from=' + from +
+                                            '&sortValue=' + sortValue + '&searchValue=' + searchValue;
         });
         previousButton.on('click', () => {
-            const boardNo = (pageNo - 1) * 10 + indexValue - 1;
+            //const boardNo = (pageNo - 1) * 10 + indexValue - 1;
             const index = indexValue - 1 == -1 ? 9 : indexValue - 1;
             const page = indexValue - 1 == -1 ? pageNo - 1 : pageNo;
-            location.href = '/board/contentToContent?boardNo=' + boardNo + '&index=' + index +
-                                                    '&pageNo=' + page + '&count=' + count;
+            location.href = '/board/content?index=' + index + '&pageNo=' + page +
+                                            '&count=' + count + '&from=' + from +
+                                            '&sortValue=' + sortValue + '&searchValue=' + searchValue;
         });
 
         // 좋아요 버튼

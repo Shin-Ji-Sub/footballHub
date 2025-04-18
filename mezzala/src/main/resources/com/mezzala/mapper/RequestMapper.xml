@@ -191,7 +191,7 @@
                 <choose>
                     <when test="category != 'all'">
                         AND
-                            rb2.small_category_index = #{category}
+                            rb2.category = #{category}
                     </when>
                 </choose>
                 GROUP BY

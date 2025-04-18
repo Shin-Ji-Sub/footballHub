@@ -93,6 +93,8 @@ public class RequestController {
 
         int boardNo = (pageNo - 1) * 10 + index;
 
+        System.out.println("CATEGORY : " + category);
+
         List<RequestBoardDto> boards = requestService.findRequestBoard(boardNo, sortValue, category, searchValue);
         RequestBoardDto board = boards.get(0);
 

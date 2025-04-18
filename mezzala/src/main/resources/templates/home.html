@@ -25,12 +25,18 @@
             </div>
             <div class="container section content-container">
                 <div class="subject-container">
-                    <span class="subject underline" id="bestList">인기글</span>
-                    <span class="subject" id="latestList">최신글</span>
+                    <th:block th:if="${sortValue == 'bestList'}">
+                        <span class="subject underline" id="bestList">인기글</span>
+                        <span class="subject" id="latestList">최신글</span>
+                    </th:block>
+                    <th:block th:if="${sortValue == 'latestList'}">
+                        <span class="subject" id="bestList">인기글</span>
+                        <span class="subject underline" id="latestList">최신글</span>
+                    </th:block>
                 </div>
                 <div class="search-write-container">
                     <div>
-                        <input type="text" id="searchValue" placeholder="글제목 검색">
+                        <input type="text" id="searchValue" placeholder="글제목 검색" th:value="${searchValue}">
                         <button class="search-write-button" id="searchButton">검색</button>
                     </div>
                     <button th:if="${session.user != null}" class="search-write-button">
@@ -44,6 +50,8 @@
         </div>
     </main>
     <input type="hidden" id="noticePageNo" th:value="${noticePageNo}">
+    <input type="hidden" id="mainPageNo" th:value="${mainPageNo}">
+    <input type="hidden" id="sortValue" th:value="${sortValue}">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -54,13 +62,26 @@
             const noticeModule = $('#noticeModule');
             const bestList = $('#bestList');
             const latestList = $('#latestList');
-            let categoryValue = 'bestList';
             const searchButton = $('#searchButton');
-            let searchValue = '';
+
+            let searchValue = $('#searchValue').val();
             let noticePageNo = $('#noticePageNo').val();
+            let mainPageNo = $('#mainPageNo').val();
+            let sortValue = $('#sortValue').val();
+
+            // F5 새로고침 시 URL 변경
+<!--            $(window).on('beforeunload', () => {-->
+<!--                const urlWithoutParams = window.location.origin + window.location.pathname;-->
+<!--                console.log(noticePageNo);-->
+<!--                console.log(mainPageNo);-->
+<!--                console.log(sortValue);-->
+<!--                console.log(searchValue);-->
+<!--                location.href = urlWithoutParams + "&noticePageNo=" + noticePageNo +-->
+<!--                                                "&mainPageNo=" + mainPageNo + "&sortValue=" + sortValue + "&searchValue=" + searchValue;-->
+<!--            });-->
 
             // 처음 list select
-            moduleBox.load('content-list');
+            moduleBox.load('content-list?pageNo=' + mainPageNo + '&sortValue=' + sortValue + '&searchValue=' + searchValue);
 
             // 공지사항 LOAD
             noticeModule.load("notice-list?pageNo=" + noticePageNo);
@@ -94,14 +115,16 @@
             bestList.on('click', (e) => {
                 bestList.addClass('underline');
                 latestList.removeClass('underline');
-                categoryValue = 'bestList';
-                moduleBox.load('content-list?category=' + categoryValue);
+                sortValue = 'bestList';
+                $('#searchValue').val('');
+                moduleBox.load('content-list?sortValue=' + sortValue);
             });
             latestList.on('click', (e) => {
                 latestList.addClass('underline');
                 bestList.removeClass('underline');
-                categoryValue = 'latestList';
-                moduleBox.load('content-list?category=' + categoryValue);
+                sortValue = 'latestList';
+                $('#searchValue').val('');
+                moduleBox.load('content-list?sortValue=' + sortValue);
             });
 
             // 글제목 검색 FUNCTION
@@ -122,28 +145,37 @@
 
             // pagination
             moduleBox.on('click', '.main-paging .page-item', function(e) {
-                let pageNo = $('.main-paging .paging').data('pageno');
+                mainPageNo = $('.main-paging .paging').data('pageno');
                 const lastPageNo = Math.floor(($('.main-paging .paging').data('datacount') / 10) + (($('.main-paging .paging').data('datacount') % 10) > 0 ? 1 : 0));
-                if (/«/.test($(this).text())) pageNo = 1;
-                if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
-                if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
-                if (/»/.test($(this).text())) pageNo = lastPageNo;
-                if (!isNaN($(this).text())) pageNo = $(this).text();
+                if (/«/.test($(this).text())) mainPageNo = 1;
+                if ($(this).text() == '<') mainPageNo = mainPageNo - 1 < 1 ? 1 : mainPageNo - 1;
+                if ($(this).text() == '>') mainPageNo = mainPageNo + 1 > lastPageNo ? lastPageNo : mainPageNo + 1;
+                if (/»/.test($(this).text())) mainPageNo = lastPageNo;
+                if (!isNaN($(this).text())) mainPageNo = $(this).text();
 
-                moduleBox.load('content-list?pageNo=' + pageNo + '&category=' + categoryValue +
+                moduleBox.load('content-list?pageNo=' + mainPageNo + '&sortValue=' + sortValue +
                                '&searchValue=' + searchValue);
             });
 
             // 상세글로 이동
             moduleBox.on('click', '.content', (e) => {
-                const boardId = $(e.currentTarget).data('id');
                 const index = $(e.currentTarget).data('index');
-                const count = $('.paging').data('datacount');
-                const pageNo = $('.paging').data('pageno');
+                const count = $('.main-paging .paging').data('datacount');
+                //const pageNo = $('.paging').data('pageno');
 
-                location.href = '/board/content?boardId=' + boardId + '&index=' + index +
-                                                '&count=' + count + '&pageNo=' + pageNo +
-                                                '&from=home';
+                location.href = '/board/content?index=' + index + '&pageNo=' + mainPageNo +
+                                                '&from=home' + '&sortValue=' + sortValue +
+                                                '&count=' + count + '&searchValue=' + searchValue;
+
+
+<!--                const boardId = $(e.currentTarget).data('id');-->
+<!--                const index = $(e.currentTarget).data('index');-->
+<!--                const count = $('.paging').data('datacount');-->
+<!--                const pageNo = $('.paging').data('pageno');-->
+
+<!--                location.href = '/board/content?boardId=' + boardId + '&index=' + index +-->
+<!--                                                '&count=' + count + '&pageNo=' + pageNo +-->
+<!--                                                '&from=home';-->
             });
 
         });

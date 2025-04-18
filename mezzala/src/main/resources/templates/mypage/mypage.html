@@ -44,6 +44,8 @@
         </div>
         <input type="hidden" id="userNickname" th:value="${session.user.nickname}">
         <input type="hidden" id="userId" th:value="${session.user.userId}">
+        <input type="hidden" id="tabNo" th:value="${tabNo}">
+        <input type="hidden" id="pageNo" th:value="${pageNo}">
     </main>
 
     <!-- jQuery -->
@@ -53,9 +55,37 @@
         $(window).on('load', function() {
             const mypageSectionEl = $('.mypage-section');
             const userId = $('#userId').val();
+            let tabNo = $('#tabNo').val();
+            let pageNo = $('#pageNo').val();
 
-            // 내정보 load
-            mypageSectionEl.load('/mypage/get-myinfo');
+            // 현재 TAB 표시
+            $('.main-container .nav-item .nav-link').removeClass('text-primary');
+            $('.main-container .nav-item .nav-link').removeClass('active');
+            $('.main-container .nav-item .nav-link').eq(tabNo).addClass('text-primary');
+            $('.main-container .nav-item .nav-link').eq(tabNo).addClass('active');
+
+            // TAB LOAD FUNCTION
+            function tabLoad(tabNumber, pageNumber) {
+                tabNumber = Number(tabNumber);
+                if (tabNumber === 0) {
+                    mypageSectionEl.load('/mypage/get-myinfo');
+                } else if (tabNumber === 1) {
+                    mypageSectionEl.load('/mypage/get-written-content?userId=' + userId + '&pageNo=' + pageNumber);
+                } else if (tabNumber === 2) {
+                    mypageSectionEl.load('/mypage/get-written-comment?userId=' + userId + '&pageNo=' + pageNumber);
+                } else if (tabNumber === 3) {
+                    mypageSectionEl.load('/mypage/get-liked-content?userId=' + userId + '&pageNo=' + pageNumber);
+                } else if (tabNumber === 4) {
+                    mypageSectionEl.load('/mypage/get-liked-comment?userId=' + userId + '&pageNo=' + pageNumber);
+                } else if (tabNumber === 5) {
+                    mypageSectionEl.load('/mypage/get-bookmarked-content?userId=' + userId + '&pageNo=' + pageNumber);
+                } else if (tabNumber === 6) {
+                    mypageSectionEl.load('/mypage/get-block-user?userId=' + userId + '&pageNo=' + pageNumber);
+                }
+            }
+
+            // 처음 탭 LOAD
+            tabLoad(tabNo, pageNo);
 
             $('.nav-item').on('click', (e) => {
                 $('.nav-link').removeClass('active');
@@ -64,21 +94,23 @@
                 $(e.currentTarget).children('.nav-link').addClass('text-primary');
 
                 const index = $(e.currentTarget).data('index');
-                if (index === 0) {
-                    mypageSectionEl.load('/mypage/get-myinfo');
-                } else if (index === 1) {
-                    mypageSectionEl.load('/mypage/get-written-content?userId=' + userId);
-                } else if (index === 2) {
-                    mypageSectionEl.load('/mypage/get-written-comment?userId=' + userId);
-                } else if (index === 3) {
-                    mypageSectionEl.load('/mypage/get-liked-content?userId=' + userId);
-                } else if (index === 4) {
-                    mypageSectionEl.load('/mypage/get-liked-comment?userId=' + userId);
-                } else if (index === 5) {
-                    mypageSectionEl.load('/mypage/get-bookmarked-content?userId=' + userId);
-                } else if (index === 6) {
-                    mypageSectionEl.load('/mypage/get-block-user?userId=' + userId);
-                }
+                tabNo = index;
+                tabLoad(tabNo, 1);
+<!--                if (index === 0) {-->
+<!--                    mypageSectionEl.load('/mypage/get-myinfo');-->
+<!--                } else if (index === 1) {-->
+<!--                    mypageSectionEl.load('/mypage/get-written-content?userId=' + userId);-->
+<!--                } else if (index === 2) {-->
+<!--                    mypageSectionEl.load('/mypage/get-written-comment?userId=' + userId);-->
+<!--                } else if (index === 3) {-->
+<!--                    mypageSectionEl.load('/mypage/get-liked-content?userId=' + userId);-->
+<!--                } else if (index === 4) {-->
+<!--                    mypageSectionEl.load('/mypage/get-liked-comment?userId=' + userId);-->
+<!--                } else if (index === 5) {-->
+<!--                    mypageSectionEl.load('/mypage/get-bookmarked-content?userId=' + userId);-->
+<!--                } else if (index === 6) {-->
+<!--                    mypageSectionEl.load('/mypage/get-block-user?userId=' + userId);-->
+<!--                }-->
             });
 
             mypageSectionEl.on('click', '#infoModifyButton', (e) => {
@@ -114,7 +146,7 @@
 
             // 작성한 글 pagination
             mypageSectionEl.on('click', '#writtenContentPaging .page-item', function(e) {
-                let pageNo = $('.paging').data('pageno');
+                pageNo = $('.paging').data('pageno');
                 const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
                 if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
@@ -127,7 +159,7 @@
 
             // 작성한 댓글 pagination
             mypageSectionEl.on('click', '#writtenCommentPaging .page-item', function(e) {
-                let pageNo = $('.paging').data('pageno');
+                pageNo = $('.paging').data('pageno');
                 const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
                 if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
@@ -140,7 +172,7 @@
 
             // 좋아요 한 글 pagination
             mypageSectionEl.on('click', '#likedContentPaging .page-item', function(e) {
-                let pageNo = $('.paging').data('pageno');
+                pageNo = $('.paging').data('pageno');
                 const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
                 if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
@@ -153,7 +185,7 @@
 
             // 좋아요 한 댓글 pagination
             mypageSectionEl.on('click', '#likedContentPaging .page-item', function(e) {
-                let pageNo = $('.paging').data('pageno');
+                pageNo = $('.paging').data('pageno');
                 const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
                 if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
@@ -166,7 +198,7 @@
 
             // 북마크한 글 pagination
             mypageSectionEl.on('click', '#bookmarkedContent .page-item', function(e) {
-                let pageNo = $('.paging').data('pageno');
+                pageNo = $('.paging').data('pageno');
                 const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
                 if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
@@ -174,12 +206,12 @@
                 if (/»/.test($(this).text())) pageNo = lastPageNo;
                 if (!isNaN($(this).text())) pageNo = $(this).text();
 
-                mypageSectionEl.load('/mypage/get-bookmarked-content?userId=' + userId + '&pageNo=' + pageNo););
+                mypageSectionEl.load('/mypage/get-bookmarked-content?userId=' + userId + '&pageNo=' + pageNo);
             });
 
             // 차단한 사용자 pagination
             mypageSectionEl.on('click', '#blockUserPaging .page-item', function(e) {
-                let pageNo = $('.paging').data('pageno');
+                pageNo = $('.paging').data('pageno');
                 const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
                 if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
@@ -213,7 +245,8 @@
             // 해당 글로 이동
             mypageSectionEl.on('click', '.written-content', (e) => {
                 const boardId = $(e.currentTarget).data('boardid');
-                location.href = '/board/content?boardId=' + boardId + '&from=mypage';
+                location.href = '/board/content?boardId=' + boardId + '&from=mypage' +
+                                                '&tabNo=' + tabNo + '&pageNo=' + pageNo;
             });
 
         });

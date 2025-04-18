@@ -514,10 +514,11 @@
             b.board_id
         ORDER BY
             b.reg_date DESC
-        LIMIT
-            5
-        OFFSET
-            0;
+<!--        LIMIT-->
+<!--            5-->
+<!--        OFFSET-->
+<!--            #{start}-->
+
 <!--        SELECT-->
 <!--            COALESCE(COUNT(DISTINCT ua.action_id), 0) AS recommendationCount-->
 <!--        FROM-->

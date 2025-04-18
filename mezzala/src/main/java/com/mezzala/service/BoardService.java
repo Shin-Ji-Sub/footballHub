@@ -13,7 +13,7 @@ public interface BoardService {
 
     void addBoard(BoardDto board, List<Map<String, String>> imageFiles);
 
-    List<BoardDto> findBoardWithPaging(int start, String category, String searchValue, String userId);
+    List<BoardDto> findBoardWithPaging(int start, String sortValue, String searchValue, String userId);
 
     int findAllBoardCount(String userId, String searchValue);
 
@@ -21,7 +21,7 @@ public interface BoardService {
 
     void incrementVisitedBoard(int boardId);
 
-    List<BoardDto> findBoardWithBoardNo(int boardNo, String userId);
+    List<BoardDto> findBoardWithBoardNo(int boardNo, String userId, String sortValue, String searchValue);
 
     void addUserAction(UserDto user, int boardId, String actionCategory);
 

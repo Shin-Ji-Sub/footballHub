@@ -33,14 +33,16 @@ public class MypageController {
     private MypageService mypageService;
 
     @GetMapping(path = {"/myinfo"})
-    public String myinfo() {
-
+    public String myinfo(Model model,
+                         @RequestParam(name = "tabNo", defaultValue = "0") int tabNo,
+                         @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
+        model.addAttribute("tabNo", tabNo);
+        model.addAttribute("pageNo", pageNo);
         return "/mypage/mypage";
     }
 
     @GetMapping(path = {"/get-myinfo"})
     public String myInfoModule() {
-
         return "/mypage/modules/myinfoModule";
     }
 

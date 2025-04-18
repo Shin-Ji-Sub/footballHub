@@ -25,15 +25,23 @@ public class HomeController {
 
     @RequestMapping(path = {"/", "/home"})
     public String home(Model model,
-                       @RequestParam(name = "noticePageNo", defaultValue = "1") int noticePageNo) {
+                       @RequestParam(name = "noticePageNo", defaultValue = "1") int noticePageNo,
+                       @RequestParam(name = "mainPageNo", defaultValue = "1") int mainPageNo,
+                       @RequestParam(name = "sortValue", defaultValue = "bestList") String sortValue,
+                       @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+
         model.addAttribute("noticePageNo", noticePageNo);
+        model.addAttribute("mainPageNo", mainPageNo);
+        model.addAttribute("sortValue", sortValue);
+        model.addAttribute("searchValue", searchValue);
+
         return "home";
     }
 
     @GetMapping(path = {"/content-list"})
     public String contentList(Model model, HttpServletRequest req, HttpSession session,
                               @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
-                              @RequestParam(name = "category", defaultValue = "bestList") String category,
+                              @RequestParam(name = "sortValue", defaultValue = "bestList") String sortValue,
                               @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
         UserDto user = (UserDto) session.getAttribute("user");
         String userId = "";
@@ -53,11 +61,14 @@ public class HomeController {
 
         ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
 
-        List<BoardDto> boards = boardService.findBoardWithPaging(start, category, searchValue, userId);
+        List<BoardDto> boards = boardService.findBoardWithPaging(start, sortValue, searchValue, userId);
 
         model.addAttribute("pager", pager);
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("dataCount", dataCount);
+
+        model.addAttribute("sortValue", sortValue);
+        model.addAttribute("searchValue", searchValue);
 
         model.addAttribute("boards", boards);
 

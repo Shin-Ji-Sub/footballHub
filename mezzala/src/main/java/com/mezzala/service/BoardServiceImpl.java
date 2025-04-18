@@ -47,13 +47,13 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<BoardDto> findBoardWithPaging(int start, String category, String searchValue, String userId) {
+    public List<BoardDto> findBoardWithPaging(int start, String sortValue, String searchValue, String userId) {
         List<BoardDto> boards = new ArrayList<>();
 
         if (searchValue.isEmpty()) {
-            boards = boardMapper.selectBoardWithPaging(start, category, userId);
+            boards = boardMapper.selectBoardWithPaging(start, sortValue, userId);
         } else {
-            boards = boardMapper.selectBoardWithPagingAndSearch(start, category, searchValue, userId);
+            boards = boardMapper.selectBoardWithPagingAndSearch(start, sortValue, searchValue, userId);
         }
 
         for (BoardDto b : boards) {
@@ -78,8 +78,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<BoardDto> findBoardWithBoardNo(int boardNo, String userId) {
-        return boardMapper.selectBoardWithBoardNo(boardNo, userId);
+    public List<BoardDto> findBoardWithBoardNo(int boardNo, String userId, String sortValue, String searchValue) {
+        return boardMapper.selectBoardWithBoardNo(boardNo, userId, sortValue, searchValue);
     }
 
     @Override
