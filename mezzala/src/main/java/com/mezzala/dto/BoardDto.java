@@ -20,6 +20,7 @@ public class BoardDto {
     // default(0)
     private int recommendationCount;
     private int commentCount;
+    private int reportCount;
     // default(true)
     private boolean boardState;
 

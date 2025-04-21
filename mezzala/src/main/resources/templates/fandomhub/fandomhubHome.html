@@ -120,6 +120,9 @@
             });
 
             // 팀 이름 검색
+            teamView.on('click', (e) => {
+                $('#exampleModal').modal('show');
+            });
             teamSearchValue.on('input', (e) => {
                 const keyword = $(e.currentTarget).val().trim();
 

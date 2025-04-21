@@ -5,28 +5,3 @@
   column-gap: 5rem;
   font-size: 1.2rem;
 }
-
-/* 팬덤hub Section */
-.fandom-item-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  column-gap: 1rem;
-  row-gap: 1rem;
-}
-.fandom-item {
-  width: 100px;
-  height: 60px; /* 원하는 높이로 설정 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  white-space: normal; /* 텍스트 줄바꿈 허용 */
-  word-break: keep-all; /* 단어 단위로 줄바꿈 */
-}
-
-.team-search {
-  width: 100%;
-  padding: 5px;
-  border: 1px solid gray;
-  border-radius: 10px;
-}

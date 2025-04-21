@@ -11,9 +11,9 @@ import java.util.Map;
 public interface AdminService {
     void addBoard(BoardDto board, List<Map<String, String>> imageFiles);
 
-    int findAllBoardCount(String searchValue, boolean state);
+    int findAllNoticeBoardCount(String searchValue, boolean state);
 
-    List<BoardDto> findBoardWithPaging(int start, String searchValue, boolean state);
+    List<BoardDto> findNoticeBoardWithPaging(int start, String searchValue, boolean state);
 
     void modifyBoardState(int boardId, boolean state);
 
@@ -22,4 +22,10 @@ public interface AdminService {
     List<BoardDto> findBoardWithBoardId(int boardId);
 
     void modifyBoardsState(List<Integer> contentIds);
+
+    List<BoardLargeCategoryDto> findCategories();
+
+    int findAllBoardCount(String totalSelectValue, String smallSelectValue);
+
+    List<BoardDto> findBoardWithPaging(int start, String sortValue, String totalSelectValue, String smallSelectValue);
 }

@@ -3,6 +3,7 @@ package com.mezzala.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mezzala.dto.BoardDto;
+import com.mezzala.dto.BoardLargeCategoryDto;
 import com.mezzala.service.AdminService;
 import com.mezzala.ui.ThePager;
 import jakarta.servlet.http.Cookie;
@@ -37,12 +38,12 @@ public class AdminController {
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("from", from);
         model.addAttribute("searchValue", searchValue);
-        return "/admin/notice";
+        return "/admin/notice/notice";
     }
 
     @GetMapping(path = {"/write-notice"})
     public String writeNotice() {
-        return "/admin/writeNotice";
+        return "/admin/notice/writeNotice";
     }
 
     @PostMapping(path = {"/write-board"})
@@ -80,7 +81,7 @@ public class AdminController {
             pageSize = 10;
         }
         int pagerSize = 5;
-        int dataCount = adminService.findAllBoardCount(searchValue, state);
+        int dataCount = adminService.findAllNoticeBoardCount(searchValue, state);
         String uri = req.getRequestURI();
         String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
         String queryString = req.getQueryString();
@@ -88,13 +89,13 @@ public class AdminController {
         int start = pageSize * (pageNo - 1);
 
         ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
-        List<BoardDto> boards = adminService.findBoardWithPaging(start, searchValue, state);
+        List<BoardDto> boards = adminService.findNoticeBoardWithPaging(start, searchValue, state);
         if (boards.isEmpty()) {
             pageNo = pageNo - 1;
             start = pageSize * (pageNo - 1);
             pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
             try {
-                boards = adminService.findBoardWithPaging(start, searchValue, state);
+                boards = adminService.findNoticeBoardWithPaging(start, searchValue, state);
             } catch (Exception e) {
                 return "/modules/noDataModule";
             }
@@ -106,7 +107,7 @@ public class AdminController {
 
         model.addAttribute("boards", boards);
 
-        return "/admin/modules/" + from;
+        return "/admin/notice/modules/" + from;
     }
 
     @PostMapping(path = {"/control-notice"})
@@ -158,6 +159,53 @@ public class AdminController {
         List<Integer> contentIds = request.get("contentIds");
         adminService.modifyBoardsState(contentIds);
         return "success";
+    }
+
+    @GetMapping(path = {"/board-manage"})
+    public String boardManage(Model model,
+                              @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                              @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
+                              @RequestParam(name = "totalSelectValue", defaultValue = "all") String totalSelectValue,
+                              @RequestParam(name = "smallSelectValue", defaultValue = "all") String smallSelectValue) {
+
+        List<BoardLargeCategoryDto> largeCategories = adminService.findCategories();
+        model.addAttribute("largeCategories", largeCategories);
+        model.addAttribute("pageNo", pageNo);
+        model.addAttribute("sortValue", sortValue);
+        model.addAttribute("totalSelectValue", totalSelectValue);
+
+        return "/admin/board-manage/board-manage";
+    }
+
+    @GetMapping(path = {"/get-content"})
+    public String getContent(Model model, HttpServletRequest req,
+                             @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                             @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
+                             @RequestParam(name = "totalSelectValue", defaultValue = "all") String totalSelectValue,
+                             @RequestParam(name = "smallSelectValue", defaultValue = "all") String smallSelectValue) {
+        // paging
+        int pageSize = 10;
+        int pagerSize = 5;
+        int dataCount = adminService.findAllBoardCount(totalSelectValue, smallSelectValue);
+        String uri = req.getRequestURI();
+        String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+        String queryString = req.getQueryString();
+
+        int start = pageSize * (pageNo - 1);
+
+        ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+
+        List<BoardDto> boards = adminService.findBoardWithPaging(start, sortValue, totalSelectValue, smallSelectValue);
+
+        System.out.println("count : " + dataCount);
+
+        model.addAttribute("pager", pager);
+        model.addAttribute("pageNo", pageNo);
+        model.addAttribute("dataCount", dataCount);
+
+        model.addAttribute("boards", boards);
+
+        return "/admin/board-manage/modules/contentList";
     }
 
 }

@@ -16,9 +16,9 @@ public interface AdminMapper {
 
     void insertBoardAttach(@Param("imageFiles") List<Map<String, String>> imageFiles, @Param("boardId") int boardId);
 
-    int selectAllBoardCount(@Param("searchValue") String searchValue, @Param("state") boolean state);
+    int selectAllNoticeBoardCount(@Param("searchValue") String searchValue, @Param("state") boolean state);
 
-    List<BoardDto> selectBoardWithPaging(@Param("start") int start, @Param("searchValue") String searchValue,
+    List<BoardDto> selectNoticeBoardWithPaging(@Param("start") int start, @Param("searchValue") String searchValue,
                                          @Param("state") boolean state);
 
     void updateBoardState(@Param("boardId") int boardId, @Param("state") boolean state);
@@ -28,4 +28,11 @@ public interface AdminMapper {
     List<BoardDto> selectBoardWithBoardId(int boardId);
 
     void updateBoardsState(List<Integer> contentIds);
+
+    List<BoardLargeCategoryDto> selectCategories();
+
+    int selectAllBoardCount(@Param("totalSelectValue") String totalSelectValue, @Param("smallSelectValue") String smallSelectValue);
+
+    List<BoardDto> selectBoardWithPaging(@Param("start") int start, @Param("sortValue") String sortValue,
+                                         @Param("totalSelectValue") String totalSelectValue, @Param("smallSelectValue") String smallSelectValue);
 }

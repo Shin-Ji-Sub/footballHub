@@ -28,14 +28,14 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public int findAllBoardCount(String searchValue, boolean state) {
-        return adminMapper.selectAllBoardCount(searchValue, state);
+    public int findAllNoticeBoardCount(String searchValue, boolean state) {
+        return adminMapper.selectAllNoticeBoardCount(searchValue, state);
     }
 
     @Override
-    public List<BoardDto> findBoardWithPaging(int start, String searchValue, boolean state) {
+    public List<BoardDto> findNoticeBoardWithPaging(int start, String searchValue, boolean state) {
         int limit = state ? 5 : 10;
-        return adminMapper.selectBoardWithPaging(start, searchValue, state);
+        return adminMapper.selectNoticeBoardWithPaging(start, searchValue, state);
     }
 
     @Override
@@ -56,5 +56,20 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void modifyBoardsState(List<Integer> contentIds) {
         adminMapper.updateBoardsState(contentIds);
+    }
+
+    @Override
+    public List<BoardLargeCategoryDto> findCategories() {
+        return adminMapper.selectCategories();
+    }
+
+    @Override
+    public int findAllBoardCount(String totalSelectValue, String smallSelectValue) {
+        return adminMapper.selectAllBoardCount(totalSelectValue, smallSelectValue);
+    }
+
+    @Override
+    public List<BoardDto> findBoardWithPaging(int start, String sortValue, String totalSelectValue, String smallSelectValue) {
+        return adminMapper.selectBoardWithPaging(start, sortValue, totalSelectValue, smallSelectValue);
     }
 }
