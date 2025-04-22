@@ -19,13 +19,19 @@ public interface AdminService {
 
     void incrementVisitedBoard(int boardId);
 
-    List<BoardDto> findBoardWithBoardId(int boardId);
+    List<BoardDto> findNoticeBoardWithBoardId(int boardId);
 
     void modifyBoardsState(List<Integer> contentIds);
 
     List<BoardLargeCategoryDto> findCategories();
 
-    int findAllBoardCount(String totalSelectValue, String smallSelectValue);
+    int findAllBoardCount(String totalSelectValue, String smallSelectValue, String searchValue);
 
-    List<BoardDto> findBoardWithPaging(int start, String sortValue, String totalSelectValue, String smallSelectValue);
+    List<BoardDto> findBoardWithPaging(int start, String sortValue, String totalSelectValue, String smallSelectValue, String searchValue);
+
+    List<BoardDto> findBoardWithBoardId(int boardId);
+
+    int findAllReportBoardCount(String searchValue);
+
+    List<BoardDto> findReportBoardWithPaging(int start, String sortValue, String searchValue);
 }

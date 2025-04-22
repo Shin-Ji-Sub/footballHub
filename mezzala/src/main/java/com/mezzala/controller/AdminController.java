@@ -140,7 +140,7 @@ public class AdminController {
             res.addCookie(cookie);
         }
 
-        List<BoardDto> boards = adminService.findBoardWithBoardId(boardId);
+        List<BoardDto> boards = adminService.findNoticeBoardWithBoardId(boardId);
         BoardDto board = boards.get(0);
 
         model.addAttribute("board", board);
@@ -150,7 +150,7 @@ public class AdminController {
         model.addAttribute("from", from);
         model.addAttribute("to", to);
 
-        return "/admin/content";
+        return "/admin/notice/content";
     }
 
     @PostMapping(path = {"/save-notice"})
@@ -163,49 +163,153 @@ public class AdminController {
 
     @GetMapping(path = {"/board-manage"})
     public String boardManage(Model model,
+                              @RequestParam(name = "to", defaultValue = "boardSearch") String to,
                               @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
                               @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
                               @RequestParam(name = "totalSelectValue", defaultValue = "all") String totalSelectValue,
-                              @RequestParam(name = "smallSelectValue", defaultValue = "all") String smallSelectValue) {
+                              @RequestParam(name = "smallSelectValue", defaultValue = "all") String smallSelectValue,
+                              @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
 
-        List<BoardLargeCategoryDto> largeCategories = adminService.findCategories();
-        model.addAttribute("largeCategories", largeCategories);
+        model.addAttribute("to", to);
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("sortValue", sortValue);
         model.addAttribute("totalSelectValue", totalSelectValue);
+        model.addAttribute("smallSelectValue", smallSelectValue);
+        model.addAttribute("searchValue", searchValue);
 
         return "/admin/board-manage/board-manage";
     }
 
     @GetMapping(path = {"/get-content"})
     public String getContent(Model model, HttpServletRequest req,
+                             @RequestParam(name = "to", defaultValue = "boardSearch") String to,
                              @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
                              @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
                              @RequestParam(name = "totalSelectValue", defaultValue = "all") String totalSelectValue,
-                             @RequestParam(name = "smallSelectValue", defaultValue = "all") String smallSelectValue) {
-        // paging
-        int pageSize = 10;
-        int pagerSize = 5;
-        int dataCount = adminService.findAllBoardCount(totalSelectValue, smallSelectValue);
-        String uri = req.getRequestURI();
-        String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
-        String queryString = req.getQueryString();
+                             @RequestParam(name = "smallSelectValue", defaultValue = "all") String smallSelectValue,
+                             @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
 
-        int start = pageSize * (pageNo - 1);
+        try {
+            if (to.equals("boardSearch")) {
+                // paging
+                int pageSize = 10;
+                int pagerSize = 5;
+                int dataCount = adminService.findAllBoardCount(totalSelectValue, smallSelectValue, searchValue);
+                String uri = req.getRequestURI();
+                String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+                String queryString = req.getQueryString();
 
-        ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+                int start = pageSize * (pageNo - 1);
 
-        List<BoardDto> boards = adminService.findBoardWithPaging(start, sortValue, totalSelectValue, smallSelectValue);
+                ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+                List<BoardDto> boards = adminService.findBoardWithPaging(start, sortValue, totalSelectValue, smallSelectValue, searchValue);
 
-        System.out.println("count : " + dataCount);
+                if (boards.isEmpty()) {
+                    return "/modules/noDataModule";
+                }
 
-        model.addAttribute("pager", pager);
+                model.addAttribute("pager", pager);
+                model.addAttribute("pageNo", pageNo);
+                model.addAttribute("dataCount", dataCount);
+
+                model.addAttribute("boards", boards);
+            }
+            if (to.equals("reportList")) {
+                // paging
+                int pageSize = 10;
+                int pagerSize = 5;
+                int dataCount = adminService.findAllReportBoardCount(searchValue);
+                String uri = req.getRequestURI();
+                String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+                String queryString = req.getQueryString();
+
+                int start = pageSize * (pageNo - 1);
+
+                ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+                List<BoardDto> boards = adminService.findReportBoardWithPaging(start, sortValue, searchValue);
+
+                if (boards.isEmpty()) {
+                    return "/modules/noDataModule";
+                }
+
+                model.addAttribute("pager", pager);
+                model.addAttribute("pageNo", pageNo);
+                model.addAttribute("dataCount", dataCount);
+
+                model.addAttribute("boards", boards);
+            }
+
+            return "/admin/board-manage/modules/contentList";
+        } catch (Exception e) {
+            return "/modules/noDataModule";
+        }
+
+    }
+
+    @GetMapping(path = {"/detail-content"})
+    public String detailContent(Model model,
+                                @RequestParam(name = "to", defaultValue = "boardSearch") String to,
+                                @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                                @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
+                                @RequestParam(name = "boardId") int boardId,
+                                @RequestParam(name = "totalSelectValue", defaultValue = "all") String totalSelectValue,
+                                @RequestParam(name = "smallSelectValue", defaultValue = "all") String smallSelectValue,
+                                @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+
+        List<BoardDto> boards = adminService.findBoardWithBoardId(boardId);
+        BoardDto board = boards.get(0);
+
+        model.addAttribute("to", to);
         model.addAttribute("pageNo", pageNo);
-        model.addAttribute("dataCount", dataCount);
+        model.addAttribute("sortValue", sortValue);
+        model.addAttribute("totalSelectValue", totalSelectValue);
+        model.addAttribute("smallSelectValue", smallSelectValue);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("board", board);
 
-        model.addAttribute("boards", boards);
+        return "/admin/board-manage/content";
+    }
 
-        return "/admin/board-manage/modules/contentList";
+    @GetMapping(path = {"/get-controller"})
+    public String getController(Model model,
+                                @RequestParam(name = "to", defaultValue = "boardSearch") String to,
+                                @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
+                                @RequestParam(name = "totalSelectValue", defaultValue = "all") String totalSelectValue,
+                                @RequestParam(name = "smallSelectValue", defaultValue = "all") String smallSelectValue,
+                                @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+
+//        System.out.println(pageNo);
+        System.out.println("to : " + to);
+        System.out.println("sort : " + sortValue);
+        System.out.println("total : " + totalSelectValue);
+        System.out.println("small : " + smallSelectValue);
+        System.out.println("search : " + searchValue);
+
+        if (to.equals("boardSearch")) {
+            List<BoardLargeCategoryDto> largeCategories = adminService.findCategories();
+
+            model.addAttribute("largeCategories", largeCategories);
+
+            model.addAttribute("sortValue", sortValue);
+            if (totalSelectValue.equals("all")) {
+                model.addAttribute("totalSelectValue", totalSelectValue);
+            } else {
+                model.addAttribute("totalSelectValue", Integer.parseInt(totalSelectValue));
+            }
+            if (smallSelectValue.equals("all")) {
+                model.addAttribute("smallSelectValue", smallSelectValue);
+            } else {
+                model.addAttribute("smallSelectValue", Integer.parseInt(smallSelectValue));
+            }
+            model.addAttribute("searchValue", searchValue);
+        }
+        if (to.equals("reportList")) {
+            model.addAttribute("sortValue", sortValue);
+            model.addAttribute("searchValue", searchValue);
+        }
+
+        return "/admin/board-manage/modules/" + to + "Module";
+
     }
 
 }

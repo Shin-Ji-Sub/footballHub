@@ -25,14 +25,23 @@ public interface AdminMapper {
 
     void updateVisitedBoard(int boardId);
 
-    List<BoardDto> selectBoardWithBoardId(int boardId);
+    List<BoardDto> selectNoticeBoardWithBoardId(int boardId);
 
     void updateBoardsState(List<Integer> contentIds);
 
     List<BoardLargeCategoryDto> selectCategories();
 
-    int selectAllBoardCount(@Param("totalSelectValue") String totalSelectValue, @Param("smallSelectValue") String smallSelectValue);
+    int selectAllBoardCount(@Param("totalSelectValue") String totalSelectValue, @Param("smallSelectValue") String smallSelectValue,
+                            @Param("searchValue") String searchValue);
 
     List<BoardDto> selectBoardWithPaging(@Param("start") int start, @Param("sortValue") String sortValue,
-                                         @Param("totalSelectValue") String totalSelectValue, @Param("smallSelectValue") String smallSelectValue);
+                                         @Param("totalSelectValue") String totalSelectValue, @Param("smallSelectValue") String smallSelectValue,
+                                         @Param("searchValue") String searchValue);
+
+    List<BoardDto> selectBoardWithBoardId(int boardId);
+
+    int selectAllReportBoardCount(String searchValue);
+
+    List<BoardDto> selectReportBoardWithPaging(@Param("start") int start, @Param("sortValue") String sortValue,
+                                               @Param("searchValue") String searchValue);
 }

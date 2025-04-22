@@ -49,8 +49,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<BoardDto> findBoardWithBoardId(int boardId) {
-        return adminMapper.selectBoardWithBoardId(boardId);
+    public List<BoardDto> findNoticeBoardWithBoardId(int boardId) {
+        return adminMapper.selectNoticeBoardWithBoardId(boardId);
     }
 
     @Override
@@ -64,12 +64,28 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public int findAllBoardCount(String totalSelectValue, String smallSelectValue) {
-        return adminMapper.selectAllBoardCount(totalSelectValue, smallSelectValue);
+    public int findAllBoardCount(String totalSelectValue, String smallSelectValue, String searchValue) {
+        return adminMapper.selectAllBoardCount(totalSelectValue, smallSelectValue, searchValue);
     }
 
     @Override
-    public List<BoardDto> findBoardWithPaging(int start, String sortValue, String totalSelectValue, String smallSelectValue) {
-        return adminMapper.selectBoardWithPaging(start, sortValue, totalSelectValue, smallSelectValue);
+    public List<BoardDto> findBoardWithPaging(int start, String sortValue, String totalSelectValue, String smallSelectValue, String searchValue) {
+        return adminMapper.selectBoardWithPaging(start, sortValue, totalSelectValue, smallSelectValue, searchValue);
     }
+
+    @Override
+    public List<BoardDto> findBoardWithBoardId(int boardId) {
+        return adminMapper.selectBoardWithBoardId(boardId);
+    }
+
+    @Override
+    public int findAllReportBoardCount(String searchValue) {
+        return adminMapper.selectAllReportBoardCount(searchValue);
+    }
+
+    @Override
+    public List<BoardDto> findReportBoardWithPaging(int start, String sortValue, String searchValue) {
+        return adminMapper.selectReportBoardWithPaging(start, sortValue, searchValue);
+    }
+
 }

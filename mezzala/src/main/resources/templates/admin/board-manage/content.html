@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Text Editor -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Custom -->
+    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/content.css">
+    <title>FootballHub</title>
+</head>
+<body>
+    <div th:replace="~{/modules/header}"></div>
+
+    <main>
+        <!-- 제목, 본문, 댓글, 전체 인기글 -->
+        <div class="main-container">
+            <!-- 본문 -->
+            <div class="section content-section">
+                <!-- 제목, 카테고리(btn), 작성자, 작성날짜, 조회수 -->
+                <div class="content-subject-container dividing-line">
+                    <div class="subject-line">
+                        <div class="content-subject" th:text="${board.subject}"></div>
+                    </div>
+                    <div class="category-button">
+                        <button class="content-category" id="largeCategoryButton"
+                                th:data-value="${board.largeCategory.largeCategoryId}"
+                                th:text="${board.largeCategory.largeCategoryName}"></button>
+                        <button class="content-category" id="smallCategoryButton"
+                                th:data-value="${board.smallCategory.smallCategoryIndex}"
+                                th:text="${board.smallCategory.smallCategoryName}"></button>
+                    </div>
+                    <div class="board-info">
+                        <div class="content-info-container">
+                            <span class="info-data" th:text="${board.user.nickname}"></span>
+<!--                            <span class="info-data" th:text="${#dates.format(board.regDate, 'yy-MM-dd')}"></span>-->
+                            <span class="info-data" th:text="${board.getRegDateFormatted()}"></span>
+                            <span class="info-data" id="likeModuleBox">
+                                <!-- 좋아요 개수 -->
+                            </span>
+                            <span class="info-data">
+                              <i class="bi bi-door-open"></i>
+                              <span th:text="${board.visitCount}"></span>
+                            </span>
+                        </div>
+<!--                        <div class="content-info-container" th:if="${session.user != null && session.user.userId == board.user.userId}">-->
+                        <div class="content-info-container">
+                            <span class="comment-button-common text-warning" id="modifyContentButton">
+                                <i class="bi bi-pencil-fill"></i>
+                                수정
+                            </span>
+                            <span class="comment-button-common text-danger" id="deleteContentButton">
+                                <i class="bi bi-trash-fill"></i>
+                                삭제
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 본문 -->
+                <div class="dividing-line">
+                    <div id="viewer"></div>
+                </div>
+                <!-- 추천 버튼, 스크랩 추가 버튼 -->
+                <!-- 이전글, 목록, 다음글 버튼 -->
+                <div class="content-button-list dividing-line">
+                    <div class="top-button-list">
+                        <!-- 좋아요, 스크랩하기 버튼 -->
+                        <!-- userActionModule -->
+                    </div>
+                    <div class="bottom-button-list">
+                        <div></div>
+                        <button class="content-button" id="toList">
+                            <i class="bi bi-list-task"></i>
+                            <span>목록</span>
+                        </button>
+                        <div></div>
+                    </div>
+                </div>
+                <!-- 댓글 -->
+                <div class="dividing-line">
+                    <div class="comment-content-section" id="commentModuleBox">
+                        <!-- 댓글 Module -->
+                    </div>
+                    <div class="comment-write-section" th:if="${session.user != null}">
+                        <textarea name="content" class="write-comment" id="writeComment" placeholder="댓글을 작성해주세요"></textarea>
+                        <button class="comment-write-button bg-primary" id="writeCommentButton">
+                            <i class="bi bi-send-fill"></i>
+                            등록
+                        </button>
+                    </div>
+                    <div class="block-comment-section" th:if="${session.user == null}">
+                        <div class="block-container">
+                            <button class="comment-login-button" id="boardToLogin">로그인</button>
+                            <span>로그인 후 댓글 등록이 가능합니다.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="userId" th:if="${session.user != null}" th:value="${session.user.userId}">
+        <input type="hidden" id="writeUserId" th:value="${board.user.userId}">
+        <input type="hidden" id="writeUserNickname" th:value="${board.user.nickname}">
+        <input type="hidden" id="boardId" th:value="${board.boardId}">
+        <input type="hidden" id="pageNo" th:value="${pageNo}">
+        <input type="hidden" id="sortValue" th:value="${sortValue}">
+        <input type="hidden" id="totalSelectValue" th:value="${totalSelectValue}">
+        <input type="hidden" id="smallSelectValue" th:value="${smallSelectValue}">
+        <input type="hidden" id="searchValue" th:value="${searchValue}">
+        <input type="hidden" id="to" th:value="${to}">
+    </main>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Text Editor -->
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+</body>
+<script type="text/javascript" th:inline="javascript">
+    $(window).on('load', function() {
+        const user = /*[[${session.user}]]*/'';
+        const content = /*[[${board.content}]]*/'';
+        const likeUserActions = /*[[${likeActions}]]*/'';
+        const bookmarkUserActions = /*[[${bookmarkActions}]]*/'';
+
+        const boardId = $('#boardId').val();
+        const writeUserId = $('#writeUserId').val();
+        const writeUserNickname = $('#writeUserNickname').val();
+        const userId = $('#userId').val();
+        const pageNo = Number($('#pageNo').val());
+        const sortValue = $('#sortValue').val();
+        const totalSelectValue = $('#totalSelectValue').val();
+        const smallSelectValue = $('#smallSelectValue').val();
+        const searchValue = $('#searchValue').val();
+        const to = $('#to').val();
+        let commentPageNo = 1;
+
+        const topButtonList = $('.top-button-list');
+        const likeModuleBox = $('#likeModuleBox');
+        const writeCommentBox = $('.write-comment-box');
+        const boardToLoginButton = $('#boardToLogin');
+        const writeCommentButton = $('#writeCommentButton');
+        const commentModuleBox = $('#commentModuleBox');
+        const largeCategoryButton = $('#largeCategoryButton');
+        const toListButton = $('#toList');
+
+        // Toast UI Viewer 사용하여 렌더링
+        const viewer = new toastui.Editor.factory({
+            el : document.querySelector('#viewer'),
+            viewer : true,  // 읽기 전용 모드
+            initialValue : content
+        });
+
+        // 좋아요 Header LOAD
+        likeModuleBox.load('/board/action-like?boardId=' + boardId);
+        // 댓글 LOAD
+        const commentLoad = () => {
+            let commentIdArr = [];
+            $('.comment-id').each(function() {
+                commentIdArr.push($(this).val());
+            });
+            $('.comment-action').each(function() {
+                const index = commentIdArr.findIndex(value => value == $(this).val());
+                if (index != -1) {
+                    $('.comment-recommendation-button').eq(index).addClass('display-none');
+                    $('.cancel-recommendation-button').eq(index).removeClass('display-none');
+                }
+            });
+        }
+        commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
+
+        // 목록 버튼
+        toListButton.on('click', (e) => {
+            location.href = "/admin/board-manage?pageNo=" + pageNo + "&sortValue=" + sortValue +
+                                                    "&totalSelectValue=" + totalSelectValue + "&smallSelectValue=" + smallSelectValue +
+                                                    "&searchValue=" + searchValue + "&to=" + to;
+        });
+
+        // 글 수정 기능
+        $('#modifyContentButton').on('click', (e) => {
+            location.href = '/board/modify-content?boardId=' + boardId;
+        });
+
+        // 글 삭제 기능
+        $('#deleteContentButton').on('click', (e) => {
+            const ok = window.confirm('글을 삭제하시겠습니까? 삭제하면 복구할 수 없습니다.');
+            if (ok) {
+                $.ajax({
+                    url : '/board/before-delete',
+                    method : 'POST',
+                    data : 'writeUserId=' + writeUserId,
+                    dataType : 'text',
+                    success : (response, status, xhr) => {
+                        if (response == "success") {
+                            location.href = '/board/delete-content?boardId=' + boardId;
+                        } else {
+                            alert('글을 삭제하지 못했습니다. 다시 한번 시도해주세요.');
+                        }
+                    },
+                    error : (xhr, status, error) => {
+                        alert('글을 삭제하지 못했습니다. 다시 한번 시도해주세요.');
+                    }
+                });
+            }
+        });
+
+        // 댓글 three dots 버튼
+        commentModuleBox.on('click', '.dots-button', (e) => {
+            e.stopPropagation();
+            $('.report-container').addClass('display-none');
+            $('.dots-button').removeClass('display-none');
+            $(e.currentTarget).siblings('.report-container').removeClass('display-none');
+            $(e.currentTarget).addClass('display-none');
+        });
+        // report container 외 다른 곳 클릭 시 닫힘
+        $(document).on('click', (e) => {
+            if (!$(e.target).closest('.report-container, .dots-button').length) {
+                $('.report-container').addClass('display-none');
+                $('.dots-button').removeClass('display-none');
+            }
+            if (!$(e.target).closest('#boardDotsButton, #boardReportContainer').length) {
+                boardDotsButton.removeClass('display-none');
+                boardReportContainer.addClass('display-none');
+            }
+        });
+
+        // 댓글 신고 기능
+        commentModuleBox.on('click', '.report-button', (e) => {
+            if (userId == undefined) {
+                alert('로그인 후 이용해주세요.');
+                return;
+            }
+
+            const commentId = $(e.currentTarget).siblings('.identification').val();
+            const blockUser = $(e.currentTarget).siblings('.comment-write-user').val();
+
+            if (blockUser == userId) {
+                alert('본인은 신고할 수 없습니다.');
+                return;
+            }
+
+            const ok = window.confirm('이 글을 부적절한 댓글로 신고하시겠습니까?');
+
+            if (ok) {
+                $.ajax({
+                    url : "/account/report-content",
+                    method : "POST",
+                    data : "reportCategory=comment&contentId=" + commentId + "&userId=" + userId,
+                    dataType : "text",
+                    success : (response, status, xhr) => {
+                        if (response == "success") {
+                            alert('신고되었습니다.');
+                        }
+                        if (response == "fail") {
+                            alert('중복 신고는 불가능합니다.');
+                        }
+                    },
+                    error : (xhr, status, error) => {
+                        alert('신고하지 못하였습니다. 다시 시도해주세요.');
+                    }
+                });
+            }
+        });
+
+        // 댓글 차단 기능
+        commentModuleBox.on('click', '.block-button', (e) => {
+            if (userId == undefined) {
+                alert('로그인 후 이용해주세요.');
+                return;
+            }
+
+            const blockUser = $(e.currentTarget).siblings('.comment-write-user').val();
+            const blockUserNickname = $(e.currentTarget).siblings('.comment-write-nickname').val();
+            if (blockUser == userId) {
+                alert('본인은 차단할 수 없습니다.');
+                return;
+            }
+
+            const ok = window.confirm(`${blockUserNickname}님을 차단하시겠습니까? 차단 시 차단한 사용자가 작성한 글, 댓글들이 보이지 않습니다.`);
+
+            if (ok) {
+                $.ajax({
+                    url : "/account/block-user",
+                    method : "POST",
+                    data : "blockUser=" + blockUser + "&userId=" + userId,
+                    dataType : "text",
+                    success : (response, status, xhr) => {
+                        if (response == "success") {
+                            alert(`${blockUserNickname}님을 차단하였습니다.`);
+                            location.href = "/home";
+                        }
+                        if (response == "fail") {
+                            alert('이미 차단된 사용자입니다.');
+                        }
+                    },
+                    error : (xhr, status, error) => {
+                        alert('차단하지 못하였습니다. 다시 시도해주세요.');
+                    }
+                });
+            }
+        });
+
+        // 댓글의 로그인 버튼
+        boardToLoginButton.on('click', (e) => {
+            logIn();
+        });
+
+        // 댓글 등록 버튼
+        writeCommentButton.on('click', (e) => {
+            const content = encodeURIComponent($('#writeComment').val());
+            const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
+            if (content.length == 0) {
+                alert('댓글을 써주세요.');
+                $('#writeComment').focus();
+                return;
+            } else {
+                $.ajax({
+                    url : '/board/write-comment',
+                    method : 'POST',
+                    data : 'content=' + content + '&boardId=' + boardId + '&userId=' + userId,
+                    dataType : 'text',
+                    success : (response, status, xhr) => {
+                        if (response == 'success') {
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + lastPageNo, commentLoad);
+                            $('#writeComment').val("");
+                        } else {
+                            alert('댓글을 등록하지 못하였습니다. 다시 작성해주세요.');
+                        }
+                    },
+                    error : (xhr, status, error) => {
+                        alert('댓글을 등록하지 못하였습니다. 다시 작성해주세요.');
+                    }
+                });
+            }
+        });
+
+        // (대)댓글쓰기 버튼 - textarea view 노출
+        commentModuleBox.on('click', '.append-comment', (e) => {
+            if (user == null) {
+                alert('로그인 후 댓글 등록이 가능합니다.');
+            } else {
+                console.log(1);
+                $('.write-comment-box').empty();
+                $(e.currentTarget).parent('.item-header').siblings('.write-comment-box').append(
+                    `
+                    <div class="comment-write-section">
+                        <textarea name="content" class="write-comment" id="writeRecomment" placeholder="댓글을 작성해주세요"></textarea>
+                        <div class="recomment-button-box">
+                            <button class="comment-action-button bg-danger close-recomment">
+                                <i class="bi bi-x-circle"></i>
+                                닫기
+                            </button>
+                            <button class="comment-action-button bg-primary write-recomment" id="writeRecommentButton">
+                                <i class="bi bi-send-fill"></i>
+                                등록
+                            </button>
+                        </div>
+                    </div>
+                    `
+                );
+            }
+        });
+        // (대)댓글 등록 버튼
+        commentModuleBox.on('click', '#writeRecommentButton', (e) => {
+            const content = encodeURIComponent($('#writeRecomment').val());
+            const parentId = $(e.currentTarget).closest('.write-comment-box').data('id');
+            if (content.length == 0) {
+                alert('댓글을 써주세요.');
+                $('#writeRecomment').focus();
+                return;
+            } else {
+                $.ajax({
+                    url : '/board/write-comment',
+                    method : 'POST',
+                    data : 'content=' + content + '&boardId=' + boardId + '&userId=' + userId + '&parentId=' + parentId,
+                    dataType : 'text',
+                    success : (response, status, xhr) => {
+                        if (response == 'success') {
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + commentPageNo, commentLoad);
+                            $('#writeComment').val("");
+                        } else {
+                            alert('댓글 등록하지 못하였습니다. 다시 작성해주세요.');
+                        }
+                    },
+                    error : (xhr, status, error) => {
+                        alert('댓글 등록하지 못하였습니다. 다시 작성해주세요.');
+                    }
+                });
+            }
+        });
+        // (대)댓글 닫기 버튼
+        commentModuleBox.on('click', '.close-recomment', (e) => {
+            $('.write-comment-box').empty();
+        });
+
+        // 댓글 삭제 버튼
+        commentModuleBox.on('click', '.delete-comment-button', (e) => {
+            const ok = window.confirm('삭제하면 복구할 수 없습니다. 그래도 삭제하겠습니까?');
+            if (ok) {
+                const commentId = $(e.currentTarget).parent('.item-header').siblings('input.comment-id').val();
+                $.ajax({
+                    url : '/board/delete-comment',
+                    method : 'POST',
+                    data : 'commentId=' + commentId + '&boardId=' + boardId,
+                    dataType : 'text',
+                    success : (response, status, xhr) => {
+                        if (response == 'success') {
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + commentPageNo, commentLoad);
+                        } else {
+                            alert('댓글 삭제를 못하였습니다. 다시 시도해주세요.');
+                        }
+                    },
+                    error : (xhr, status, error) => {
+                        alert('댓글 삭제를 못하였습니다. 다시 시도해주세요.');
+                    }
+                });
+            }
+        });
+
+        // 댓글 수정 버튼 - textarea view 노출
+        commentModuleBox.on('click', '.modify-comment-button', (e) => {
+            //item-content
+            $(e.currentTarget).parent('.item-header').siblings('.item-content').addClass('display-none');
+            $(e.currentTarget).parent('.item-header').siblings('.comment-write-section').removeClass('display-none');
+        });
+        // 댓글 수정 취소 버튼
+        commentModuleBox.on('click', '.cancel-comment-button', (e) => {
+            $(e.currentTarget).closest('.comment-write-section').siblings('.item-content').removeClass('display-none');
+            $(e.currentTarget).closest('.comment-write-section').addClass('display-none');
+        });
+
+        // 댓글 수정 기능
+        commentModuleBox.on('click', '.modify-comment-function', (e) => {
+            const commentId = $(e.currentTarget).closest('.comment-write-section').siblings('input.comment-id').val();
+            const content = encodeURIComponent($(e.currentTarget).parent('.recomment-button-box').siblings('.write-comment').val());
+            $.ajax({
+                url : '/board/modify-comment',
+                method : 'POST',
+                data : 'commentId=' + commentId + '&boardId=' + boardId + '&content=' + content,
+                dataType : 'text',
+                success : (response, status, xhr) => {
+                    if (response == 'success') {
+                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + commentPageNo, commentLoad);
+                    } else {
+                        alert('댓글 수정을 못하였습니다. 다시 시도해주세요.');
+                    }
+                },
+                error : (xhr, status, error) => {
+                    alert('댓글 수정을 못하였습니다. 다시 시도해주세요.');
+                }
+            });
+        });
+
+        // 댓글 추천 기능
+        commentModuleBox.on('click', '.comment-recommendation-button', (e) => {
+            if (user == null) {
+                alert('로그인 후 댓글 등록이 가능합니다.');
+            } else {
+                const commentId = $(e.currentTarget).parent('.item-header').siblings('input.comment-id').val();
+                $.ajax({
+                    url : '/board/recommendation-comment',
+                    method : 'POST',
+                    data : 'commentId=' + commentId + '&userId=' + userId,
+                    dataType : 'text',
+                    success : (response, status, xhr) => {
+                        if (response == "success") {
+                            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + commentPageNo, commentLoad);
+                        } else {
+                            alert('추천하지 못하였습니다. 다시 시도해주세요.');
+                        }
+                    },
+                    error : (xhr, status, error) => {
+                        alert('추천하지 못하였습니다. 다시 시도해주세요.');
+                    }
+                });
+            }
+        });
+        // 댓글 추천 취소
+        commentModuleBox.on('click', '.cancel-recommendation-button', (e) => {
+            const commentId = $(e.currentTarget).parent('.item-header').siblings('input.comment-id').val();
+            $.ajax({
+                url : '/board/cancel-comment-recommendation',
+                method : 'POST',
+                data : 'commentId=' + commentId + '&userId=' + userId,
+                dataType : 'text',
+                success : (response, status, xhr) => {
+                    if (response == "success") {
+                        commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + commentPageNo, commentLoad);
+                    } else {
+                        alert('추천 취소하지 못하였습니다. 다시 시도해주세요.');
+                    }
+                },
+                error : (xhr, status, error) => {
+                    alert('추천 취소하지 못하였습니다. 다시 시도해주세요.');
+                }
+            });
+        });
+
+        // 댓글 pagination
+        commentModuleBox.on('click', '.page-item', function(e) {
+            commentPageNo = $('.paging').data('pageno');
+            const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
+            if (/«/.test($(this).text())) commentPageNo = 1;
+            if ($(this).text() == '<') commentPageNo = commentPageNo - 1 < 1 ? 1 : commentPageNo - 1;
+            if ($(this).text() == '>') commentPageNo = commentPageNo + 1 > lastPageNo ? lastPageNo : commentPageNo + 1;
+            if (/»/.test($(this).text())) commentPageNo = lastPageNo;
+            if (!isNaN($(this).text())) commentPageNo = $(this).text();
+
+            commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + commentPageNo, commentLoad);
+        });
+
+    });
+</script>
+</html>

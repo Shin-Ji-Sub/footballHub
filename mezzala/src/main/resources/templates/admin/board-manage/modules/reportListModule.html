@@ -1,0 +1,19 @@
+<nav xmlns:th="http://www.thymeleaf.org" class="nav nav-pills nav-justified">
+    <a class="nav-link active" data-value="board" aria-current="page" href="#">신고된 글</a>
+    <a class="nav-link" data-value="comment" href="#">신고된 댓글</a>
+</nav>
+<div class="board-manage-sort-container">
+    <th:block th:if="${sortValue == 'latest'}">
+        <span class="subject sort-button underline" data-value="latest">최신순</span>
+        <span class="subject sort-button" data-value="reportOrder">신고수순</span>
+    </th:block>
+    <th:block th:if="${sortValue == 'reportOrder'}">
+        <span class="subject sort-button" data-value="latest">최신순</span>
+        <span class="subject sort-button underline" data-value="reportOrder">신고수순</span>
+    </th:block>
+</div>
+<div class="input-group">
+    <input type="text" class="form-control" id="searchSubject" placeholder="글제목으로 검색" aria-label="Recipient's username" aria-describedby="button-addon2"
+           th:value="${searchValue}">
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2">검색</button>
+</div>

@@ -59,6 +59,12 @@
 
 
 /* Admin - Board Management Section */
+.content-controller-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2rem;
+}
+
 .board-manage-container {
   display: flex;
   flex-direction: column;

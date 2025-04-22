@@ -1,0 +1,97 @@
+<h4>글 검색</h4>
+<div xmlns:th="http://www.thymeleaf.org" class="board-manage-sort-container">
+    <th:block th:if="${sortValue == 'latest'}">
+        <span class="subject sort-button underline" data-value="latest">최신순</span>
+        <span class="subject sort-button" data-value="best">인기순</span>
+    </th:block>
+    <th:block th:if="${sortValue == 'best'}">
+        <span class="subject sort-button" data-value="latest">최신순</span>
+        <span class="subject sort-button underline" data-value="best">인기순</span>
+    </th:block>
+</div>
+<div class="input-group">
+    <input type="text" class="form-control" id="searchSubject" placeholder="글제목으로 검색" aria-label="Recipient's username" aria-describedby="button-addon2"
+           th:value="${searchValue}">
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2">검색</button>
+</div>
+<select id="totalSelect" class="form-select" aria-label="Default select example">
+    <option value="all" th:selected="${totalSelectValue == 'all'}">전체</option>
+    <option th:each="largeCategory : ${largeCategories}"
+            th:if="${largeCategory.largeCategoryName != '공지사항'}"
+            th:value="${largeCategory.largeCategoryId}"
+            th:text=${largeCategory.largeCategoryName}
+            th:selected="${largeCategory.largeCategoryId == totalSelectValue}"></option>
+</select>
+<!-- 일반 선택했을 때 -->
+<th:block th:if="${totalSelectValue != 1}">
+    <select id="normalSelect" class="form-select display-none" aria-label="Default select example">
+        <option value="all" th:selected="${smallSelectValue == 'all'}">전체</option>
+        <th:block th:each="largeCategory : ${largeCategories}"
+                  th:if="${largeCategory.largeCategoryId == 1}">
+            <option th:each="smallCategory : ${largeCategory.smallCategories}"
+                    th:value="${smallCategory.smallCategoryIndex}"
+                    th:text="${smallCategory.smallCategoryName}"
+                    th:selected="${smallCategory.smallCategoryIndex == smallSelectValue}"></option>
+        </th:block>
+    </select>
+</th:block>
+<th:block th:if="${totalSelectValue == 1}">
+    <select id="normalSelect" class="form-select" aria-label="Default select example">
+        <option value="all" th:selected="${smallSelectValue == 'all'}">전체</option>
+        <th:block th:each="largeCategory : ${largeCategories}"
+                  th:if="${largeCategory.largeCategoryId == 1}">
+            <option th:each="smallCategory : ${largeCategory.smallCategories}"
+                    th:value="${smallCategory.smallCategoryIndex}"
+                    th:text="${smallCategory.smallCategoryName}"
+                    th:selected="${smallCategory.smallCategoryIndex == smallSelectValue}"></option>
+        </th:block>
+    </select>
+</th:block>
+<!-- 공화국을 선택했을 때 -->
+<th:block th:if="${totalSelectValue != 2}">
+    <div id="fandomSelect" class="input-group mb-3 display-none">
+        <input readonly type="text" class="form-control" id="teamValue" value="전체">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <i class="bi bi-search"></i>
+        </button>
+    </div>
+</th:block>
+<th:block th:if="${totalSelectValue == 2}">
+    <div id="fandomSelect" class="input-group mb-3">
+        <input readonly type="text" class="form-control" id="teamValue" value="전체">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <i class="bi bi-search"></i>
+        </button>
+    </div>
+</th:block>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">선택창</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h2 class="fs-5">팀 검색</h2>
+                <input type="text" class="team-search" id="teamSearchValue" placeholder="팀 이름을 입력해주세요.">
+                <hr>
+                <h2 class="fs-5">팀 목록</h2>
+                <p class="fandom-item-container">
+                    <button type="button" class="btn btn-outline-primary fandom-item" data-value="all">전체</button>
+                    <th:block th:each="largeCategory : ${largeCategories}"
+                              th:if="${largeCategory.largeCategoryId == 2}">
+                        <button th:each="smallCategory : ${largeCategory.smallCategories}"
+                                th:text="${smallCategory.smallCategoryName}"
+                                th:data-value="${smallCategory.smallCategoryIndex}"
+                                type="button" class="btn btn-outline-primary fandom-item"></button>
+                    </th:block>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+        </div>
+    </div>
+</div>

@@ -18,141 +18,173 @@
             <!-- 모든 글을 보여주는데,
             카테고리, 검색, 인기순/최신순, 신고된 글, 신고된 댓글 -->
             <!-- 글에 삭제 및 수정 -->
-            <div class="container section content-container board-manage-container">
-                <h4>글 검색</h4>
-                <div class="board-manage-sort-container">
-                    <th:block th:if="${sortValue == 'latest'}">
-                        <span class="subject sort-button underline" data-value="latest">최신순</span>
-                        <span class="subject sort-button" data-value="best">인기순</span>
-                    </th:block>
-                    <th:block th:if="${sortValue == 'best'}">
-                        <span class="subject" data-value="latest">최신순</span>
-                        <span class="subject underline" data-value="best">인기순</span>
-                    </th:block>
-                </div>
-                <select id="totalSelect" class="form-select" aria-label="Default select example">
-                    <option value="all" th:selected="${totalSelectValue == 'all'}">전체</option>
-                    <option th:each="largeCategory : ${largeCategories}"
-                            th:if="${largeCategory.largeCategoryName != '공지사항'}"
-                            th:value="${largeCategory.largeCategoryId}"
-                            th:text=${largeCategory.largeCategoryName}
-                            th:selected="${largeCategory.largeCategoryName == totalSelectValue}"></option>
-                    <option value="신고된글">신고된 글</option>
-<!--                    <option value="신고된댓글">신고된 댓글</option>-->
-                </select>
-                <!-- 일반 선택했을 때 -->
-                <select id="normalSelect" class="form-select display-none" aria-label="Default select example">
-                    <option value="all" selected>전체</option>
-                    <th:block th:each="largeCategory : ${largeCategories}"
-                              th:if="${largeCategory.largeCategoryId == 1}">
-                        <option th:each="smallCategory : ${largeCategory.smallCategories}"
-                                th:value="${smallCategory.smallCategoryIndex}"
-                                th:text="${smallCategory.smallCategoryName}"></option>
-                    </th:block>
-                </select>
-                <!-- 공화국을 선택했을 때 -->
-                <div id="fandomSelect" class="input-group mb-3 display-none">
-                    <input readonly type="text" class="form-control" id="teamValue" value="전체">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        <i class="bi bi-search"></i>
-                    </button>
+            <div class="container section content-container content-controller-container">
+                <ul class="nav nav-tabs justify-content-center">
+                    <li class="nav-item">
+                        <a class="nav-link board-controller-nav active text-primary" data-value="boardSearch" aria-current="page" href="#">글 검색</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link board-controller-nav" data-value="reportList" href="#">신고 목록</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link board-controller-nav" data-value="controlCategory" href="#">카테고리 관리</a>
+                    </li>
+                </ul>
+                <div class="board-manage-container">
+                    <!-- 글검색, 신고목록, 카테고리관리 모듈 -->
                 </div>
             </div>
             <div class="container section content-container" id="contentModule">
-                <!-- 글목록 -->
+                <!-- 글목록 모듈 -->
             </div>
         </div>
     </main>
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">선택창</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h2 class="fs-5">팀 검색</h2>
-                    <input type="text" class="team-search" id="teamSearchValue" placeholder="팀 이름을 입력해주세요.">
-                    <hr>
-                    <h2 class="fs-5">팀 목록</h2>
-                    <p class="fandom-item-container">
-                        <button type="button" class="btn btn-outline-primary fandom-item" data-value="all">전체</button>
-                        <th:block th:each="largeCategory : ${largeCategories}"
-                                  th:if="${largeCategory.largeCategoryId == 2}">
-                            <button th:each="smallCategory : ${largeCategory.smallCategories}"
-                                    th:text="${smallCategory.smallCategoryName}"
-                                    th:data-value="${smallCategory.smallCategoryIndex}"
-                                    type="button" class="btn btn-outline-primary fandom-item"></button>
-                        </th:block>
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
-                </div>
-            </div>
-        </div>
-    </div>
+<!--    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
+<!--        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h1 class="modal-title fs-5" id="exampleModalLabel">선택창</h1>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <h2 class="fs-5">팀 검색</h2>-->
+<!--                    <input type="text" class="team-search" id="teamSearchValue" placeholder="팀 이름을 입력해주세요.">-->
+<!--                    <hr>-->
+<!--                    <h2 class="fs-5">팀 목록</h2>-->
+<!--                    <p class="fandom-item-container">-->
+<!--                        <button type="button" class="btn btn-outline-primary fandom-item" data-value="all">전체</button>-->
+<!--                        <th:block th:each="largeCategory : ${largeCategories}"-->
+<!--                                  th:if="${largeCategory.largeCategoryId == 2}">-->
+<!--                            <button th:each="smallCategory : ${largeCategory.smallCategories}"-->
+<!--                                    th:text="${smallCategory.smallCategoryName}"-->
+<!--                                    th:data-value="${smallCategory.smallCategoryIndex}"-->
+<!--                                    type="button" class="btn btn-outline-primary fandom-item"></button>-->
+<!--                        </th:block>-->
+<!--                    </p>-->
+<!--                </div>-->
+<!--                <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
+<!--                    &lt;!&ndash; <button type="button" class="btn btn-primary">Save changes</button> &ndash;&gt;-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <input type="hidden" id="to" th:value="${to}">
     <input type="hidden" id="pageNo" th:value="${pageNo}">
     <input type="hidden" id="sortValue" th:value="${sortValue}">
+    <input type="hidden" id="totalSelectValue" th:value="${totalSelectValue}">
+    <input type="hidden" id="smallSelectValue" th:value="${smallSelectValue}">
+    <input type="hidden" id="searchValue" th:value="${searchValue}">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script type="text/javascript" th:inline="javascript">
         $(window).on('load', function() {
-            const teamSearchValue = $('#teamSearchValue');
-            const fandomItem = $('.fandom-item');
-            const teamValue = $('#teamValue');
-            const totalSelect = $('#totalSelect');
-            const normalSelect = $('#normalSelect');
-            const fandomSelect = $('#fandomSelect');
             const contentModule = $('#contentModule');
-            const sortButton = $('.sort-button');
+            const boardManageModule = $('.board-manage-container');
 
+            let to = $('#to').val();
             let pageNo = $('#pageNo').val();
             let sortValue = $('#sortValue').val();
-            let totalSelectValue = $('#totalSelect').val();
+            let searchValue = $('#searchValue').val();
             let normalSelectValue = $('#normalSelect').val();
             let fandomSelectValue = $('#teamValue').val();
-            let smallSelectValue = "all";
-            if (totalSelectValue == 1) smallSelectValue = $('#normalSelect').val();
-            if (totalSelectValue == 2) smallSelectValue = $('#teamValue').val();
+            let totalSelectValue = $('#totalSelectValue').val();
+            let smallSelectValue = $('#smallSelectValue').val();
+            //if (totalSelectValue == 1) smallSelectValue = $('#normalSelect').val();
+            //if (totalSelectValue == 2) smallSelectValue = $('#teamValue').val();
 
             // 현재 page nav에 표시
             const locationCategories = $('.location-category');
             locationCategories.eq(1).addClass('active');
             locationCategories.eq(1).addClass('text-primary');
 
-            contentModule.load("/admin/get-content?pageNo=" + pageNo + "&sortValue=" + sortValue);
+            // 현재 controller nav에 표시
+            const controllerNav = $('.board-controller-nav');
+            let navIndex = 0;
+            if (to == "boardSearch") navIndex = 0;
+            if (to == "reportList") navIndex = 1;
+            if (to == "controlCategory") navIndex = 2;
+            controllerNav.removeClass('active');
+            controllerNav.removeClass('text-primary');
+            controllerNav.eq(navIndex).addClass('active');
+            controllerNav.eq(navIndex).addClass('text-primary');
+
+            // Controller Nav 이동
+            controllerNav.on('click', (e) => {
+                controllerNav.removeClass('active');
+                controllerNav.removeClass('text-primary');
+                $(e.currentTarget).addClass('active');
+                $(e.currentTarget).addClass('text-primary');
+                to = $(e.currentTarget).data('value');
+
+                boardManageModule.load("/admin/get-controller?to=" + to);
+                contentModule.load("/admin/get-content?to=" + to);
+            });
+
+            // 처음 NAV LOAD
+            boardManageModule.load("/admin/get-controller?to=" + to + "&sortValue=" + sortValue +
+                                                          "&totalSelectValue=" + totalSelectValue + "&smallSelectValue=" + smallSelectValue +
+                                                          "&searchValue=" + searchValue, () => {
+                                                              if (totalSelectValue == 2) {
+                                                                  const findIndex = $('.fandom-item').toArray().findIndex(value => {
+                                                                      return $(value).data('value') == smallSelectValue;
+                                                                  });
+                                                                  $('#teamValue').val($('.fandom-item').eq(findIndex).text());
+                                                              }
+                                                          });
+            // 처음 CONTENT LOAD
+            contentModule.load("/admin/get-content?pageNo=" + pageNo + "&sortValue=" + sortValue +
+                                                  "&totalSelectValue=" + totalSelectValue + "&smallSelectValue=" + smallSelectValue +
+                                                  "&searchValue=" + searchValue + "&to=" + to);
 
             // 최신순, 인기순 정렬 버튼
-            sortButton.on('click', (e) => {
-                sortButton.removeClass('underline');
+            boardManageModule.on('click', '.sort-button', (e) => {
+                $('.sort-button').removeClass('underline');
                 $(e.currentTarget).addClass('underline');
 
                 sortValue = $(e.currentTarget).data('value');
                 contentModule.load("/admin/get-content?sortValue=" + sortValue + "&totalSelectValue=" + totalSelectValue +
-                                                       "&smallSelectValue=" + smallSelectValue);
+                                                       "&smallSelectValue=" + smallSelectValue + "&searchValue=" + searchValue + "&to=" + to);
+            });
+
+            // 글제목 검색
+            function search() {
+                searchValue = encodeURIComponent($('#searchSubject').val());
+                contentModule.load("/admin/get-content?sortValue=" + sortValue + "&totalSelectValue=" + totalSelectValue +
+                                                       "&smallSelectValue=" + smallSelectValue + "&searchValue=" + searchValue + "&to=" + to);
+            }
+            boardManageModule.on('click', '#button-addon2', (e) => {
+                search();
+            });
+            boardManageModule.on('keyup', '#searchSubject', (key) => {
+                if (key.keyCode == 13) {
+                    search();
+                }
             });
 
             // 전체 Select
-            totalSelect.on('change', (e) => {
+            boardManageModule.on('change', '#totalSelect', (e) => {
                 totalSelectValue = $('#totalSelect').val();
+                // 작은 카테고리 초기화
                 smallSelectValue = "all";
-                teamValue.val('전체');
+                $('#teamValue').val('전체');
                 $('#normalSelect').val('all');
+                // 검색창 초기화
+                $('#searchSubject').val("");
+                searchValue = "";
 
                 if (totalSelectValue == 1) {
-                    normalSelect.removeClass('display-none');
-                    fandomSelect.addClass('display-none');
+                    $('#normalSelect').removeClass('display-none');
+                    $('#fandomSelect').addClass('display-none');
                 } else if (totalSelectValue == 2) {
-                    fandomSelect.removeClass('display-none');
-                    normalSelect.addClass('display-none');
+                    $('#fandomSelect').removeClass('display-none');
+                    $('#normalSelect').addClass('display-none');
                 } else {
-                    normalSelect.addClass('display-none');
-                    fandomSelect.addClass('display-none');
+                    $('#normalSelect').addClass('display-none');
+                    $('#fandomSelect').addClass('display-none');
                 }
 
                 contentModule.load("/admin/get-content?sortValue=" + sortValue + "&totalSelectValue=" + totalSelectValue +
@@ -160,17 +192,17 @@
             });
 
             // 일반 카테고리 Select
-            normalSelect.on('change', (e) => {
+            boardManageModule.on('change', '#normalSelect', (e) => {
                 smallSelectValue = $('#normalSelect').val();
                 contentModule.load("/admin/get-content?sortValue=" + sortValue + "&totalSelectValue=" + totalSelectValue +
-                                                       "&smallSelectValue=" + smallSelectValue);
+                                                       "&smallSelectValue=" + smallSelectValue + "&searchValue=" + searchValue);
             });
 
             // 팀 검색(fandom)
-            teamValue.on('click', (e) => {
+            boardManageModule.on('click', '#teamValue', (e) => {
                 $('#exampleModal').modal('show');
             });
-            teamSearchValue.on('input', (e) => {
+            boardManageModule.on('input', '#teamSearchValue', (e) => {
                 const keyword = $(e.currentTarget).val().trim();
                 $('.fandom-item').each(function() {
                     const text = $(this).text();
@@ -182,15 +214,15 @@
                 });
             });
             // 팀 선택, 팬덤 카테고리 Select
-            fandomItem.on('click', function() {
+            boardManageModule.on('click', '.fandom-item', function() {
                 // aria-hidden 경고
                 //$('#teamSearchValue').focus();
 
                 smallSelectValue = $(this).data('value');
                 contentModule.load("/admin/get-content?sortValue=" + sortValue + "&totalSelectValue=" + totalSelectValue +
-                                                       "&smallSelectValue=" + smallSelectValue);
+                                                       "&smallSelectValue=" + smallSelectValue + "&searchValue=" + searchValue);
 
-                teamValue.val($(this).text());
+                $('#teamValue').val($(this).text());
 
                 // 모달창 닫기
                 const modalEl = $('.modal');
@@ -209,7 +241,19 @@
                 if (!isNaN($(this).text())) pageNo = $(this).text();
 
                 contentModule.load("/admin/get-content?sortValue=" + sortValue + "&totalSelectValue=" + totalSelectValue +
-                                                       "&smallSelectValue=" + smallSelectValue + "&pageNo=" + pageNo);
+                                                       "&smallSelectValue=" + smallSelectValue + "&pageNo=" + pageNo +
+                                                       "&searchValue=" + searchValue + "&to=" + to);
+            });
+
+            // 상세글로 이동
+            contentModule.on('click', '.content', (e) => {
+                //const index = $(e.currentTarget).data('index');
+                const boardId = $(e.currentTarget).data('value');
+                pageNo = $('.paging').data('pageno');
+
+                location.href = '/admin/detail-content?pageNo=' + pageNo + '&sortValue=' + sortValue + '&boardId=' + boardId +
+                                                       '&totalSelectValue=' + totalSelectValue + '&smallSelectValue=' + smallSelectValue +
+                                                       '&searchValue=' + searchValue + '&to=' + to;
             });
 
         });
