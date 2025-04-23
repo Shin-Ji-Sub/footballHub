@@ -77,3 +77,44 @@
   column-gap: 1rem;
   font-size: 1.2rem;
 }
+
+
+/* Admin - Control Category Section */
+.control-category-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1rem;
+}
+
+.add-small-category-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.category-manage {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.category-name {
+  justify-self: center;
+  align-self: center;
+  text-align: center;
+  font-size: 1.1rem;
+  background-color: lightgray;
+  border: none;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.control-button-container {
+    display: flex;
+    flex-direction: row;
+    column-gap: 5px;
+}
+
+.control-button {
+    font-size: 0.9rem;
+}

@@ -31,6 +31,7 @@
                                 th:data-value="${board.largeCategory.largeCategoryId}"
                                 th:text="${board.largeCategory.largeCategoryName}"></button>
                         <button class="content-category" id="smallCategoryButton"
+                                th:if="${board.smallCategory != null}"
                                 th:data-value="${board.smallCategory.smallCategoryIndex}"
                                 th:text="${board.smallCategory.smallCategoryName}"></button>
                     </div>
@@ -111,6 +112,7 @@
         <input type="hidden" id="smallSelectValue" th:value="${smallSelectValue}">
         <input type="hidden" id="searchValue" th:value="${searchValue}">
         <input type="hidden" id="to" th:value="${to}">
+        <input type="hidden" id="reportCategory" th:value="${reportCategory}">
     </main>
 
     <!-- jQuery -->
@@ -137,6 +139,7 @@
         const smallSelectValue = $('#smallSelectValue').val();
         const searchValue = $('#searchValue').val();
         const to = $('#to').val();
+        const reportCategory = $('#reportCategory').val();
         let commentPageNo = 1;
 
         const topButtonList = $('.top-button-list');
@@ -177,7 +180,7 @@
         toListButton.on('click', (e) => {
             location.href = "/admin/board-manage?pageNo=" + pageNo + "&sortValue=" + sortValue +
                                                     "&totalSelectValue=" + totalSelectValue + "&smallSelectValue=" + smallSelectValue +
-                                                    "&searchValue=" + searchValue + "&to=" + to;
+                                                    "&searchValue=" + searchValue + "&to=" + to + "&reportCategory=" + reportCategory;
         });
 
         // 글 수정 기능

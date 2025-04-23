@@ -1,9 +1,6 @@
 package com.mezzala.service;
 
-import com.mezzala.dto.BoardDto;
-import com.mezzala.dto.BoardLargeCategoryDto;
-import com.mezzala.dto.CommentDto;
-import com.mezzala.dto.UserDto;
+import com.mezzala.dto.*;
 
 import java.util.List;
 import java.util.Map;
@@ -34,4 +31,16 @@ public interface AdminService {
     int findAllReportBoardCount(String searchValue);
 
     List<BoardDto> findReportBoardWithPaging(int start, String sortValue, String searchValue);
+
+    int findAllReportBoardCommentCount(String searchValue);
+
+    List<CommentDto> findReportBoardCommentWithPaging(int start, String sortValue, String searchValue);
+
+    int findAllCategoryCount(String categoryPart, int largeCategoryValue);
+
+    List<BoardLargeCategoryDto> findLargeCategory(int start);
+
+    List<BoardSmallCategoryDto> findSmallCategory(int start, int largeCategoryValue);
+
+    List<BoardLargeCategoryDto> findAllLargeCategory();
 }

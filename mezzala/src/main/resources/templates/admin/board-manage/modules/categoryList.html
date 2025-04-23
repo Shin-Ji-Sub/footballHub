@@ -1,0 +1,39 @@
+<div xmlns:th="http://www.thymeleaf.org" class="category-manage">
+    <th:block th:if="${categoryPart == 'large'}">
+        <div th:each="largeCategory : ${largeCategories}" class="row control-category-item">
+            <input class="col category-name" th:value="${largeCategory.largeCategoryName}" readonly>
+            <div class="col-2 control-button-container">
+                <button type="button" class="btn btn-warning control-button">
+                    <i class="bi bi-pencil-fill"></i>
+                    수정
+                </button>
+                <button type="button" class="btn btn-danger control-button">
+                    <i class="bi bi-x-lg"></i>
+                    삭제
+                </button>
+            </div>
+        </div>
+    </th:block>
+    <th:block th:if="${categoryPart == 'small'}">
+        <div th:each="smallCategory : ${smallCategories}" class="row control-category-item">
+            <input class="col category-name" th:value="${smallCategory.smallCategoryName}" readonly>
+            <div class="col-2 control-button-container">
+                <button type="button" class="btn btn-warning control-button">
+                    <i class="bi bi-pencil-fill"></i>
+                    수정
+                </button>
+                <button type="button" class="btn btn-danger control-button">
+                    <i class="bi bi-x-lg"></i>
+                    삭제
+                </button>
+            </div>
+        </div>
+    </th:block>
+    <div class="page-button-container">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination paging" th:data-pageno='${ pageNo }' th:data-datacount="${ dataCount }">
+                [(${ pager })]
+            </ul>
+        </nav>
+    </div>
+</div>

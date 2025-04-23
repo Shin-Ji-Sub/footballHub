@@ -1,10 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<h4>카테고리 관리</h4>
+<div xmlns:th="http://www.thymeleaf.org" class="control-category-container">
+    <div>
+        <select id="categoryPart" class="form-select" aria-label="Default select example">
+            <option value="large" selected>큰 카테고리</option>
+            <option value="small">작은 카테고리</option>
+        </select>
+    </div>
+    <div class="input-group" id="addLargeCategoryContainer">
+        <input type="text" class="form-control" placeholder="카테고리 추가">
+        <button class="btn btn-outline-secondary" type="button" id="addLargeCategoryButton">추가</button>
+    </div>
+    <div class="add-small-category-container display-none" id="addSmallCategoryContainer">
+        <select class="form-select" id="largeCategorySelect" aria-label="Default select example">
+            <option th:each="largeCategory, categoryState : ${largeCategories}"
+                    th:value="${largeCategory.largeCategoryId}"
+                    th:text="${largeCategory.largeCategoryName}"
+                    th:selected="${categoryState.index == 0}"></option>
+        </select>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="카테고리 추가">
+            <button class="btn btn-outline-secondary" type="button" id="addSmallCategoryButton">추가</button>
+        </div>
+    </div>
+</div>

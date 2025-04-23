@@ -76,6 +76,7 @@
     <input type="hidden" id="totalSelectValue" th:value="${totalSelectValue}">
     <input type="hidden" id="smallSelectValue" th:value="${smallSelectValue}">
     <input type="hidden" id="searchValue" th:value="${searchValue}">
+    <input type="hidden" id="reportCategory" th:value="${reportCategory}">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -95,6 +96,9 @@
             let smallSelectValue = $('#smallSelectValue').val();
             //if (totalSelectValue == 1) smallSelectValue = $('#normalSelect').val();
             //if (totalSelectValue == 2) smallSelectValue = $('#teamValue').val();
+            let reportCategory = $('#reportCategory').val();
+            let categoryPart = "large";
+            let largeCategoryValue = 1;
 
             // 현재 page nav에 표시
             const locationCategories = $('.location-category');
@@ -122,12 +126,17 @@
 
                 boardManageModule.load("/admin/get-controller?to=" + to);
                 contentModule.load("/admin/get-content?to=" + to);
+<!--                if (to == "controlCategory") {-->
+<!--                    contentModule.load("/admin/get-content?to=" + to);-->
+<!--                } else {-->
+<!--                    contentModule.load("/admin/get-content?to=" + to);-->
+<!--                }-->
             });
 
             // 처음 NAV LOAD
             boardManageModule.load("/admin/get-controller?to=" + to + "&sortValue=" + sortValue +
                                                           "&totalSelectValue=" + totalSelectValue + "&smallSelectValue=" + smallSelectValue +
-                                                          "&searchValue=" + searchValue, () => {
+                                                          "&searchValue=" + searchValue + "&reportCategory=" + reportCategory, () => {
                                                               if (totalSelectValue == 2) {
                                                                   const findIndex = $('.fandom-item').toArray().findIndex(value => {
                                                                       return $(value).data('value') == smallSelectValue;
@@ -138,23 +147,25 @@
             // 처음 CONTENT LOAD
             contentModule.load("/admin/get-content?pageNo=" + pageNo + "&sortValue=" + sortValue +
                                                   "&totalSelectValue=" + totalSelectValue + "&smallSelectValue=" + smallSelectValue +
-                                                  "&searchValue=" + searchValue + "&to=" + to);
+                                                  "&searchValue=" + searchValue + "&to=" + to + "&reportCategory=" + reportCategory);
 
-            // 최신순, 인기순 정렬 버튼
+            // 최신순, 인기순, 신고수순 정렬 버튼
             boardManageModule.on('click', '.sort-button', (e) => {
                 $('.sort-button').removeClass('underline');
                 $(e.currentTarget).addClass('underline');
 
                 sortValue = $(e.currentTarget).data('value');
                 contentModule.load("/admin/get-content?sortValue=" + sortValue + "&totalSelectValue=" + totalSelectValue +
-                                                       "&smallSelectValue=" + smallSelectValue + "&searchValue=" + searchValue + "&to=" + to);
+                                                       "&smallSelectValue=" + smallSelectValue + "&searchValue=" + searchValue + "&to=" + to +
+                                                       "&reportCategory=" + reportCategory);
             });
 
             // 글제목 검색
             function search() {
                 searchValue = encodeURIComponent($('#searchSubject').val());
                 contentModule.load("/admin/get-content?sortValue=" + sortValue + "&totalSelectValue=" + totalSelectValue +
-                                                       "&smallSelectValue=" + smallSelectValue + "&searchValue=" + searchValue + "&to=" + to);
+                                                       "&smallSelectValue=" + smallSelectValue + "&searchValue=" + searchValue + "&to=" + to +
+                                                       "&reportCategory=" + reportCategory);
             }
             boardManageModule.on('click', '#button-addon2', (e) => {
                 search();
@@ -165,6 +176,7 @@
                 }
             });
 
+            /* BoardSearch 기능 */
             // 전체 Select
             boardManageModule.on('change', '#totalSelect', (e) => {
                 totalSelectValue = $('#totalSelect').val();
@@ -230,6 +242,40 @@
                 modal.hide();
             });
 
+            /* ReportList 기능 */
+            // 신고된 글, 신고된 댓글 버튼 기능
+            boardManageModule.on('click', '.report-category', (e) => {
+                $('.report-category').removeClass('active');
+                $(e.currentTarget).addClass('active');
+                reportCategory = $(e.currentTarget).data('value');
+
+                contentModule.load("/admin/get-content?to=" + to + "&sortValue=" + sortValue +
+                                                      "&reportCategory=" + reportCategory);
+            });
+
+            /* ControlCategory 기능 */
+            // 큰 카테고리 Select
+            boardManageModule.on('change', '#categoryPart', (e) => {
+                categoryPart = $('#categoryPart').val();
+                if (categoryPart == "large") {
+                    $('#addLargeCategoryContainer').removeClass('display-none');
+                    $('#addSmallCategoryContainer').addClass('display-none');
+                }
+                if (categoryPart == "small") {
+                    $('#addSmallCategoryContainer').removeClass('display-none');
+                    $('#addLargeCategoryContainer').addClass('display-none');
+                    contentModule.load("/admin/get-content?to=" + to + "&categoryPart=" + categoryPart);
+                }
+            });
+
+            // 작은 카테고리 Select
+            boardManageModule.on('change', '#largeCategorySelect', (e) => {
+                largeCategoryValue = $('#largeCategorySelect').val();
+                contentModule.load("/admin/get-content?to=" + to + "&categoryPart=" + categoryPart +
+                                                       "&largeCategoryValue=" + largeCategoryValue);
+            });
+
+            /* Common */
             // pagination
             contentModule.on('click', '.page-item', function(e) {
                 let pageNo = $('.paging').data('pageno');
@@ -242,7 +288,8 @@
 
                 contentModule.load("/admin/get-content?sortValue=" + sortValue + "&totalSelectValue=" + totalSelectValue +
                                                        "&smallSelectValue=" + smallSelectValue + "&pageNo=" + pageNo +
-                                                       "&searchValue=" + searchValue + "&to=" + to);
+                                                       "&searchValue=" + searchValue + "&to=" + to + "&reportCategory=" + reportCategory +
+                                                       '&categoryPart=' + categoryPart + '&largeCategoryValue=' + largeCategoryValue);
             });
 
             // 상세글로 이동
@@ -253,7 +300,7 @@
 
                 location.href = '/admin/detail-content?pageNo=' + pageNo + '&sortValue=' + sortValue + '&boardId=' + boardId +
                                                        '&totalSelectValue=' + totalSelectValue + '&smallSelectValue=' + smallSelectValue +
-                                                       '&searchValue=' + searchValue + '&to=' + to;
+                                                       '&searchValue=' + searchValue + '&to=' + to + "&reportCategory=" + reportCategory;
             });
 
         });

@@ -4,8 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mezzala.dto.BoardDto;
 import com.mezzala.dto.BoardLargeCategoryDto;
+import com.mezzala.dto.BoardSmallCategoryDto;
+import com.mezzala.dto.CommentDto;
+import com.mezzala.mapper.AdminMapper;
 import com.mezzala.service.AdminService;
 import com.mezzala.ui.ThePager;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -168,7 +172,8 @@ public class AdminController {
                               @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
                               @RequestParam(name = "totalSelectValue", defaultValue = "all") String totalSelectValue,
                               @RequestParam(name = "smallSelectValue", defaultValue = "all") String smallSelectValue,
-                              @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+                              @RequestParam(name = "searchValue", defaultValue = "") String searchValue,
+                              @RequestParam(name = "reportCategory", defaultValue = "board") String reportCategory) {
 
         model.addAttribute("to", to);
         model.addAttribute("pageNo", pageNo);
@@ -176,6 +181,7 @@ public class AdminController {
         model.addAttribute("totalSelectValue", totalSelectValue);
         model.addAttribute("smallSelectValue", smallSelectValue);
         model.addAttribute("searchValue", searchValue);
+        model.addAttribute("reportCategory", reportCategory);
 
         return "/admin/board-manage/board-manage";
     }
@@ -187,9 +193,12 @@ public class AdminController {
                              @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
                              @RequestParam(name = "totalSelectValue", defaultValue = "all") String totalSelectValue,
                              @RequestParam(name = "smallSelectValue", defaultValue = "all") String smallSelectValue,
-                             @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+                             @RequestParam(name = "searchValue", defaultValue = "") String searchValue,
+                             @RequestParam(name = "reportCategory", defaultValue = "board") String reportCategory,
+                             @RequestParam(name = "categoryPart", defaultValue = "large") String categoryPart,
+                             @RequestParam(name = "largeCategoryValue", defaultValue = "1") int largeCategoryValue) {
 
-        try {
+//        try {
             if (to.equals("boardSearch")) {
                 // paging
                 int pageSize = 10;
@@ -214,7 +223,7 @@ public class AdminController {
 
                 model.addAttribute("boards", boards);
             }
-            if (to.equals("reportList")) {
+            if (to.equals("reportList") && reportCategory.equals("board")) {
                 // paging
                 int pageSize = 10;
                 int pagerSize = 5;
@@ -237,12 +246,78 @@ public class AdminController {
                 model.addAttribute("dataCount", dataCount);
 
                 model.addAttribute("boards", boards);
+            } else if (to.equals("reportList") && reportCategory.equals("comment")) {
+                // paging
+                int pageSize = 10;
+                int pagerSize = 5;
+                int dataCount = adminService.findAllReportBoardCommentCount(searchValue);
+                String uri = req.getRequestURI();
+                String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+                String queryString = req.getQueryString();
+
+                int start = pageSize * (pageNo - 1);
+
+                ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+                List<CommentDto> comments = adminService.findReportBoardCommentWithPaging(start, sortValue, searchValue);
+
+                System.out.println("[COMMENTS] : " + comments);
+
+                if (comments.isEmpty()) {
+                    return "/modules/noDataModule";
+                }
+
+                model.addAttribute("pager", pager);
+                model.addAttribute("pageNo", pageNo);
+                model.addAttribute("dataCount", dataCount);
+
+                model.addAttribute("comments", comments);
+
+                return "/admin/board-manage/modules/commentList";
+            }
+            if (to.equals("controlCategory")) {
+                // paging
+                int pageSize = 10;
+                int pagerSize = 5;
+                int dataCount = adminService.findAllCategoryCount(categoryPart, largeCategoryValue);
+                String uri = req.getRequestURI();
+                String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+                String queryString = req.getQueryString();
+
+                int start = pageSize * (pageNo - 1);
+
+                ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+
+                if (categoryPart.equals("large")) {
+                    List<BoardLargeCategoryDto> largeCategories = adminService.findLargeCategory(start);
+                    if (largeCategories.isEmpty()) {
+                        return "/modules/noDataModule";
+                    }
+
+                    model.addAttribute("largeCategories", largeCategories);
+                }
+
+                if (categoryPart.equals("small")) {
+                    List<BoardSmallCategoryDto> smallCategories = adminService.findSmallCategory(start, largeCategoryValue);
+                    if (smallCategories.isEmpty()) {
+                        return "/modules/noDataModule";
+                    }
+
+                    model.addAttribute("smallCategories", smallCategories);
+                }
+
+                model.addAttribute("pager", pager);
+                model.addAttribute("pageNo", pageNo);
+                model.addAttribute("dataCount", dataCount);
+                model.addAttribute("categoryPart", categoryPart);
+
+                return "/admin/board-manage/modules/categoryList";
+
             }
 
             return "/admin/board-manage/modules/contentList";
-        } catch (Exception e) {
-            return "/modules/noDataModule";
-        }
+//        } catch (Exception e) {
+//            return "/modules/noDataModule";
+//        }
 
     }
 
@@ -254,7 +329,8 @@ public class AdminController {
                                 @RequestParam(name = "boardId") int boardId,
                                 @RequestParam(name = "totalSelectValue", defaultValue = "all") String totalSelectValue,
                                 @RequestParam(name = "smallSelectValue", defaultValue = "all") String smallSelectValue,
-                                @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+                                @RequestParam(name = "searchValue", defaultValue = "") String searchValue,
+                                @RequestParam(name = "reportCategory", defaultValue = "board") String reportCategory) {
 
         List<BoardDto> boards = adminService.findBoardWithBoardId(boardId);
         BoardDto board = boards.get(0);
@@ -265,6 +341,7 @@ public class AdminController {
         model.addAttribute("totalSelectValue", totalSelectValue);
         model.addAttribute("smallSelectValue", smallSelectValue);
         model.addAttribute("searchValue", searchValue);
+        model.addAttribute("reportCategory", reportCategory);
         model.addAttribute("board", board);
 
         return "/admin/board-manage/content";
@@ -276,7 +353,8 @@ public class AdminController {
                                 @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
                                 @RequestParam(name = "totalSelectValue", defaultValue = "all") String totalSelectValue,
                                 @RequestParam(name = "smallSelectValue", defaultValue = "all") String smallSelectValue,
-                                @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+                                @RequestParam(name = "searchValue", defaultValue = "") String searchValue,
+                                @RequestParam(name = "reportCategory", defaultValue = "board") String reportCategory) {
 
 //        System.out.println(pageNo);
         System.out.println("to : " + to);
@@ -306,6 +384,11 @@ public class AdminController {
         if (to.equals("reportList")) {
             model.addAttribute("sortValue", sortValue);
             model.addAttribute("searchValue", searchValue);
+            model.addAttribute("reportCategory", reportCategory);
+        }
+        if (to.equals("controlCategory")) {
+            List<BoardLargeCategoryDto> largeCategories = adminService.findAllLargeCategory();
+            model.addAttribute("largeCategories", largeCategories);
         }
 
         return "/admin/board-manage/modules/" + to + "Module";

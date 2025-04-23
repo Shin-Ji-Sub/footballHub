@@ -58,49 +58,43 @@
         </collection>
     </resultMap>
     <resultMap id="CommentResultMap" type="com.mezzala.dto.CommentDto">
-        <id property="commentId" column="comment_id"/>
-        <result property="parentId" column="parent_id"/>
-        <result property="regDate" column="reg_date"/>
-        <result property="content" column="content"/>
+        <id property="commentId" column="c_comment_id"/>
+        <result property="parentId" column="c_parent_id"/>
+        <result property="regDate" column="c_reg_date"/>
+        <result property="content" column="c_content"/>
         <result property="recommendationCount" column="c1_recommendation_count"/>
-        <result property="commentState" column="comment_state"/>
-        <result property="userId" column="user_id"/>
-        <result property="boardId" column="board_id"/>
-        <association property="user" javaType="com.mezzala.dto.UserDto">
-            <id property="userId" column="user_id" />
-            <result property="nickname" column="nickname" />
-            <result property="socialMethod" column="social_method" />
-            <result property="joinDate" column="join_date" />
-            <result property="isAdmin" column="is_admin" />
-            <result property="state" column="state" />
-        </association>
-        <collection property="commentActions" ofType="com.mezzala.dto.CommentActionDto">
-            <id property="actionId" column="ca1_action_id"/>
-            <result property="userId" column="ca1_user_id"/>
-            <result property="commentId" column="ca1_comment_id"/>
-        </collection>
-        <collection property="recomments" ofType="com.mezzala.dto.CommentDto">
-            <id property="commentId" column="recomment_comment_id"/>
-            <result property="parentId" column="recomment_parent_id"/>
-            <result property="regDate" column="recomment_reg_date"/>
-            <result property="content" column="recomment_content"/>
-            <result property="commentState" column="recomment_comment_state"/>
-            <result property="userId" column="recomment_user_id"/>
-            <result property="boardId" column="recomment_board_id"/>
-            <association property="user" javaType="com.mezzala.dto.UserDto">
-                <id property="userId" column="recomment_user_id"/>
-                <result property="nickname" column="recomment_nickname"/>
-                <result property="socialMethod" column="recomment_social_method"/>
-                <result property="joinDate" column="recomment_join_date"/>
-                <result property="isAdmin" column="recomment_is_admin"/>
-                <result property="state" column="recomment_state"/>
+        <result property="reportCount" column="c_reportCount" />
+        <result property="commentState" column="c_comment_state"/>
+        <result property="userId" column="c_user_id"/>
+        <result property="boardId" column="c_board_id"/>
+        <association property="board" javaType="com.mezzala.dto.BoardDto">
+            <id property="boardId" column="b_board_id" />
+            <result property="subject" column="b_subject" />
+            <result property="content" column="b_content" />
+            <result property="regDate" column="b_reg_date" />
+            <result property="visitCount" column="b_visit_count" />
+            <result property="boardState" column="b_board_state" />
+            <result property="largeCategoryId" column="b_large_category_id"/>
+            <result property="smallCategoryIndex" column="b_small_category_index"/>
+            <!-- 1:1 관계 board_large_category -->
+            <association property="largeCategory" javaType="com.mezzala.dto.BoardLargeCategoryDto">
+                <id property="largeCategoryId" column="lc_large_category_id" />
+                <result property="largeCategoryName" column="lc_large_category_name" />
             </association>
-            <collection property="commentActions" ofType="com.mezzala.dto.CommentActionDto">
-                <id property="actionId" column="ca2_action_id"/>
-                <result property="userId" column="ca2_user_id"/>
-                <result property="commentId" column="ca2_comment_id"/>
-            </collection>
-        </collection>
+            <!-- 1:1 관계 board_small_category -->
+            <association property="smallCategory" javaType="com.mezzala.dto.BoardSmallCategoryDto">
+                <id property="smallCategoryIndex" column="sc_small_category_index" />
+                <result property="smallCategoryName" column="sc_small_category_name" />
+            </association>
+        </association>
+        <association property="user" javaType="com.mezzala.dto.UserDto">
+            <id property="userId" column="u_user_id" />
+            <result property="nickname" column="u_nickname" />
+            <result property="socialMethod" column="u_social_method" />
+            <result property="joinDate" column="u_join_date" />
+            <result property="isAdmin" column="u_is_admin" />
+            <result property="state" column="u_state" />
+        </association>
     </resultMap>
     <resultMap id="CommentActionResultMap" type="com.mezzala.dto.CommentActionDto">
         <id property="actionId" column="ca_action_id"/>
@@ -664,6 +658,174 @@
                     b.reg_date DESC
                 </when>
             </choose>
+        LIMIT
+            10
+        OFFSET
+            #{start}
+    </select>
+
+    <select id="selectAllReportBoardCommentCount" parameterType="String" resultType="int">
+        SELECT
+            COUNT(DISTINCT c.comment_id)
+        FROM
+            comment c
+        LEFT JOIN
+            report r
+        ON
+            c.comment_id = r.reported_content_id
+        AND
+            r.report_category = "comment"
+        WHERE
+            c.comment_state = true
+        AND
+            c.comment_id = r.reported_content_id
+        <choose>
+            <when test="searchValue.length != null and searchValue != ''">
+                AND
+                    c.content LIKE CONCAT('%', #{searchValue}, '%')
+            </when>
+        </choose>
+    </select>
+
+    <select id="selectReportBoardCommentWithPaging" parameterType="hashmap" resultMap="CommentResultMap">
+        SELECT
+            c.comment_id AS c_comment_id,
+            c.parent_id AS c_parent_id,
+            c.reg_date AS c_reg_date,
+            c.content AS c_content,
+            c.comment_state AS c_comment_state,
+            c.user_id AS c_user_id,
+            c.board_id AS c_board_id,
+
+            b.board_id AS b_board_id,
+            b.subject AS b_subject,
+            b.content AS b_content,
+            b.reg_date AS b_reg_date,
+            b.visit_count AS b_visit_count,
+            b.board_state AS b_board_state,
+            b.user_id AS b_user_id,
+            b.large_category_id AS b_large_category_id,
+            b.small_category_index AS b_small_category_index,
+
+            lc.large_category_id AS lc_large_category_id,
+            lc.large_category_name AS lc_large_category_name,
+
+            sc.small_category_index AS sc_small_category_index,
+            sc.small_category_name AS sc_small_category_name,
+
+            COALESCE(COUNT(DISTINCT r.report_id), 0) AS c_reportCount,
+
+            u.user_id AS u_user_id,
+            u.nickname AS u_nickname,
+            u.social_method AS u_social_method,
+            u.join_date AS u_join_date,
+            u.is_admin AS u_is_admin,
+            u.state AS u_state
+        FROM
+            comment c
+        LEFT JOIN
+            user u
+        ON
+            c.user_id = u.user_id
+        LEFT JOIN
+            report r
+        ON
+            c.comment_id = r.reported_content_id
+        AND
+            r.report_category = "comment"
+        LEFT JOIN
+            board b
+        ON
+            c.board_id = b.board_id
+        LEFT JOIN
+            board_large_category lc
+        ON
+            b.large_category_id = lc.large_category_id
+        LEFT JOIN
+            board_small_category sc
+        ON
+            b.small_category_index = sc.small_category_index
+        WHERE
+            c.comment_state = true
+        AND
+            c.comment_id = r.reported_content_id
+        <choose>
+            <when test="searchValue.length != null and searchValue != ''">
+                AND
+                    c.content LIKE CONCAT('%', #{searchValue}, '%')
+            </when>
+        </choose>
+        GROUP BY
+            c.comment_id
+        ORDER BY
+            <choose>
+                <when test="sortValue == 'reportOrder'">
+                    COALESCE(COUNT(DISTINCT r.report_id), 0) DESC,
+                    c.reg_date DESC
+                </when>
+                <when test="sortValue == 'latest'">
+                    c.reg_date DESC
+                </when>
+            </choose>
+        LIMIT
+            10
+        OFFSET
+            #{start}
+    </select>
+
+    <select id="selectAllLargeCategoryCount" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            board_large_category
+    </select>
+
+    <select id="selectAllSmallCategoryCount" parameterType="int" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            board_small_category sc
+        LEFT JOIN
+            board_large_category lc
+        ON
+            sc.large_category_id = lc.large_category_id
+        WHERE
+            sc.large_category_id = #{largeCategoryValue}
+    </select>
+
+    <select id="selectLargeCategory" parameterType="int" resultType="BoardLargeCategoryDto">
+        SELECT
+            large_category_id AS largeCategoryId,
+            large_category_name AS largeCategoryName
+        FROM
+            board_large_category
+        LIMIT
+            10
+        OFFSET
+            #{start}
+    </select>
+
+    <select id="selectAllLargeCategory" resultType="BoardLargeCategoryDto">
+        SELECT
+            large_category_id AS largeCategoryId,
+            large_category_name AS largeCategoryName
+        FROM
+            board_large_category
+    </select>
+
+    <select id="selectSmallCategory" parameterType="hashmap" resultType="BoardSmallCategoryDto">
+        SELECT
+            sc.small_category_index AS smallCategoryIndex,
+            sc.large_category_id AS largeCategoryId,
+            sc.small_category_name AS smallCategoryName
+        FROM
+            board_small_category sc
+        LEFT JOIN
+            board_large_category lc
+        ON
+            sc.large_category_id = lc.large_category_id
+        WHERE
+            sc.large_category_id = #{largeCategoryValue}
         LIMIT
             10
         OFFSET
