@@ -799,6 +799,8 @@
             large_category_name AS largeCategoryName
         FROM
             board_large_category
+        ORDER BY
+            large_category_id DESC
         LIMIT
             10
         OFFSET
@@ -811,6 +813,8 @@
             large_category_name AS largeCategoryName
         FROM
             board_large_category
+        ORDER BY
+            large_category_id ASC
     </select>
 
     <select id="selectSmallCategory" parameterType="hashmap" resultType="BoardSmallCategoryDto">
@@ -826,10 +830,66 @@
             sc.large_category_id = lc.large_category_id
         WHERE
             sc.large_category_id = #{largeCategoryValue}
+        ORDER BY
+            small_category_index DESC
         LIMIT
             10
         OFFSET
             #{start}
     </select>
+
+    <insert id="insertLargeCategory" parameterType="String">
+        INSERT INTO
+            board_large_category (
+                large_category_name
+            )
+        VALUES (
+                #{categoryValue}
+            )
+    </insert>
+
+    <insert id="insertSmallCategory" parameterType="hashmap">
+        INSERT INTO
+            board_small_category (
+                large_category_id,
+                small_category_name
+            )
+        VALUES (
+                #{largeCategoryValue},
+                #{categoryValue}
+            )
+    </insert>
+
+    <update id="updateLargeCategory" parameterType="hashmap">
+        UPDATE
+            board_large_category
+        SET
+            large_category_name = #{categoryName}
+        WHERE
+            large_category_id = #{categoryId}
+    </update>
+
+    <update id="updateSmallCategory" parameterType="hashmap">
+        UPDATE
+            board_small_category
+        SET
+            small_category_name = #{categoryName}
+        WHERE
+            small_category_index = #{categoryId}
+    </update>
+
+    <delete id="deleteLargeCategory" parameterType="int">
+        DELETE FROM
+            board_large_category
+        WHERE
+            large_category_id = #{categoryId}
+    </delete>
+
+    <delete id="deleteSmallCategory" parameterType="int">
+        DELETE FROM
+            board_small_category
+        WHERE
+            small_category_index = #{categoryId}
+    </delete>
 
 </mapper>

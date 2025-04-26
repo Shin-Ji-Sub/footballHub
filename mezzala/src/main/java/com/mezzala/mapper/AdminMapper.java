@@ -60,4 +60,16 @@ public interface AdminMapper {
     List<BoardLargeCategoryDto> selectAllLargeCategory();
 
     List<BoardSmallCategoryDto> selectSmallCategory(@Param("start") int start, @Param("largeCategoryValue") int largeCategoryValue);
+
+    void insertLargeCategory(String categoryValue);
+
+    void insertSmallCategory(@Param("categoryValue") String categoryValue, @Param("largeCategoryValue") String largeCategoryValue);
+
+    void updateLargeCategory(@Param("categoryName") String categoryName, @Param("categoryId") int categoryId);
+
+    void updateSmallCategory(@Param("categoryName") String categoryName, @Param("categoryId") int categoryId);
+
+    void deleteLargeCategory(int categoryId);
+
+    void deleteSmallCategory(int categoryId);
 }

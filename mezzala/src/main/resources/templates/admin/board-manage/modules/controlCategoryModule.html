@@ -7,7 +7,7 @@
         </select>
     </div>
     <div class="input-group" id="addLargeCategoryContainer">
-        <input type="text" class="form-control" placeholder="카테고리 추가">
+        <input type="text" class="form-control" id="addLargeCategoryValue" placeholder="카테고리 추가">
         <button class="btn btn-outline-secondary" type="button" id="addLargeCategoryButton">추가</button>
     </div>
     <div class="add-small-category-container display-none" id="addSmallCategoryContainer">
@@ -18,7 +18,7 @@
                     th:selected="${categoryState.index == 0}"></option>
         </select>
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="카테고리 추가">
+            <input type="text" class="form-control" id="addSmallCategoryValue" placeholder="카테고리 추가">
             <button class="btn btn-outline-secondary" type="button" id="addSmallCategoryButton">추가</button>
         </div>
     </div>

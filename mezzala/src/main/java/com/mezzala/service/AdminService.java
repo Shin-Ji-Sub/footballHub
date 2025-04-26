@@ -43,4 +43,10 @@ public interface AdminService {
     List<BoardSmallCategoryDto> findSmallCategory(int start, int largeCategoryValue);
 
     List<BoardLargeCategoryDto> findAllLargeCategory();
+
+    void addCategory(String part, String categoryValue, String largeCategoryValue);
+
+    void modifyCategoryName(String categoryName, int categoryId, String categoryPart);
+
+    void deleteCategory(String categoryPart, int categoryId);
 }

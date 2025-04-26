@@ -357,11 +357,11 @@ public class AdminController {
                                 @RequestParam(name = "reportCategory", defaultValue = "board") String reportCategory) {
 
 //        System.out.println(pageNo);
-        System.out.println("to : " + to);
-        System.out.println("sort : " + sortValue);
-        System.out.println("total : " + totalSelectValue);
-        System.out.println("small : " + smallSelectValue);
-        System.out.println("search : " + searchValue);
+//        System.out.println("to : " + to);
+//        System.out.println("sort : " + sortValue);
+//        System.out.println("total : " + totalSelectValue);
+//        System.out.println("small : " + smallSelectValue);
+//        System.out.println("search : " + searchValue);
 
         if (to.equals("boardSearch")) {
             List<BoardLargeCategoryDto> largeCategories = adminService.findCategories();
@@ -393,6 +393,39 @@ public class AdminController {
 
         return "/admin/board-manage/modules/" + to + "Module";
 
+    }
+
+    @PostMapping(path = {"/add-category"})
+    @ResponseBody
+    public String addCategory(@RequestParam(name = "part") String part,
+                              @RequestParam(name = "categoryValue") String categoryValue,
+                              @RequestParam(name = "largeCategoryValue") String largeCategoryValue) {
+        System.out.println("[PART] : " + part);
+        System.out.println("[categoryValue] : " + categoryValue);
+        System.out.println("[largeCategoryValue] : " + largeCategoryValue);
+        adminService.addCategory(part, categoryValue, largeCategoryValue);
+        return "success";
+    }
+
+    @PostMapping(path = {"/modify-category"})
+    @ResponseBody
+    public String modifyCategory(@RequestParam(name = "categoryName") String categoryName,
+                                 @RequestParam(name = "categoryId") int categoryId,
+                                 @RequestParam(name = "categoryPart") String categoryPart) {
+        adminService.modifyCategoryName(categoryName, categoryId, categoryPart);
+        return "success";
+    }
+
+    @PostMapping(path = {"/delete-category"})
+    @ResponseBody
+    public String deleteCategory(@RequestParam(name = "categoryPart") String categoryPart,
+                                 @RequestParam(name = "categoryId") int categoryId) {
+        try {
+            adminService.deleteCategory(categoryPart, categoryId);
+            return "success";
+        } catch (Exception e) {
+            return "fail";
+        }
     }
 
 }

@@ -123,4 +123,34 @@ public class AdminServiceImpl implements AdminService {
         return adminMapper.selectAllLargeCategory();
     }
 
+    @Override
+    public void addCategory(String part, String categoryValue, String largeCategoryValue) {
+        if (part.equals("large")) {
+            adminMapper.insertLargeCategory(categoryValue);
+        }
+        if (part.equals("small")) {
+            adminMapper.insertSmallCategory(categoryValue, largeCategoryValue);
+        }
+    }
+
+    @Override
+    public void modifyCategoryName(String categoryName, int categoryId, String categoryPart) {
+        if (categoryPart.equals("large")) {
+            adminMapper.updateLargeCategory(categoryName, categoryId);
+        }
+        if (categoryPart.equals("small")) {
+            adminMapper.updateSmallCategory(categoryName, categoryId);
+        }
+    }
+
+    @Override
+    public void deleteCategory(String categoryPart, int categoryId) {
+        if (categoryPart.equals("large")) {
+            adminMapper.deleteLargeCategory(categoryId);
+        }
+        if (categoryPart.equals("small")) {
+            adminMapper.deleteSmallCategory(categoryId);
+        }
+    }
+
 }

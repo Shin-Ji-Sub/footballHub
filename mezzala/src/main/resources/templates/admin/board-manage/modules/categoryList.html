@@ -1,13 +1,13 @@
 <div xmlns:th="http://www.thymeleaf.org" class="category-manage">
     <th:block th:if="${categoryPart == 'large'}">
-        <div th:each="largeCategory : ${largeCategories}" class="row control-category-item">
+        <div th:each="largeCategory, largeCategoryState : ${largeCategories}" class="row control-category-item">
             <input class="col category-name" th:value="${largeCategory.largeCategoryName}" readonly>
-            <div class="col-2 control-button-container">
-                <button type="button" class="btn btn-warning control-button">
+            <div class="col-2 control-button-container" th:data-index="${largeCategoryState.index}" th:data-id="${largeCategory.largeCategoryId}">
+                <button type="button" class="btn btn-warning control-button category-modify-button" data-bs-toggle="modal" data-bs-target="#exampleModal2">
                     <i class="bi bi-pencil-fill"></i>
                     수정
                 </button>
-                <button type="button" class="btn btn-danger control-button">
+                <button type="button" class="btn btn-danger control-button category-delete-button">
                     <i class="bi bi-x-lg"></i>
                     삭제
                 </button>
@@ -15,14 +15,14 @@
         </div>
     </th:block>
     <th:block th:if="${categoryPart == 'small'}">
-        <div th:each="smallCategory : ${smallCategories}" class="row control-category-item">
+        <div th:each="smallCategory, smallCategoryState : ${smallCategories}" class="row control-category-item">
             <input class="col category-name" th:value="${smallCategory.smallCategoryName}" readonly>
-            <div class="col-2 control-button-container">
-                <button type="button" class="btn btn-warning control-button">
+            <div class="col-2 control-button-container" th:data-index="${smallCategoryState.index}" th:data-id="${smallCategory.smallCategoryIndex}">
+                <button type="button" class="btn btn-warning control-button category-modify-button" data-bs-toggle="modal" data-bs-target="#exampleModal2">
                     <i class="bi bi-pencil-fill"></i>
                     수정
                 </button>
-                <button type="button" class="btn btn-danger control-button">
+                <button type="button" class="btn btn-danger control-button category-delete-button">
                     <i class="bi bi-x-lg"></i>
                     삭제
                 </button>
@@ -35,5 +35,34 @@
                 [(${ pager })]
             </ul>
         </nav>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">카테고리명 수정</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body modal-modify-category">
+                <!-- <p>Modal body text goes here.</p> -->
+                <div>
+                    <h5>현재 카테고리 명</h5>
+                    <input type="text" class="form-control modal-category-value" id="presentCategoryValue" value="" readonly>
+                </div>
+                <i class="bi bi-arrow-down-circle text-success"></i>
+                <div>
+                    <h5>변경할 카테고리 명</h5>
+                    <input type="hidden" id="modifyCategoryId">
+                    <input type="hidden" id="modifyCategoryPart" th:value="${categoryPart}">
+                    <input type="text" class="form-control modal-category-value" id="modalCategoryValue">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                <button type="button" class="btn btn-primary" id="categoryChangeButton">변경</button>
+            </div>
+        </div>
     </div>
 </div>

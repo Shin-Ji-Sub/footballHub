@@ -118,3 +118,20 @@
 .control-button {
     font-size: 0.9rem;
 }
+
+.modal-modify-category {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  align-items: center;
+  font-size: 1.2rem;
+}
+
+.modal-modify-category i {
+  font-size: 2rem;
+}
+
+.modal-category-value {
+  padding: 5px;
+  width: 15vw;
+}
