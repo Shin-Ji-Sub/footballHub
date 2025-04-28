@@ -19,7 +19,7 @@
             <result property="nickname" column="nickname" />
             <result property="socialMethod" column="social_method" />
             <result property="joinDate" column="join_date" />
-            <result property="isAdmin" column="is_admin" />
+            <result property="roleId" column="role_id" />
             <result property="state" column="state" />
         </association>
     </resultMap>
@@ -36,7 +36,7 @@
             <result property="nickname" column="nickname" />
             <result property="socialMethod" column="social_method" />
             <result property="joinDate" column="join_date" />
-            <result property="isAdmin" column="is_admin" />
+            <result property="roleId" column="role_id" />
             <result property="state" column="state" />
         </association>
         <collection property="recomments" ofType="com.mezzala.dto.CommentDto">
@@ -52,7 +52,7 @@
                 <result property="nickname" column="recomment_nickname"/>
                 <result property="socialMethod" column="recomment_social_method"/>
                 <result property="joinDate" column="recomment_join_date"/>
-                <result property="isAdmin" column="recomment_is_admin"/>
+                <result property="roleId" column="recomment_role_id"/>
                 <result property="state" column="recomment_state"/>
             </association>
         </collection>
@@ -110,7 +110,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state
         FROM
             request_board rb
@@ -166,7 +166,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state
         FROM
             request_board rb
@@ -256,7 +256,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
 
             c2.comment_id AS recomment_comment_id,
@@ -271,7 +271,7 @@
             u2.nickname AS recomment_nickname,
             u2.social_method AS recomment_social_method,
             u2.join_date AS recomment_join_date,
-            u2.is_admin AS recomment_is_admin,
+            u2.role_id AS recomment_role_id,
             u2.state AS recomment_state
         FROM
             request_comment c1

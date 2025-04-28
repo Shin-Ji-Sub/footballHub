@@ -2,10 +2,7 @@ package com.mezzala.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mezzala.dto.BoardDto;
-import com.mezzala.dto.BoardLargeCategoryDto;
-import com.mezzala.dto.BoardSmallCategoryDto;
-import com.mezzala.dto.CommentDto;
+import com.mezzala.dto.*;
 import com.mezzala.mapper.AdminMapper;
 import com.mezzala.service.AdminService;
 import com.mezzala.ui.ThePager;
@@ -57,7 +54,8 @@ public class AdminController {
         if (ImageFilesArr != null && !ImageFilesArr.isEmpty()) {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
-                imageFiles = objectMapper.readValue(ImageFilesArr, new TypeReference<List<Map<String, String>>>() {});
+                imageFiles = objectMapper.readValue(ImageFilesArr, new TypeReference<List<Map<String, String>>>() {
+                });
                 System.out.println("이미지 리스트: " + imageFiles);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -199,122 +197,122 @@ public class AdminController {
                              @RequestParam(name = "largeCategoryValue", defaultValue = "1") int largeCategoryValue) {
 
 //        try {
-            if (to.equals("boardSearch")) {
-                // paging
-                int pageSize = 10;
-                int pagerSize = 5;
-                int dataCount = adminService.findAllBoardCount(totalSelectValue, smallSelectValue, searchValue);
-                String uri = req.getRequestURI();
-                String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
-                String queryString = req.getQueryString();
+        if (to.equals("boardSearch")) {
+            // paging
+            int pageSize = 10;
+            int pagerSize = 5;
+            int dataCount = adminService.findAllBoardCount(totalSelectValue, smallSelectValue, searchValue);
+            String uri = req.getRequestURI();
+            String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+            String queryString = req.getQueryString();
 
-                int start = pageSize * (pageNo - 1);
+            int start = pageSize * (pageNo - 1);
 
-                ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
-                List<BoardDto> boards = adminService.findBoardWithPaging(start, sortValue, totalSelectValue, smallSelectValue, searchValue);
+            ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+            List<BoardDto> boards = adminService.findBoardWithPaging(start, sortValue, totalSelectValue, smallSelectValue, searchValue);
 
-                if (boards.isEmpty()) {
+            if (boards.isEmpty()) {
+                return "/modules/noDataModule";
+            }
+
+            model.addAttribute("pager", pager);
+            model.addAttribute("pageNo", pageNo);
+            model.addAttribute("dataCount", dataCount);
+
+            model.addAttribute("boards", boards);
+        }
+        if (to.equals("reportList") && reportCategory.equals("board")) {
+            // paging
+            int pageSize = 10;
+            int pagerSize = 5;
+            int dataCount = adminService.findAllReportBoardCount(searchValue);
+            String uri = req.getRequestURI();
+            String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+            String queryString = req.getQueryString();
+
+            int start = pageSize * (pageNo - 1);
+
+            ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+            List<BoardDto> boards = adminService.findReportBoardWithPaging(start, sortValue, searchValue);
+
+            if (boards.isEmpty()) {
+                return "/modules/noDataModule";
+            }
+
+            model.addAttribute("pager", pager);
+            model.addAttribute("pageNo", pageNo);
+            model.addAttribute("dataCount", dataCount);
+
+            model.addAttribute("boards", boards);
+        } else if (to.equals("reportList") && reportCategory.equals("comment")) {
+            // paging
+            int pageSize = 10;
+            int pagerSize = 5;
+            int dataCount = adminService.findAllReportBoardCommentCount(searchValue);
+            String uri = req.getRequestURI();
+            String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+            String queryString = req.getQueryString();
+
+            int start = pageSize * (pageNo - 1);
+
+            ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+            List<CommentDto> comments = adminService.findReportBoardCommentWithPaging(start, sortValue, searchValue);
+
+            System.out.println("[COMMENTS] : " + comments);
+
+            if (comments.isEmpty()) {
+                return "/modules/noDataModule";
+            }
+
+            model.addAttribute("pager", pager);
+            model.addAttribute("pageNo", pageNo);
+            model.addAttribute("dataCount", dataCount);
+
+            model.addAttribute("comments", comments);
+
+            return "/admin/board-manage/modules/commentList";
+        }
+        if (to.equals("controlCategory")) {
+            // paging
+            int pageSize = 10;
+            int pagerSize = 5;
+            int dataCount = adminService.findAllCategoryCount(categoryPart, largeCategoryValue);
+            String uri = req.getRequestURI();
+            String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+            String queryString = req.getQueryString();
+
+            int start = pageSize * (pageNo - 1);
+
+            ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+
+            if (categoryPart.equals("large")) {
+                List<BoardLargeCategoryDto> largeCategories = adminService.findLargeCategory(start);
+                if (largeCategories.isEmpty()) {
                     return "/modules/noDataModule";
                 }
 
-                model.addAttribute("pager", pager);
-                model.addAttribute("pageNo", pageNo);
-                model.addAttribute("dataCount", dataCount);
-
-                model.addAttribute("boards", boards);
+                model.addAttribute("largeCategories", largeCategories);
             }
-            if (to.equals("reportList") && reportCategory.equals("board")) {
-                // paging
-                int pageSize = 10;
-                int pagerSize = 5;
-                int dataCount = adminService.findAllReportBoardCount(searchValue);
-                String uri = req.getRequestURI();
-                String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
-                String queryString = req.getQueryString();
 
-                int start = pageSize * (pageNo - 1);
-
-                ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
-                List<BoardDto> boards = adminService.findReportBoardWithPaging(start, sortValue, searchValue);
-
-                if (boards.isEmpty()) {
+            if (categoryPart.equals("small")) {
+                List<BoardSmallCategoryDto> smallCategories = adminService.findSmallCategory(start, largeCategoryValue);
+                if (smallCategories.isEmpty()) {
                     return "/modules/noDataModule";
                 }
 
-                model.addAttribute("pager", pager);
-                model.addAttribute("pageNo", pageNo);
-                model.addAttribute("dataCount", dataCount);
-
-                model.addAttribute("boards", boards);
-            } else if (to.equals("reportList") && reportCategory.equals("comment")) {
-                // paging
-                int pageSize = 10;
-                int pagerSize = 5;
-                int dataCount = adminService.findAllReportBoardCommentCount(searchValue);
-                String uri = req.getRequestURI();
-                String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
-                String queryString = req.getQueryString();
-
-                int start = pageSize * (pageNo - 1);
-
-                ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
-                List<CommentDto> comments = adminService.findReportBoardCommentWithPaging(start, sortValue, searchValue);
-
-                System.out.println("[COMMENTS] : " + comments);
-
-                if (comments.isEmpty()) {
-                    return "/modules/noDataModule";
-                }
-
-                model.addAttribute("pager", pager);
-                model.addAttribute("pageNo", pageNo);
-                model.addAttribute("dataCount", dataCount);
-
-                model.addAttribute("comments", comments);
-
-                return "/admin/board-manage/modules/commentList";
-            }
-            if (to.equals("controlCategory")) {
-                // paging
-                int pageSize = 10;
-                int pagerSize = 5;
-                int dataCount = adminService.findAllCategoryCount(categoryPart, largeCategoryValue);
-                String uri = req.getRequestURI();
-                String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
-                String queryString = req.getQueryString();
-
-                int start = pageSize * (pageNo - 1);
-
-                ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
-
-                if (categoryPart.equals("large")) {
-                    List<BoardLargeCategoryDto> largeCategories = adminService.findLargeCategory(start);
-                    if (largeCategories.isEmpty()) {
-                        return "/modules/noDataModule";
-                    }
-
-                    model.addAttribute("largeCategories", largeCategories);
-                }
-
-                if (categoryPart.equals("small")) {
-                    List<BoardSmallCategoryDto> smallCategories = adminService.findSmallCategory(start, largeCategoryValue);
-                    if (smallCategories.isEmpty()) {
-                        return "/modules/noDataModule";
-                    }
-
-                    model.addAttribute("smallCategories", smallCategories);
-                }
-
-                model.addAttribute("pager", pager);
-                model.addAttribute("pageNo", pageNo);
-                model.addAttribute("dataCount", dataCount);
-                model.addAttribute("categoryPart", categoryPart);
-
-                return "/admin/board-manage/modules/categoryList";
-
+                model.addAttribute("smallCategories", smallCategories);
             }
 
-            return "/admin/board-manage/modules/contentList";
+            model.addAttribute("pager", pager);
+            model.addAttribute("pageNo", pageNo);
+            model.addAttribute("dataCount", dataCount);
+            model.addAttribute("categoryPart", categoryPart);
+
+            return "/admin/board-manage/modules/categoryList";
+
+        }
+
+        return "/admin/board-manage/modules/contentList";
 //        } catch (Exception e) {
 //            return "/modules/noDataModule";
 //        }
@@ -426,6 +424,49 @@ public class AdminController {
         } catch (Exception e) {
             return "fail";
         }
+    }
+
+    @GetMapping(path = {"/user-manage"})
+    public String userManage(Model model) {
+        List<UserRoleDto> userRoles = adminService.findAllUserRole();
+        model.addAttribute("userRoles", userRoles);
+        return "/admin/user-manage/userManage";
+    }
+
+    @GetMapping(path = {"/get-user"})
+    public String getUser(Model model, HttpServletRequest req,
+                          @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                          @RequestParam(name = "category", defaultValue = "all") String category,
+                          @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+        // paging
+        int pageSize = 10;
+        int pagerSize = 5;
+        int dataCount = adminService.findAllUserCount(category, searchValue);
+        String uri = req.getRequestURI();
+        String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+        String queryString = req.getQueryString();
+
+        int start = pageSize * (pageNo - 1);
+
+        ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+        List<UserDto> users = adminService.findUserList(start, category, searchValue);
+
+        System.out.println("[USERS] : " + users);
+
+        if (users.isEmpty()) {
+            return "/modules/noDataModule";
+        }
+
+        List<UserRoleDto> userRoles = adminService.findAllUserRole();
+        model.addAttribute("userRoles", userRoles);
+
+        model.addAttribute("pager", pager);
+        model.addAttribute("pageNo", pageNo);
+        model.addAttribute("dataCount", dataCount);
+
+        model.addAttribute("users", users);
+
+        return "/admin/user-manage/modules/userList";
     }
 
 }

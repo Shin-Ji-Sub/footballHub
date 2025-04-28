@@ -9,8 +9,14 @@
         <result property="nickname" column="nickname"/>
         <result property="socialMethod" column="social_method"/>
         <result property="joinDate" column="join_date"/>
-        <result property="isAdmin" column="is_admin"/>
+        <result property="roleId" column="role_id"/>
         <result property="state" column="state"/>
+        <!-- 1:1 관계 user_role -->
+        <association property="userRole" javaType="com.mezzala.dto.UserRoleDto">
+            <id property="roleId" column="ur_role_id"/>
+            <result property="roleName" column="ur_role_name"/>
+            <result property="roleKorName" column="ur_role_kor_name"/>
+        </association>
         <!-- 1:N 관계 user_action -->
         <collection property="likeUserActions" ofType="com.mezzala.dto.UserActionDto">
             <id property="actionId" column="like_action_id"/>
@@ -33,8 +39,12 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
+
+            ur.role_id AS ur_role_id,
+            ur.role_name AS ur_role_name,
+            ur.role_kor_name AS ur_role_kor_name,
 
             ua_like.action_id AS like_action_id,
             ua_like.action_category AS like_action_category,
@@ -47,6 +57,10 @@
             ua_bookmark.board_id AS bookmark_board_id
         FROM
             user u
+        LEFT JOIN
+            user_role ur
+        ON
+            u.role_id = ur.role_id
         LEFT JOIN
             user_action ua_like
         ON

@@ -9,8 +9,14 @@
         <result property="nickname" column="nickname"/>
         <result property="socialMethod" column="social_method"/>
         <result property="joinDate" column="join_date"/>
-        <result property="isAdmin" column="is_admin"/>
+        <result property="roleId" column="role_id"/>
         <result property="state" column="state"/>
+        <!-- 1:1 관계 user_role -->
+        <association property="userRole" javaType="com.mezzala.dto.UserRoleDto">
+            <id property="roleId" column="ur_role_id"/>
+            <result property="roleName" column="ur_role_name"/>
+            <result property="roleKorName" column="ur_role_kor_name"/>
+        </association>
         <!-- 1:N 관계 user_action -->
         <collection property="likeUserActions" ofType="com.mezzala.dto.UserActionDto">
             <id property="actionId" column="action_id"/>
@@ -34,7 +40,7 @@
             <result property="nickname" column="nickname" />
             <result property="socialMethod" column="social_method" />
             <result property="joinDate" column="join_date" />
-            <result property="isAdmin" column="is_admin" />
+            <result property="roleId" column="role_id" />
             <result property="state" column="state" />
         </association>
         <!-- 1:1 관계 board_large_category -->
@@ -106,14 +112,23 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
+
+            ur.role_id AS ur_role_id,
+            ur.role_name AS ur_role_name,
+            ur.role_kor_name AS ur_role_kor_name,
+
             ua.action_id,
             ua.action_category,
             ua.user_id,
             ua.board_id
         FROM
             user u
+        LEFT JOIN
+            user_role ur
+        ON
+            u.role_id = ur.role_id
         LEFT JOIN
             user_action ua
         ON
@@ -153,7 +168,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
@@ -295,7 +310,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
@@ -441,7 +456,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
@@ -564,7 +579,7 @@
             u.nickname AS nickname,
             u.social_method AS socialMethod,
             u.join_date AS joinDate,
-            u.is_admin AS isAdmin,
+            u.role_id AS roleId,
             u.state AS state
         FROM
             block_user bu

@@ -1,0 +1,53 @@
+<div xmlns:th="http://www.thymeleaf.org" class="accordion" id="accordionExample">
+    <div class="accordion-item" th:each="user, userState : ${users}">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    th:data-bs-target="'#' + ${userState.index}" aria-expanded="false"
+                    th:aria-controls="${userState.index}">
+                <span th:text="${user.nickname}"></span>
+                <div class="user_info_header">
+                    <div class="text-primary">등급 : <span th:text="${user.userRole.roleKorName}"></span></div>
+                    <div class="text-success">총 점수 : <span th:text="${user.userScore}"></span></div>
+                </div>
+            </button>
+        </h2>
+        <div th:id="${userState.index}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <!-- 쓴 글 수, 쓴 댓글 수, 차단당한 횟수 -->
+                <div class="user_info_main">
+                    <div>
+                        <i class="bi bi-pencil-fill text-primary"></i>
+                        쓴 글 수 : <span th:text="${user.writeBoardCount}"></span>
+                    </div>
+                    <div>
+                        <i class="bi bi-chat-dots-fill text-primary"></i>
+                        쓴 댓글 수 : <span th:text="${user.writeCommentCount}"></span>
+                    </div>
+                    <div>
+                        <i class="bi bi-ban text-danger"></i>
+                        신고 당한 수 : <span th:text="${user.reportCount}"></span>
+                    </div>
+                </div>
+                <div class="list-group">
+                    <th:block th:each="userRole : ${userRoles}">
+                        <button th:if="${user.userRole.roleId == userRole.roleId}"
+                                th:text="${userRole.roleKorName}"
+                                type="button" class="list-group-item list-group-item-action active" aria-current="true">
+                        </button>
+                        <button th:unless="${user.userRole.roleId == userRole.roleId}"
+                                th:text="${userRole.roleKorName}"
+                                type="button" class="list-group-item list-group-item-action">
+                        </button>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-button-container">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination paging" th:data-pageno='${ pageNo }' th:data-datacount="${ dataCount }">
+                [(${ pager })]
+            </ul>
+        </nav>
+    </div>
+</div>

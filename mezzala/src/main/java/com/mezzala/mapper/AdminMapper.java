@@ -1,9 +1,6 @@
 package com.mezzala.mapper;
 
-import com.mezzala.dto.BoardDto;
-import com.mezzala.dto.BoardLargeCategoryDto;
-import com.mezzala.dto.BoardSmallCategoryDto;
-import com.mezzala.dto.CommentDto;
+import com.mezzala.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -72,4 +69,11 @@ public interface AdminMapper {
     void deleteLargeCategory(int categoryId);
 
     void deleteSmallCategory(int categoryId);
+
+    List<UserRoleDto> selectAllUserRole();
+
+    int selectAllUserCount(String category, String searchValue);
+
+    List<UserDto> selectUserList(@Param("start") int start, @Param("category") String category,
+                                 @Param("searchValue") String searchValue);
 }

@@ -135,3 +135,32 @@
   padding: 5px;
   width: 15vw;
 }
+
+
+/* Admin - User Manage Section */
+.user_info_header {
+  position: absolute;
+  right: 10%;
+  display: flex;
+  flex-direction: row;
+  column-gap: 2rem;
+  font-weight: 600;
+}
+
+.accordion-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.user_info_main {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.user_info_main i {
+  font-size:1.5rem;
+}

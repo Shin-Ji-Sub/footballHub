@@ -117,7 +117,7 @@ public class AccountController {
 
         List<UserDto> users = accountService.addAccount(userId, nickname, socialMethod);
 
-//        System.out.println("user : " + users.get(0));
+        System.out.println("user : " + users.get(0));
 
         session.setAttribute("accessToken", accessToken);
         session.setAttribute("user", users.get(0));

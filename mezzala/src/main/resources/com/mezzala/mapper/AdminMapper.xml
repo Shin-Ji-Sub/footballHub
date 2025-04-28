@@ -4,6 +4,24 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mezzala.mapper.AdminMapper">
+    <resultMap id="UserResultMap" type="com.mezzala.dto.UserDto">
+        <id property="userId" column="u_user_id"/>
+        <result property="nickname" column="u_nickname"/>
+        <result property="socialMethod" column="u_social_method"/>
+        <result property="joinDate" column="u_join_date"/>
+        <result property="roleId" column="u_role_id"/>
+        <result property="state" column="u_state"/>
+        <result property="writeBoardCount" column="writeBoardCount"/>
+        <result property="writeCommentCount" column="writeCommentCount"/>
+        <result property="reportCount" column="reportCount"/>
+        <result property="userScore" column="userScore"/>
+        <!-- 1:1 관계 user_role -->
+        <association property="userRole" javaType="com.mezzala.dto.UserRoleDto">
+            <id property="roleId" column="ur_role_id" />
+            <result property="roleName" column="ur_role_name" />
+            <result property="roleKorName" column="ur_role_kor_name" />
+        </association>
+    </resultMap>
     <resultMap id="BoardLargeCategoryResultMap" type="com.mezzala.dto.BoardLargeCategoryDto">
         <id property="largeCategoryId" column="large_category_id" />
         <result property="largeCategoryName" column="large_category_name" />
@@ -30,7 +48,7 @@
             <result property="nickname" column="nickname" />
             <result property="socialMethod" column="social_method" />
             <result property="joinDate" column="join_date" />
-            <result property="isAdmin" column="is_admin" />
+            <result property="roleId" column="role_id" />
             <result property="state" column="state" />
         </association>
         <!-- 1:1 관계 board_large_category -->
@@ -92,7 +110,7 @@
             <result property="nickname" column="u_nickname" />
             <result property="socialMethod" column="u_social_method" />
             <result property="joinDate" column="u_join_date" />
-            <result property="isAdmin" column="u_is_admin" />
+            <result property="roleId" column="u_role_id" />
             <result property="state" column="u_state" />
         </association>
     </resultMap>
@@ -175,7 +193,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
@@ -269,7 +287,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             ba.attach_id,
             ba.user_file_name,
@@ -395,7 +413,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
@@ -504,7 +522,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             ba.attach_id,
             ba.user_file_name,
@@ -590,7 +608,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
@@ -719,7 +737,7 @@
             u.nickname AS u_nickname,
             u.social_method AS u_social_method,
             u.join_date AS u_join_date,
-            u.is_admin AS u_is_admin,
+            u.role_id AS u_role_id,
             u.state AS u_state
         FROM
             comment c
@@ -891,5 +909,100 @@
         WHERE
             small_category_index = #{categoryId}
     </delete>
+
+    <select id="selectAllUserRole" resultType="UserRoleDto">
+        SELECT
+            role_id AS roleId,
+            role_name AS roleName,
+            role_kor_name AS roleKorName
+        FROM
+            user_role
+    </select>
+
+    <select id="selectAllUserCount" parameterType="hashmap" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            user
+        WHERE
+            state = true
+        <choose>
+            <when test="searchValue.length != null and searchValue != ''">
+                AND
+                    nickname LIKE CONCAT('%', #{searchValue}, '%')
+            </when>
+        </choose>
+        <choose>
+            <when test="category != 'all'">
+                AND
+                    role_id = #{category}
+            </when>
+        </choose>
+    </select>
+
+    <select id="selectUserList" parameterType="hashmap" resultMap="UserResultMap">
+        SELECT
+            u.user_id AS u_user_id,
+            u.nickname AS u_nickname,
+            u.social_method AS u_social_method,
+            u.role_id AS u_role_id,
+            u.join_date AS u_join_date,
+            u.state AS u_state,
+
+            ur.role_id AS ur_role_id,
+            ur.role_name AS ur_role_name,
+            ur.role_kor_name AS ur_role_kor_name,
+
+            COALESCE(COUNT(DISTINCT b.board_id), 0) + COALESCE(COUNT(DISTINCT rb.board_id), 0) AS writeBoardCount,
+            COALESCE(COUNT(DISTINCT c.comment_id), 0) + COALESCE(COUNT(DISTINCT rc.comment_id), 0) AS writeCommentCount,
+            COALESCE(COUNT(DISTINCT r.report_id), 0) AS reportCount,
+            (COALESCE(COUNT(DISTINCT b.board_id), 0) + COALESCE(COUNT(DISTINCT rb.board_id), 0)) * 2 + (COALESCE(COUNT(DISTINCT c.comment_id), 0) + COALESCE(COUNT(DISTINCT rc.comment_id), 0)) AS userScore
+        FROM
+            user u
+        LEFT JOIN
+            user_role ur
+        ON
+            u.role_id = ur.role_id
+        LEFT JOIN
+            board b
+        ON
+            u.user_id = b.user_id
+        LEFT JOIN
+            request_board rb
+        ON
+            u.user_id = rb.user_id
+        LEFT JOIN
+            comment c
+        ON
+            u.user_id = c.user_id
+        LEFT JOIN
+            request_comment rc
+        ON
+            u.user_id = rc.user_id
+        LEFT JOIN
+            report r
+        ON
+            u.user_id = r.user_id
+        WHERE
+            u.state = true
+        <choose>
+            <when test="searchValue.length != null and searchValue != ''">
+                AND
+                    u.nickname LIKE CONCAT('%', #{searchValue}, '%')
+            </when>
+        </choose>
+        <choose>
+            <when test="category != 'all'">
+                AND
+                    u.role_id = #{category}
+            </when>
+        </choose>
+        GROUP BY
+            u.user_id
+        LIMIT
+            10
+        OFFSET
+            #{start}
+    </select>
 
 </mapper>

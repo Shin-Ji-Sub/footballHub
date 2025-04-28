@@ -19,7 +19,7 @@
             <result property="nickname" column="nickname" />
             <result property="socialMethod" column="social_method" />
             <result property="joinDate" column="join_date" />
-            <result property="isAdmin" column="is_admin" />
+            <result property="roleId" column="role_id" />
             <result property="state" column="state" />
         </association>
         <!-- 1:1 관계 board_large_category -->
@@ -114,7 +114,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
@@ -202,7 +202,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,

@@ -47,7 +47,7 @@ public class BoardController {
         } else if (fromPage.equals("fandomhub")) {
             categoryText = "공화국";
         }
-
+        System.out.println("largeCategories : " + largeCategories);
         model.addAttribute("largeCategories", largeCategories);
         model.addAttribute("fromPage", fromPage);
         model.addAttribute("categoryText", categoryText);

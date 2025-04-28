@@ -28,13 +28,17 @@
                 <div class="write-header">
                     <select name="largeCategoryId" class="form-select write-subject" id="writeLargeCategory" aria-label="Default select example">
                         <option th:selected="${fromPage == 'home'}" id="deleteFirstOption">카테고리</option>
+<!--                        th:if="${largeCategory.largeCategoryName != '공지사항' && session.user.userRole.roleName != 'admin'}"-->
                         <option th:each="largeCategory : ${largeCategories}"
-                                th:if="${largeCategory.largeCategoryId != 3 && session.user.isAdmin != true}"
+                                th:if="${largeCategory.largeCategoryName != '공지사항'}"
                                 th:value="${largeCategory.largeCategoryId}"
                                 th:text="${largeCategory.largeCategoryName}"
                                 th:selected="${largeCategory.largeCategoryName == categoryText}"></option>
                     </select>
-                    <select disabled name="smallCategoryIndex" class="form-select write-subject" id="normalCategory" aria-label="Default select example">
+                    <select disabled name="smallCategoryIndex" class="form-select write-subject" id="noneSmallCategory" aria-label="Default select example">
+                        <option selected>카테고리</option>
+                    </select>
+                    <select name="smallCategoryIndex" class="form-select write-subject display-none" id="normalCategory" aria-label="Default select example">
                         <option selected id="deleteSecondOption">카테고리</option>
                         <th:block th:each="largeCategory : ${largeCategories}"
                                   th:if="${largeCategory.largeCategoryId == 1}">
@@ -223,6 +227,7 @@
         const deleteFirstOption = $('#deleteFirstOption');
         const deleteSecondOption = $('#deleteSecondOption');
         const teamArrEl = $('.search-team');
+        const noneSmallCategory = $('#noneSmallCategory');
         const fromPage = $('#fromPage').val();
 
         // FORM 관련 변수
@@ -233,16 +238,19 @@
 
         const width = contentWidth / 2;
 
-        writeSubject.css('width', contentWidth);
-        writeLargeCategory.css('width', width);
-        normalCategory.css('width', width);
-        fanCategory.css('width', width);
-        teamValueContainer.css('width', width);
+<!--        writeSubject.css('width', contentWidth);-->
+<!--        writeLargeCategory.css('width', width);-->
+<!--        normalCategory.css('width', width);-->
+<!--        fanCategory.css('width', width);-->
+<!--        teamValueContainer.css('width', width);-->
 
         // 큰 카테고리 설정 함수
         function setLargeCategory() {
             const writeLargeCategoryValue = writeLargeCategory.val();
             if (writeLargeCategoryValue == 1) {
+                noneSmallCategory.addClass('display-none');
+                normalCategory.removeClass('display-none');
+
                 deleteFirstOption.remove();
                 deleteSecondOption.remove();
                 normalCategory.removeAttr('disabled');
@@ -250,6 +258,7 @@
                 fanCategory.addClass('display-none');
                 teamValueContainer.addClass('display-none');
             } else if (writeLargeCategoryValue == 2) {
+                noneSmallCategory.addClass('display-none');
                 deleteFirstOption.remove();
                 deleteSecondOption.remove();
                 fanCategory.removeClass('display-none');
@@ -260,6 +269,11 @@
                   'max-height': teamArrEl.outerHeight() * 5 + 'px',
                   'overflow-y': 'auto'
                 });
+            } else if (writeLargeCategoryValue != '카테고리') {
+                noneSmallCategory.removeClass('display-none');
+                normalCategory.addClass('display-none');
+                fanCategory.addClass('display-none');
+                teamValueContainer.addClass('display-none');
             }
         }
         // 초기 큰 카테고리 설정

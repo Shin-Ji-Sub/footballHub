@@ -153,4 +153,19 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    @Override
+    public List<UserRoleDto> findAllUserRole() {
+        return adminMapper.selectAllUserRole();
+    }
+
+    @Override
+    public int findAllUserCount(String category, String searchValue) {
+        return adminMapper.selectAllUserCount(category, searchValue);
+    }
+
+    @Override
+    public List<UserDto> findUserList(int start, String category, String searchValue) {
+        return adminMapper.selectUserList(start, category, searchValue);
+    }
+
 }

@@ -15,6 +15,7 @@
 		<typeAlias type="com.mezzala.dto.CommentDto" alias="CommentDto" />
 		<typeAlias type="com.mezzala.dto.CommentActionDto" alias="CommentActionDto" />
 		<typeAlias type="com.mezzala.dto.RequestBoardDto" alias="RequestBoardDto" />
+		<typeAlias type="com.mezzala.dto.UserRoleDto" alias="UserRoleDto" />
 	</typeAliases>
 
 	<mappers>

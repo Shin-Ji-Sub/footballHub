@@ -13,15 +13,27 @@ public class UserDto {
     private String socialMethod;
     // default (now())
     private Date joinDate;
-    // default (false)
-    private boolean isAdmin;
+    // default (2)
+    private int roleId;
     // default (true)
     private boolean state;
+
+    // 쓴 글 수
+    private int writeBoardCount;
+    // 쓴 댓글 수
+    private int writeCommentCount;
+    // 신고 당한 수
+    private int reportCount;
+    // 총 점수
+    private int userScore;
 
     // UserAction - like
     List<UserActionDto> likeUserActions;
 
     // UserAction - bookmark
     List<UserActionDto> bookmarkUserActions;
+
+    // user_role
+    UserRoleDto userRole;
 
 }

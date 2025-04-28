@@ -49,4 +49,10 @@ public interface AdminService {
     void modifyCategoryName(String categoryName, int categoryId, String categoryPart);
 
     void deleteCategory(String categoryPart, int categoryId);
+
+    List<UserRoleDto> findAllUserRole();
+
+    int findAllUserCount(String category, String searchValue);
+
+    List<UserDto> findUserList(int start, String category, String searchValue);
 }

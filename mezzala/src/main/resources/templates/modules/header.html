@@ -4,7 +4,7 @@
         <div class="head"><a href="/">FootballHub</a></div>
         <div class="account-section">
             <th:block th:if="${session.user != null}">
-                <button th:if="${session.user.isAdmin == true}">
+                <button th:if="${session.user.userRole.roleName == 'admin'}">
                     <a href="/admin/notice">관리자</a>
                 </button>
                 <button>

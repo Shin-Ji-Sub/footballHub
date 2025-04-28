@@ -29,7 +29,7 @@
             <result property="nickname" column="nickname" />
             <result property="socialMethod" column="social_method" />
             <result property="joinDate" column="join_date" />
-            <result property="isAdmin" column="is_admin" />
+            <result property="roleId" column="role_id" />
             <result property="state" column="state" />
         </association>
         <!-- 1:1 관계 board_large_category -->
@@ -70,7 +70,7 @@
             <result property="nickname" column="nickname" />
             <result property="socialMethod" column="social_method" />
             <result property="joinDate" column="join_date" />
-            <result property="isAdmin" column="is_admin" />
+            <result property="roleId" column="role_id" />
             <result property="state" column="state" />
         </association>
         <collection property="commentActions" ofType="com.mezzala.dto.CommentActionDto">
@@ -91,7 +91,7 @@
                 <result property="nickname" column="recomment_nickname"/>
                 <result property="socialMethod" column="recomment_social_method"/>
                 <result property="joinDate" column="recomment_join_date"/>
-                <result property="isAdmin" column="recomment_is_admin"/>
+                <result property="roleId" column="recomment_role_id"/>
                 <result property="state" column="recomment_state"/>
             </association>
             <collection property="commentActions" ofType="com.mezzala.dto.CommentActionDto">
@@ -131,7 +131,7 @@
         ON
             large.large_category_id = small.large_category_id
         ORDER BY
-            small.small_category_index;
+            small.small_category_index
     </select>
 
     <insert id="insertBoard" parameterType="BoardDto" useGeneratedKeys="true" keyProperty="boardId">
@@ -203,7 +203,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
@@ -285,7 +285,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
@@ -393,7 +393,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             ba.attach_id,
             ba.user_file_name,
@@ -455,7 +455,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             ba.attach_id,
             ba.user_file_name,
@@ -623,7 +623,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
 
             ca1.action_id AS ca1_action_id,
@@ -642,7 +642,7 @@
             u2.nickname AS recomment_nickname,
             u2.social_method AS recomment_social_method,
             u2.join_date AS recomment_join_date,
-            u2.is_admin AS recomment_is_admin,
+            u2.role_id AS recomment_role_id,
             u2.state AS recomment_state,
 
             ca2.action_id AS ca2_action_id,
@@ -766,7 +766,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             ba.attach_id,
             ba.user_file_name,
@@ -895,7 +895,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             MAX(ba.attach_id) AS attach_id,
             MAX(ba.user_file_name) AS user_file_name,
@@ -952,7 +952,7 @@
             u.nickname,
             u.social_method,
             u.join_date,
-            u.is_admin,
+            u.role_id,
             u.state,
             ba.attach_id,
             ba.user_file_name,
