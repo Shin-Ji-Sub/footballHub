@@ -54,5 +54,7 @@ public interface AdminService {
 
     int findAllUserCount(String category, String searchValue);
 
-    List<UserDto> findUserList(int start, String category, String searchValue);
+    List<UserDto> findUserList(int start, String category, String searchValue, String sortValue);
+
+    void modifyUserRole(int roleValue, String userId);
 }

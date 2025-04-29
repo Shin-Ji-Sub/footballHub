@@ -15,20 +15,24 @@
 
     <main>
         <div class="main-container">
-            <div class="container section content-container">
+            <div class="container section content-container user-controller-container">
                 <h4>유저 조회</h4>
+                <div class="board-manage-sort-container">
+                    <span class="subject sort-button underline" data-value="score">점수순</span>
+                    <span class="subject sort-button" data-value="latest">최신순</span>
+                </div>
                 <div class="control-category-container">
                     <div>
-                        <select class="form-select" aria-label="Default select example">
-                            <option value="0" selected>전체</option>
+                        <select class="form-select" id="categorySelect" aria-label="Default select example">
+                            <option value="all" selected>전체</option>
                             <option th:each="userRole : ${userRoles}"
                                     th:value="${userRole.roleId}"
                                     th:text="${userRole.roleKorName}"></option>
                         </select>
                     </div>
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="유저이름 조회">
-                        <button class="btn btn-outline-secondary" type="button" id="">조회</button>
+                        <input type="text" class="form-control" id="searchInput" placeholder="유저이름 검색">
+                        <button class="btn btn-outline-secondary" type="button" id="searchButton">검색</button>
                     </div>
                 </div>
             </div>
@@ -53,9 +57,105 @@
             locationCategories.eq(2).addClass('text-primary');
 
             const moduleBox = $('#moduleBox');
+            const categorySelect = $('#categorySelect');
+            const searchButton = $('#searchButton');
+            const searchInput = $('#searchInput');
+            const sortButton = $('.sort-button');
+
+            let categoryValue = "all";
+            let searchValue = "";
+            let sortValue = "score";
 
             // 처음 유저 목록 LOAD
             moduleBox.load("/admin/get-user");
+
+            // 점수순, 최신순 정렬 버튼
+            sortButton.on('click', (e) => {
+                sortButton.removeClass('underline');
+                $(e.currentTarget).addClass('underline');
+
+                sortValue = $(e.currentTarget).data('value');
+                moduleBox.load("/admin/get-user?sortValue=" + sortValue + "&category=" + categoryValue +
+                                                "&searchValue=" + searchValue);
+            });
+
+            // 카테고리 조회
+            categorySelect.on('change', (e) => {
+                categoryValue = categorySelect.val();
+                moduleBox.load("/admin/get-user?category=" + categoryValue + "&sortValue=" + sortValue);
+                // 검색어, 정렬 초기화 (화면)
+                searchInput.val("");
+            });
+
+            // 검색 조회
+            function search(e) {
+                searchValue = searchInput.val();
+                if (searchValue.length == 0) {
+                    alert("검색어를 입력해주세요.");
+                    searchInput.focus();
+                    e.preventDefault();
+                    return;
+                }
+                moduleBox.load("/admin/get-user?category=" + categoryValue + "&searchValue=" + searchValue +
+                                                "&sortValue=" + sortValue);
+            }
+            searchButton.on('click', (e) => {
+                search();
+            });
+            searchInput.on('keyup', (key) => {
+                if (key.keyCode == 13) {
+                    search();
+                }
+            });
+
+            // 유저 등급 변경
+            moduleBox.on('click', '.role-item', (e) => {
+                const roleValue = $(e.currentTarget).data('value');
+                const userRoleValue = $(e.currentTarget).data('uservalue');
+                const userId = $(e.currentTarget).data('user');
+                const accordionIndex = $(e.currentTarget).data('index');
+                console.log(accordionIndex);
+
+                if (roleValue == userRoleValue) {
+                    alert('현재 등급과 같은 등급입니다.');
+                    e.preventDefault();
+                    return;
+                } else {
+                    const ok = window.confirm("등급을 변경하시겠습니까?");
+                    if (ok) {
+                        $.ajax({
+                            url : "/admin/modify-role",
+                            method : "POST",
+                            data : "roleValue=" + roleValue + "&userId=" + userId,
+                            dataType : "text",
+                            success : (response, status, xhr) => {
+                                if (response == "success") {
+                                    alert("등급을 변경하였습니다.");
+                                    moduleBox.load("/admin/get-user?category=" + categoryValue + "&searchValue=" + searchValue +
+                                                                    "&accordionId=" + userId + "&sortValue=" + sortValue);
+                                }
+                            },
+                            error : (status, xhr, error) => {
+                                alert("등급을 변경하지 못하였습니다. 다시 시도해주세요.");
+                            }
+                        });
+                    }
+                }
+            });
+
+            // pagination
+            moduleBox.on('click', '.page-item', function(e) {
+                let pageNo = $('.paging').data('pageno');
+                const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
+                if (/«/.test($(this).text())) pageNo = 1;
+                if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
+                if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
+                if (/»/.test($(this).text())) pageNo = lastPageNo;
+                if (!isNaN($(this).text())) pageNo = $(this).text();
+
+                moduleBox.load("/admin/get-user?category=" + categoryValue + "&searchValue=" + searchValue +
+                                                "&pageNo=" + pageNo + "&sortValue=" + sortValue);
+            });
 
         });
     </script>

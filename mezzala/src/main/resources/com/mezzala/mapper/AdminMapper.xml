@@ -999,10 +999,28 @@
         </choose>
         GROUP BY
             u.user_id
+        ORDER BY
+            <choose>
+                <when test="sortValue == 'score'">
+                    (COALESCE(COUNT(DISTINCT b.board_id), 0) + COALESCE(COUNT(DISTINCT rb.board_id), 0)) * 2 + (COALESCE(COUNT(DISTINCT c.comment_id), 0) + COALESCE(COUNT(DISTINCT rc.comment_id), 0)) DESC
+                </when>
+                <when test="sortValue == 'latest'">
+                    u.join_date DESC
+                </when>
+            </choose>
         LIMIT
             10
         OFFSET
             #{start}
     </select>
+
+    <update id="updateUserRole" parameterType="hashmap">
+        UPDATE
+            user
+        SET
+            role_id = #{roleValue}
+        WHERE
+            user_id = #{userId}
+    </update>
 
 </mapper>

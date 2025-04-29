@@ -75,5 +75,7 @@ public interface AdminMapper {
     int selectAllUserCount(String category, String searchValue);
 
     List<UserDto> selectUserList(@Param("start") int start, @Param("category") String category,
-                                 @Param("searchValue") String searchValue);
+                                 @Param("searchValue") String searchValue, @Param("sortValue") String sortValue);
+
+    void updateUserRole(@Param("roleValue") int roleValue, @Param("userId") String userId);
 }

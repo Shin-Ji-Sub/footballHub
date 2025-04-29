@@ -164,8 +164,13 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<UserDto> findUserList(int start, String category, String searchValue) {
-        return adminMapper.selectUserList(start, category, searchValue);
+    public List<UserDto> findUserList(int start, String category, String searchValue, String sortValue) {
+        return adminMapper.selectUserList(start, category, searchValue, sortValue);
+    }
+
+    @Override
+    public void modifyUserRole(int roleValue, String userId) {
+        adminMapper.updateUserRole(roleValue, userId);
     }
 
 }

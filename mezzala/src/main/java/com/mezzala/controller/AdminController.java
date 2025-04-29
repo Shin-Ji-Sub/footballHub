@@ -437,7 +437,9 @@ public class AdminController {
     public String getUser(Model model, HttpServletRequest req,
                           @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
                           @RequestParam(name = "category", defaultValue = "all") String category,
-                          @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+                          @RequestParam(name = "searchValue", defaultValue = "") String searchValue,
+                          @RequestParam(name = "accordionId", defaultValue = "none") String accordionId,
+                          @RequestParam(name = "sortValue", defaultValue = "score") String sortValue) {
         // paging
         int pageSize = 10;
         int pagerSize = 5;
@@ -449,9 +451,7 @@ public class AdminController {
         int start = pageSize * (pageNo - 1);
 
         ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
-        List<UserDto> users = adminService.findUserList(start, category, searchValue);
-
-        System.out.println("[USERS] : " + users);
+        List<UserDto> users = adminService.findUserList(start, category, searchValue, sortValue);
 
         if (users.isEmpty()) {
             return "/modules/noDataModule";
@@ -460,6 +460,8 @@ public class AdminController {
         List<UserRoleDto> userRoles = adminService.findAllUserRole();
         model.addAttribute("userRoles", userRoles);
 
+        model.addAttribute("accordionId", accordionId);
+
         model.addAttribute("pager", pager);
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("dataCount", dataCount);
@@ -467,6 +469,14 @@ public class AdminController {
         model.addAttribute("users", users);
 
         return "/admin/user-manage/modules/userList";
+    }
+
+    @PostMapping(path = {"/modify-role"})
+    @ResponseBody
+    public String modifyRole(@RequestParam(name = "roleValue") int roleValue,
+                             @RequestParam(name = "userId") String userId) {
+        adminService.modifyUserRole(roleValue, userId);
+        return "success";
     }
 
 }
