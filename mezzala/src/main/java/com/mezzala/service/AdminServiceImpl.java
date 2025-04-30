@@ -173,4 +173,32 @@ public class AdminServiceImpl implements AdminService {
         adminMapper.updateUserRole(roleValue, userId);
     }
 
+    @Override
+    public void addScheduleCategory(String value, String logo, String from) {
+        if (from.equals("competition")) {
+            adminMapper.insertCompetition(value);
+        }
+        if (from.equals("round")) {
+            adminMapper.insertCompetitionRound(value);
+        }
+        if (from.equals("team")) {
+            adminMapper.insertTeam(value, logo);
+        }
+    }
+
+    @Override
+    public List<TeamDto> findAllTeam() {
+        return adminMapper.selectAllTeam();
+    }
+
+    @Override
+    public List<CompetitionDto> findAllCompetition() {
+        return adminMapper.selectAllCompetition();
+    }
+
+    @Override
+    public List<CompetitionRoundDto> findAllCompetitionRound() {
+        return adminMapper.selectAllCompetitionRound();
+    }
+
 }

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/schedule.css">
+    <title>FootballHub</title>
+</head>
+<body>
+    <header>
+        <div class="date-picker-wrapper text-white">
+            <div class="d-flex justify-content-between align-items-center month-nav">
+                <button id="prevMonthBtn">&lt;</button>
+
+                <div id="monthYearDisplay" class="month-year-text">
+                    <span id="yearText"></span>년 <span id="monthText"></span>월
+                </div>
+
+                <div id="monthYearSelect" class="d-none">
+                    <select id="yearSelect" class="form-control d-inline w-auto"></select>년
+                    <select id="monthSelect" class="form-control d-inline w-auto"></select>월
+                </div>
+
+                <button id="nextMonthBtn">&gt;</button>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center day-navigator">
+                <button id="prevDayPageBtn">&lt;</button>
+                <div class="day-list d-flex justify-content-center flex-grow-1"></div>
+                <button id="nextDayPageBtn">&gt;</button>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="schedule-container">
+            <h4>프리미어리그</h4>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>시간</th>
+                        <th>라운드/주차</th>
+                        <th>경기</th>
+                    </tr>
+                </thead>
+                <tbody class="schedule-body">
+                    <tr>
+                        <td>04:00</td>
+                        <td>8강 1차전</td>
+                        <td>
+                            <span>리버풀 </span><img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" class="logo"> :
+                            <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" class="logo"><span> 아스날</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>04:00</td>
+                        <td>8강 1차전</td>
+                        <td>
+                            <span>리버풀 </span><img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" class="logo"> :
+                            <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" class="logo"><span> 아스날</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>04:00</td>
+                        <td>8강 1차전</td>
+                        <td>
+                            <span>리버풀 </span><img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" class="logo"> :
+                            <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" class="logo"><span> 아스날</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="schedule-container">
+            <h4>라리가</h4>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>시간</th>
+                        <th>라운드/주차</th>
+                        <th>경기</th>
+                    </tr>
+                </thead>
+                <tbody class="schedule-body">
+                    <tr>
+                        <td>04:00</td>
+                        <td>8강 1차전</td>
+                        <td>
+                            <span>리버풀 </span><img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" class="logo"> :
+                            <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" class="logo"><span> 아스날</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>04:00</td>
+                        <td>8강 1차전</td>
+                        <td>
+                            <span>리버풀 </span><img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" class="logo"> :
+                            <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" class="logo"><span> 아스날</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>04:00</td>
+                        <td>8강 1차전</td>
+                        <td>
+                            <span>리버풀 </span><img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" class="logo"> :
+                            <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" class="logo"><span> 아스날</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(window).on('load', function() {
+            const today = new Date();
+            const todayYear = today.getFullYear();
+            const todayMonth = today.getMonth() + 1;
+            const todayDate = today.getDate();
+
+            let currentYear = todayYear;
+            let currentMonth = todayMonth;
+            let currentDayPage = 0;
+            const daysPerPage = 7;
+
+            const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+
+            // 일자 이전, 다음 버튼 표시 함수
+            function updateDayPageButtons(currentPage, totalPages) {
+                if (currentPage === 0) {
+                    //$("#prevDayPageBtn").hide();
+                    $("#prevDayPageBtn").css("visibility", "hidden");
+                } else {
+                    //$("#prevDayPageBtn").show();
+                    $("#prevDayPageBtn").css("visibility", "visible");
+                }
+
+                if (currentPage >= totalPages - 1) {
+                    //$("#nextDayPageBtn").hide();
+                    $("#nextDayPageBtn").css("visibility", "hidden");
+                } else {
+                    //$("#nextDayPageBtn").show();
+                    $("#nextDayPageBtn").css('visibility', "visible");
+                }
+            }
+
+            // ✅ 월별 날짜 목록을 반환하는 함수
+            function getDaysInMonth(year, month) {
+                const date = new Date(year, month - 1, 1);
+                const days = [];
+                while (date.getMonth() + 1 === month) {
+                    days.push({
+                        date: date.getDate(),
+                        day: daysOfWeek[date.getDay()],
+                        fullDate: new Date(date)
+                    });
+                    date.setDate(date.getDate() + 1);
+                }
+                return days;
+            }
+
+            // ✅ 오늘 날짜가 몇 페이지에 있는지 계산
+            function getTodayPage(year, month) {
+                if (year !== todayYear || month !== todayMonth) return 0;
+                return Math.floor((todayDate - 1) / daysPerPage);
+            }
+
+            // ✅ 월/년 텍스트 업데이트
+            function updateMonthYearText() {
+                $("#yearText").text(currentYear);
+                $("#monthText").text(currentMonth);
+            }
+
+            // ✅ 날짜 렌더링
+            function renderDays(year, month, page = 0) {
+                const allDays = getDaysInMonth(year, month);
+                const $dayList = $(".day-list").empty();
+                const totalPages = Math.ceil(allDays.length / daysPerPage);
+                const pageDays = allDays.slice(page * daysPerPage, (page + 1) * daysPerPage);
+
+                pageDays.forEach(({ date, day }) => {
+                    const isToday =
+                        date === todayDate &&
+                        month === todayMonth &&
+                        year === todayYear;
+
+                    const $item = $(`
+                        <div class="day-item">
+                            <div>${day}</div>
+                            <div>${isToday ? "Today" : date}</div>
+                        </div>
+                    `);
+
+                    if (isToday) {
+                        $item.addClass("today");
+                        $item.addClass("selected");
+                    }
+
+                    $dayList.append($item);
+                });
+
+                updateDayPageButtons(page, totalPages);  // ✅ 페이지 네비게이션 버튼 갱신
+                updateMonthYearText();
+            }
+
+            // ✅ 셀렉트 박스 채우기
+            function fillYearMonthSelect() {
+                const $year = $("#yearSelect").empty();
+                for (let y = 1990; y <= 2035; y++) {
+                    $year.append(`<option value="${y}" ${y === currentYear ? "selected" : ""}>${y}</option>`);
+                }
+
+                const $month = $("#monthSelect").empty();
+                for (let m = 1; m <= 12; m++) {
+                    $month.append(`<option value="${m}" ${m === currentMonth ? "selected" : ""}>${m}</option>`);
+                }
+            }
+
+            // ✅ 초기화
+            currentDayPage = getTodayPage(currentYear, currentMonth);
+            fillYearMonthSelect();
+            renderDays(currentYear, currentMonth, currentDayPage);
+
+            // ✅ 이전 월
+            $("#prevMonthBtn").click(() => {
+                currentMonth--;
+                if (currentMonth < 1) {
+                    currentMonth = 12;
+                    currentYear--;
+                }
+                currentDayPage = getTodayPage(currentYear, currentMonth);
+                renderDays(currentYear, currentMonth, currentDayPage);
+            });
+
+            // ✅ 다음 월
+            $("#nextMonthBtn").click(() => {
+                currentMonth++;
+                if (currentMonth > 12) {
+                    currentMonth = 1;
+                    currentYear++;
+                }
+                currentDayPage = getTodayPage(currentYear, currentMonth);
+                renderDays(currentYear, currentMonth, currentDayPage);
+            });
+
+            // ✅ 이전 날짜 페이지
+            $("#prevDayPageBtn").click(() => {
+                if (currentDayPage > 0) {
+                    currentDayPage--;
+                    renderDays(currentYear, currentMonth, currentDayPage);
+                }
+            });
+
+            // ✅ 다음 날짜 페이지
+            $("#nextDayPageBtn").click(() => {
+                const totalDays = getDaysInMonth(currentYear, currentMonth).length;
+                if ((currentDayPage + 1) * daysPerPage < totalDays) {
+                    currentDayPage++;
+                    renderDays(currentYear, currentMonth, currentDayPage);
+                }
+            });
+
+            // ✅ 년월 텍스트 클릭 시 select로 전환
+            $("#monthYearDisplay").click(() => {
+                $("#monthYearDisplay").addClass("d-none");
+                fillYearMonthSelect();
+                $("#monthYearSelect").removeClass("d-none");
+            });
+
+            // ✅ select 변경 시 업데이트
+            $("#yearSelect, #monthSelect").change(() => {
+                currentYear = parseInt($("#yearSelect").val());
+                currentMonth = parseInt($("#monthSelect").val());
+                currentDayPage = getTodayPage(currentYear, currentMonth);
+                renderDays(currentYear, currentMonth, currentDayPage);
+                $("#monthYearSelect").addClass("d-none");
+                $("#monthYearDisplay").removeClass("d-none");
+            });
+
+            // ✅ select에서 빠져나오면 다시 텍스트로
+            $("#monthSelect").blur(() => {
+                $("#monthYearSelect").addClass("d-none");
+                $("#monthYearDisplay").removeClass("d-none");
+            });
+
+            // ✅ 날짜 클릭 이벤트 처리 (하단에 위치)
+            $(".day-list").on("click", ".day-item", function () {
+                // 선택 클래스 제거
+                $(".day-item").removeClass("selected");
+
+                // 현재 클릭된 요소가 Today인지 확인
+                const isToday = $(this).hasClass("today");
+
+                // 클릭된 요소에 선택 표시
+                $(this).addClass("selected");
+
+                // Today가 아닌 경우엔 Today 스타일을 그대로 유지
+                if (!isToday) {
+                    $(".day-item.today").removeClass("selected"); // 오늘 날짜 선택 해제
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>

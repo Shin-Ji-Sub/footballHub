@@ -78,4 +78,16 @@ public interface AdminMapper {
                                  @Param("searchValue") String searchValue, @Param("sortValue") String sortValue);
 
     void updateUserRole(@Param("roleValue") int roleValue, @Param("userId") String userId);
+
+    void insertCompetition(String value);
+
+    void insertCompetitionRound(String value);
+
+    void insertTeam(@Param("value") String value, @Param("logo") String logo);
+
+    List<TeamDto> selectAllTeam();
+
+    List<CompetitionDto> selectAllCompetition();
+
+    List<CompetitionRoundDto> selectAllCompetitionRound();
 }

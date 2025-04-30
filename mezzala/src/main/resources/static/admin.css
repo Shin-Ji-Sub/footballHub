@@ -170,3 +170,35 @@
 .user_info_main i {
   font-size:1.5rem;
 }
+
+
+/* Admin - Schedule Manage Section */
+.schedule-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2rem;
+}
+
+.date-select-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 1rem;
+}
+.date-select {
+  display: flex;
+  flex-direction: row;
+  column-gap: 5px;
+  align-items: center;
+  font-size: 1.1rem;
+}
+
+.grid-select-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 2rem;
+}
+
+.schedule-save-button {
+  width: 50%;
+  align-self: center;
+}

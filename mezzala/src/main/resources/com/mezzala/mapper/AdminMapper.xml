@@ -1023,4 +1023,65 @@
             user_id = #{userId}
     </update>
 
+    <insert id="insertCompetition" parameterType="String">
+        INSERT INTO
+            competition (
+                competition_name
+            )
+        VALUES
+            (
+                #{value}
+            )
+    </insert>
+
+    <insert id="insertCompetitionRound" parameterType="String">
+        INSERT INTO
+            competition_round (
+                round_name
+            )
+        VALUES
+            (
+                #{value}
+            )
+    </insert>
+
+    <insert id="insertTeam" parameterType="hashmap">
+        INSERT INTO
+            team (
+                team_name,
+                logo_address
+            )
+        VALUES
+            (
+                #{value},
+                #{logo}
+            )
+    </insert>
+
+    <select id="selectAllTeam" resultType="TeamDto">
+        SELECT
+            team_id AS teamId,
+            team_name AS teamName,
+            logo_address AS logoAddress
+        FROM
+            team
+    </select>
+
+    <select id="selectAllCompetition" resultType="CompetitionDto">
+        SELECT
+            competition_id AS competitionId,
+            competition_name AS competitionName,
+            logo_address AS logoAddress
+        FROM
+            competition
+    </select>
+
+    <select id="selectAllCompetitionRound" resultType="CompetitionRoundDto">
+        SELECT
+            round_id AS roundId,
+            round_name AS roundName
+        FROM
+            competition_round
+    </select>
+
 </mapper>

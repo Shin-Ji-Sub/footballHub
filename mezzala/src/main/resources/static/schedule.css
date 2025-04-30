@@ -1,0 +1,140 @@
+body {
+  background-color: #111;
+  font-family: 'Pretendard', sans-serif;
+}
+main {
+  color: #fff;
+  padding: 20px;
+}
+
+.date-picker-wrapper {
+  background-color: #0a2a4a;
+  padding: 10px;
+  max-width: 100%;
+  border-radius: 12px;
+  color: #fff;
+}
+
+.month-nav {
+  font-size: 22px;
+}
+
+.month-nav button,
+.day-navigator button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  width: 40px;
+}
+
+.month-year-text {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.day-list {
+  gap: 25px;
+}
+
+.day-item {
+  text-align: center;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.day-item.active {
+  border-bottom: 2px solid #ffffff;
+  font-weight: bold;
+  opacity: 1;
+}
+
+.day-navigator {
+  margin-top: 5px;
+}
+
+.day-navigator button {
+  font-size: 24px;
+}
+
+#monthYearSelect select {
+  margin-right: 5px;
+}
+
+.day-item {
+  text-align: center;
+  opacity: 0.6;
+  cursor: pointer;
+  width: 50px;
+}
+
+.day-item div:last-child {
+  color: #ffffff;
+  border-radius: 50%;
+  width: 50px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.day-item.active {
+  border-bottom: 2px solid #ffffff;
+  font-weight: bold;
+  opacity: 1;
+}
+
+/* Today 기본 스타일 */
+.day-item.today div:last-child {
+  font-size: 12px;
+}
+
+/* 선택된 날짜 (Today 포함 가능) */
+.day-item.selected {
+  color: #fff;
+  opacity: 1 !important;
+}
+.day-item.selected div:last-child {
+  background-color: #00ff20;
+  color: #000000;
+  font-weight: bold;
+  border: 2px solid #0a2a4a;
+  border-radius: 10px;
+  opacity: 1;
+}
+
+
+/* Time Table Section */
+.schedule-container {
+  max-width: 900px;
+  margin: auto;
+  padding-top: 1rem;
+  /* border: 1px solid #333;
+  border-radius: 8px; */
+  overflow: hidden;
+}
+
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+
+.schedule-table thead {
+  background-color: #222;
+}
+
+.schedule-table th, .schedule-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #333;
+}
+
+.schedule-table td img {
+  vertical-align: middle;
+  height: 20px;
+  margin: 0 6px;
+}

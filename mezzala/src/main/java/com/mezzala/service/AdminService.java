@@ -57,4 +57,12 @@ public interface AdminService {
     List<UserDto> findUserList(int start, String category, String searchValue, String sortValue);
 
     void modifyUserRole(int roleValue, String userId);
+
+    void addScheduleCategory(String value, String logo, String from);
+
+    List<TeamDto> findAllTeam();
+
+    List<CompetitionDto> findAllCompetition();
+
+    List<CompetitionRoundDto> findAllCompetitionRound();
 }

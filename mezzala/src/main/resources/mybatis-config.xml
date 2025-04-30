@@ -16,6 +16,10 @@
 		<typeAlias type="com.mezzala.dto.CommentActionDto" alias="CommentActionDto" />
 		<typeAlias type="com.mezzala.dto.RequestBoardDto" alias="RequestBoardDto" />
 		<typeAlias type="com.mezzala.dto.UserRoleDto" alias="UserRoleDto" />
+		<typeAlias type="com.mezzala.dto.CompetitionDto" alias="CompetitionDto" />
+		<typeAlias type="com.mezzala.dto.CompetitionRoundDto" alias="CompetitionRoundDto" />
+		<typeAlias type="com.mezzala.dto.TeamDto" alias="TeamDto" />
+		<typeAlias type="com.mezzala.dto.ScheduleDto" alias="ScheduleDto" />
 	</typeAliases>
 
 	<mappers>

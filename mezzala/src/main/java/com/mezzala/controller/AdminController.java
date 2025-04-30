@@ -479,4 +479,31 @@ public class AdminController {
         return "success";
     }
 
+    @GetMapping(path = {"/schedule-manage"})
+    public String scheduleManage(Model model) {
+        List<TeamDto> teams = adminService.findAllTeam();
+        List<CompetitionDto> competitions = adminService.findAllCompetition();
+        List<CompetitionRoundDto> rounds = adminService.findAllCompetitionRound();
+
+        model.addAttribute("teams", teams);
+        model.addAttribute("competitions", competitions);
+        model.addAttribute("rounds", rounds);
+        return "/admin/schedule-manage/scheduleManage";
+    }
+
+    @PostMapping(path = {"/save-schedule-category"})
+    @ResponseBody
+    public String saveScheduleCategory(@RequestParam(name = "value") String value,
+                                       @RequestParam(name = "logo", required = false) String logo,
+                                       @RequestParam(name = "from") String from) {
+        if (value.isEmpty()) {
+            return "valueEmpty";
+        }
+        if (from.equals("team") && logo.isEmpty()) {
+            return "logoEmpty";
+        }
+        adminService.addScheduleCategory(value, logo, from);
+        return "success";
+    }
+
 }

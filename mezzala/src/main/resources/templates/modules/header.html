@@ -50,10 +50,39 @@
                 <a class="nav-link location-category" id="fandomhubLocation" href="/fandomhub/home">팬덤HUB</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link location-category" id="wikiLocation" href="/footballWiki/home">FootballWiki</a>
+                <button class="nav-link location-category text-dark" onclick="scheduleTable()">일정표</button>
+                <script type="text/javascript">
+                    function scheduleTable() {
+                        const popupWidth = 1000;
+                        const popupHeight = 800;
+
+                        // 현재 브라우저 기준으로 중앙 위치 계산
+                        const left = window.screenX + (window.innerWidth / 2) - (popupWidth / 2);
+                        const top = window.screenY + (window.innerHeight / 2) - (popupHeight / 2);
+
+                        window.open(
+                            "/schedule/table",
+                            'The Schedule Table',
+                            `width=${popupWidth},height=${popupHeight},left=${left},top=${top}`
+                        );
+
+                        //window.open(
+                        //    "http://localhost:8080/scheduleTable.html",
+                        //    'The Schedule Table',
+                        //    `width=${popupWidth},height=${popupHeight},left=${left},top=${top}`
+                        //);
+                    }
+                </script>
             </li>
             <li class="nav-item">
-                <a class="nav-link location-category" href="#">순위표</a>
+                <button class="nav-link location-category text-dark" href="#">순위표</button>
+                <script type="text/javascript">
+                    function logIn() {
+                        const url = new URL(window.location.href);
+                        const returnUri = url.pathname + url.search;
+                        location.href = '/account/sign-in?returnUri=' + encodeURIComponent(returnUri);
+                    }
+                </script>
             </li>
             <li class="nav-item">
                 <a class="nav-link location-category" href="/request/home">요청글</a>
