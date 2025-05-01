@@ -479,6 +479,87 @@ public class AdminController {
         return "success";
     }
 
+    @GetMapping(path = {"/team-manage"})
+    public String teamManage() {
+        return "/admin/schedule-manage/teamManage";
+    }
+
+    @GetMapping(path = {"/get-team"})
+    public String getTeam(Model model, HttpServletRequest req,
+                          @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                          @RequestParam(name = "category", defaultValue = "competition") String category,
+                          @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+
+        // paging
+        int pageSize = 10;
+        int pagerSize = 5;
+        int start = pageSize * (pageNo - 1);
+
+        if (category.equals("competition")) {
+            int dataCount = adminService.findAllCompetitionCount(searchValue);
+            String uri = req.getRequestURI();
+            String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+            String queryString = req.getQueryString();
+
+            ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+
+            List<CompetitionDto> competitions = adminService.findCompetition(start, searchValue);
+
+            if (competitions.isEmpty()) {
+                return "/modules/noDataModule";
+            }
+
+            model.addAttribute("pager", pager);
+            model.addAttribute("pageNo", pageNo);
+            model.addAttribute("dataCount", dataCount);
+            model.addAttribute("competitions", competitions);
+        }
+        if (category.equals("round")) {
+            int dataCount = adminService.findAllCompetitionRoundCount(searchValue);
+            String uri = req.getRequestURI();
+            String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+            String queryString = req.getQueryString();
+
+            ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+
+            List<CompetitionRoundDto> rounds = adminService.findCompetitionRound(start, searchValue);
+
+            if (rounds.isEmpty()) {
+                return "/modules/noDataModule";
+            }
+
+            model.addAttribute("pager", pager);
+            model.addAttribute("pageNo", pageNo);
+            model.addAttribute("dataCount", dataCount);
+
+            model.addAttribute("rounds", rounds);
+        }
+        if (category.equals("team")) {
+            int dataCount = adminService.findAllTeamCount(searchValue);
+            String uri = req.getRequestURI();
+            String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+            String queryString = req.getQueryString();
+
+            ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+
+            List<TeamDto> teams = adminService.findTeam(start, searchValue);
+
+            if (teams.isEmpty()) {
+                return "/modules/noDataModule";
+            }
+
+            model.addAttribute("pager", pager);
+            model.addAttribute("pageNo", pageNo);
+            model.addAttribute("dataCount", dataCount);
+
+            model.addAttribute("teams", teams);
+        }
+
+        model.addAttribute("category", category);
+
+        return "/admin/schedule-manage/modules/teamList";
+    }
+
     @GetMapping(path = {"/schedule-manage"})
     public String scheduleManage(Model model) {
         List<TeamDto> teams = adminService.findAllTeam();
@@ -503,6 +584,29 @@ public class AdminController {
             return "logoEmpty";
         }
         adminService.addScheduleCategory(value, logo, from);
+        return "success";
+    }
+
+    @PostMapping(path = {"/save-schedule"})
+    @ResponseBody
+    public String saveSchedule(@RequestBody ScheduleDto schedule) {
+        adminService.addSchedule(schedule);
+        return "success";
+    }
+
+    @PostMapping(path = {"/modify-team"})
+    @ResponseBody
+    public String modifyTeam(@RequestParam(name = "id") int id,
+                             @RequestParam(name = "name") String name,
+                             @RequestParam(name = "logo") String logo,
+                             @RequestParam(name = "category") String category) {
+
+        try {
+            adminService.modifyNameAndLogo(id, name, logo, category);
+        } catch (Exception e) {
+            return "fail";
+        }
+
         return "success";
     }
 

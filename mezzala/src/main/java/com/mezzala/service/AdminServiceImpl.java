@@ -201,4 +201,52 @@ public class AdminServiceImpl implements AdminService {
         return adminMapper.selectAllCompetitionRound();
     }
 
+    @Override
+    public void addSchedule(ScheduleDto schedule) {
+        adminMapper.insertSchedule(schedule);
+    }
+
+    @Override
+    public int findAllCompetitionCount(String searchValue) {
+        return adminMapper.selectAllCompetitionCount(searchValue);
+    }
+
+    @Override
+    public List<CompetitionDto> findCompetition(int start, String searchValue) {
+        return adminMapper.selectCompetition(start, searchValue);
+    }
+
+    @Override
+    public int findAllCompetitionRoundCount(String searchValue) {
+        return adminMapper.selectAllCompetitionRoundCount(searchValue);
+    }
+
+    @Override
+    public List<CompetitionRoundDto> findCompetitionRound(int start, String searchValue) {
+        return adminMapper.selectCompetitionRound(start, searchValue);
+    }
+
+    @Override
+    public int findAllTeamCount(String searchValue) {
+        return adminMapper.selectAllTeamCount(searchValue);
+    }
+
+    @Override
+    public List<TeamDto> findTeam(int start, String searchValue) {
+        return adminMapper.selectTeam(start, searchValue);
+    }
+
+    @Override
+    public void modifyNameAndLogo(int id, String name, String logo, String category) {
+        if (category.equals("competition")) {
+            adminMapper.updateCompetitionName(id, name);
+        }
+        if (category.equals("round")) {
+            adminMapper.updateCompetitionRoundName(id, name);
+        }
+        if (category.equals("team")) {
+            adminMapper.updateTeam(id, name, logo);
+        }
+    }
+
 }

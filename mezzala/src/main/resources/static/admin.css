@@ -181,7 +181,7 @@
 
 .date-select-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   column-gap: 1rem;
 }
 .date-select {
@@ -201,4 +201,45 @@
 .schedule-save-button {
   width: 50%;
   align-self: center;
+}
+
+.list-control-container {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+}
+
+.list-item-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 1rem;
+}
+
+.list-item {
+  width: 50%;
+  display: grid;
+  grid-template-columns: 1fr 0.5fr 0.5fr;
+  column-gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-item {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+  align-items: center;
+}
+
+.list-item img {
+  width: 50px;
+  height: 50px;
+}
+
+.modal-data-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
 }

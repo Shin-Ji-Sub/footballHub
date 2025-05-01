@@ -1084,4 +1084,152 @@
             competition_round
     </select>
 
+    <insert id="insertSchedule" parameterType="ScheduleDto">
+        INSERT INTO
+            schedule (
+                schedule_date,
+                competition_id,
+                round_id,
+                home_team_id,
+                away_team_id
+            )
+        VALUES
+            (
+                #{scheduleDate},
+                #{competitionId},
+                #{roundId},
+                #{homeTeamId},
+                #{awayTeamId}
+            )
+    </insert>
+
+    <select id="selectAllCompetitionCount" parameterType="String" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            competition
+        <choose>
+            <when test="searchValue.length != null and searchValue != ''">
+                WHERE
+                    competition_name LIKE CONCAT('%', #{searchValue}, '%')
+            </when>
+        </choose>
+    </select>
+
+    <select id="selectCompetition" parameterType="hashmap" resultType="CompetitionDto">
+        SELECT
+            competition_id AS competitionId,
+            competition_name AS competitionName,
+            logo_address AS logoAddress
+        FROM
+            competition
+        <choose>
+            <when test="searchValue.length != null and searchValue != ''">
+                WHERE
+                    competition_name LIKE CONCAT('%', #{searchValue}, '%')
+            </when>
+        </choose>
+        ORDER BY
+            competition_id DESC
+        LIMIT
+            10
+        OFFSET
+            #{start}
+    </select>
+
+    <select id="selectAllCompetitionRoundCount" parameterType="String" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            competition_round
+        <choose>
+            <when test="searchValue.length != null and searchValue != ''">
+                WHERE
+                    round_name LIKE CONCAT('%', #{searchValue}, '%')
+            </when>
+        </choose>
+    </select>
+
+    <select id="selectCompetitionRound" parameterType="hashmap" resultType="CompetitionRoundDto">
+        SELECT
+            round_id AS roundId,
+            round_name AS roundName
+        FROM
+            competition_round
+        <choose>
+            <when test="searchValue.length != null and searchValue != ''">
+                WHERE
+                    round_name LIKE CONCAT('%', #{searchValue}, '%')
+            </when>
+        </choose>
+        ORDER BY
+            round_id DESC
+        LIMIT
+            10
+        OFFSET
+            #{start}
+    </select>
+
+    <select id="selectAllTeamCount" parameterType="String" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            team
+        <choose>
+            <when test="searchValue.length != null and searchValue != ''">
+                WHERE
+                    team_name LIKE CONCAT('%', #{searchValue}, '%')
+            </when>
+        </choose>
+    </select>
+
+    <select id="selectTeam" parameterType="hashmap" resultType="TeamDto">
+        SELECT
+            team_id AS teamId,
+            team_name AS teamName,
+            logo_address AS logoAddress
+        FROM
+            team
+        <choose>
+            <when test="searchValue.length != null and searchValue != ''">
+                WHERE
+                    team_name LIKE CONCAT('%', #{searchValue}, '%')
+            </when>
+        </choose>
+        ORDER BY
+            team_id DESC
+        LIMIT
+            10
+        OFFSET
+            #{start}
+    </select>
+
+    <update id="updateCompetitionName" parameterType="hashmap">
+        UPDATE
+            competition
+        SET
+            competition_name = #{name}
+        WHERE
+            competition_id = #{id}
+    </update>
+
+    <update id="updateCompetitionRoundName" parameterType="hashmap">
+        UPDATE
+            competition_round
+        SET
+            round_name = #{name}
+        WHERE
+            round_id = #{id}
+    </update>
+
+    <update id="updateTeam" parameterType="hashmap">
+        UPDATE
+            team
+        SET
+            team_name = #{name},
+            logo_address = #{logo}
+        WHERE
+            team_id = #{id}
+    </update>
+
 </mapper>

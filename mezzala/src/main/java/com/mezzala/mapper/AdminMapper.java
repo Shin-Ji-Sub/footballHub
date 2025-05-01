@@ -90,4 +90,24 @@ public interface AdminMapper {
     List<CompetitionDto> selectAllCompetition();
 
     List<CompetitionRoundDto> selectAllCompetitionRound();
+
+    void insertSchedule(ScheduleDto schedule);
+
+    int selectAllCompetitionCount(String searchValue);
+
+    List<CompetitionDto> selectCompetition(@Param("start") int start, @Param("searchValue") String searchValue);
+
+    int selectAllCompetitionRoundCount(String searchValue);
+
+    List<CompetitionRoundDto> selectCompetitionRound(@Param("start") int start, @Param("searchValue") String searchValue);
+
+    int selectAllTeamCount(String searchValue);
+
+    List<TeamDto> selectTeam(@Param("start") int start, @Param("searchValue") String searchValue);
+
+    void updateCompetitionName(@Param("id") int id, @Param("name") String name);
+
+    void updateCompetitionRoundName(@Param("id") int id, @Param("name") String name);
+
+    void updateTeam(@Param("id") int id, @Param("name") String name, @Param("logo") String logo);
 }

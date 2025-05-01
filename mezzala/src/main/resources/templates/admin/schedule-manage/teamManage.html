@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/admin.css">
+    <title>FootballHub</title>
+</head>
+<body>
+    <div th:replace="~{/admin/modules/header}"></div>
+    <input id="socialMethod" type="hidden" th:if="${session.user != null}" th:value="${session.user.socialMethod}">
+
+    <main>
+        <div class="main-container">
+            <!-- 대회명, 라운드/주차, 팀 INSERT -->
+            <div class="container section schedule-container">
+                <h4>대회 및 팀 입력</h4>
+                <div class="grid-select-container">
+                    <div>
+                        <h5>대회명</h5>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="insertCompetitionValue" placeholder="대회명 (ex: 프리미어리그)">
+                            <button class="btn btn-primary" id="insertCompetition" type="button">
+                                저장
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <h5>라운드/주차</h5>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="insertRoundValue" placeholder="라운드/주차명 (ex: 16강 1차전, 34R)">
+                            <button class="btn btn-primary" id="insertRound" type="button">
+                                저장
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="dividing-line"></div>
+                <div class="grid-select-container">
+                    <div>
+                        <h5>팀 이름</h5>
+                        <input type="text" class="form-control" id="insertTeamValue" placeholder="팀명 (ex: 맨체스터 유나이티드)">
+                    </div>
+                    <div>
+                        <h5>팀 로고</h5>
+                        <input type="text" class="form-control" id="insertLogoValue" placeholder="팀 로고 주소 (ex: https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg)">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary schedule-save-button" id="saveTeamButton">저장</button>
+            </div>
+            <div class="container section schedule-container">
+                <div class="list-control-container">
+                    <div class="board-manage-sort-container">
+                        <span class="subject category-button underline" data-value="competition">대회명</span>
+                        <span class="subject category-button" data-value="round">라운드/주차</span>
+                        <span class="subject category-button" data-value="team">팀</span>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="searchInput" placeholder="검색어">
+                        <button type="button" class="btn btn-outline-secondary" id="searchButton">검색</button>
+                    </div>
+                </div>
+                <div id="moduleBox">
+                    <!-- 대회명, 라운드/주차, 팀 모듈 -->
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">수정</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body modal-modify-category">
+                    <div class="modal-data-container">
+                        <h5>현재 데이터</h5>
+                        <div>
+                            <span>NAME</span>
+                            <input type="text" class="form-control" id="modalPresentNameValue" readonly>
+                        </div>
+                        <div class="modal-logo-container display-none">
+                            <span>LOGO</span>
+                            <input type="text" class="form-control" id="modalPresentLogoValue" readonly>
+                        </div>
+                    </div>
+                    <i class="bi bi-arrow-down-circle text-success"></i>
+                    <div class="modal-data-container">
+                        <h5>변경할 데이터</h5>
+                        <div>
+                            <span>NAME</span>
+                            <input type="text" class="form-control" id="modalNameValue">
+                            <input type="hidden" id="modalIdValue">
+                        </div>
+                        <div class="modal-logo-container display-none">
+                            <span>LOGO</span>
+                            <input type="text" class="form-control" id="modalLogoValue">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-primary" id="modalModifyButton">변경</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(window).on('load', function() {
+            // 현재 page nav에 표시
+            const locationCategories = $('.location-category');
+            locationCategories.eq(3).addClass('active');
+            locationCategories.eq(3).addClass('text-primary');
+
+            /* 대회 및 팀 Section */
+            const insertCompetition = $('#insertCompetition');
+            const insertRound = $('#insertRound');
+            const saveTeamButton = $('#saveTeamButton');
+            const moduleBox = $('#moduleBox');
+            const categoryButton = $('.category-button');
+            const searchInput = $('#searchInput');
+            const searchButton = $('#searchButton');
+            const modalModifyButton = $('#modalModifyButton');
+
+            let category = "competition";
+            let searchValue = "";
+            let pageNo = 1;
+
+            // 처음 LOAD (대회명)
+            moduleBox.load("/admin/get-team?category=" + category);
+
+            // 대회명, 라운드/주차, 팀 LOAD 버튼
+            categoryButton.on('click', (e) => {
+                categoryButton.removeClass('underline');
+                $(e.currentTarget).addClass('underline');
+
+                category = $(e.currentTarget).data('value');
+                moduleBox.load("/admin/get-team?category=" + category);
+                searchInput.val("");
+            });
+
+            // 검색 기능
+            function search() {
+                searchValue = searchInput.val();
+                moduleBox.load("/admin/get-team?category=" + category + "&searchValue=" + searchValue);
+            }
+            searchButton.on('click', (e) => {
+                search();
+            });
+            searchInput.on('keyup', (key) => {
+                if (key.keyCode == 13) {
+                    search();
+                }
+            });
+
+            // pagination
+            moduleBox.on('click', '.page-item', function(e) {
+                pageNo = $('.paging').data('pageno');
+                const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
+                if (/«/.test($(this).text())) pageNo = 1;
+                if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
+                if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
+                if (/»/.test($(this).text())) pageNo = lastPageNo;
+                if (!isNaN($(this).text())) pageNo = $(this).text();
+
+                moduleBox.load("/admin/get-team?category=" + category + "&searchValue=" + searchValue + "&pageNo=" + pageNo);
+            });
+
+            // 수정 버튼 (Open Modal)
+            moduleBox.on('click', '.list-modify-button', (e) => {
+                let idValue = "";
+                let nameValue = "";
+                let logoValue = "";
+
+                if (category == "team") {
+                    idValue = $(e.currentTarget).siblings('.item-name').data('id');
+                    nameValue = $(e.currentTarget).siblings('.item-name').data('name');
+                    logoValue = $(e.currentTarget).siblings('.item-name').data('address');
+
+                    $('#modalPresentLogoValue').val(logoValue);
+                    $('.modal-logo-container').removeClass('display-none');
+                } else {
+                    idValue = $(e.currentTarget).siblings('.item-name').data('id');
+                    nameValue = $(e.currentTarget).siblings('.item-name').text();
+
+                    $('#modalPresentLogoValue').val();
+                    $('.modal-logo-container').addClass('display-none');
+                }
+
+                $('#modalIdValue').val(idValue);
+                $('#modalPresentNameValue').val(nameValue);
+
+                $('#exampleModal').modal('show');
+
+            });
+
+            // 수정 기능
+            modalModifyButton.on('click', (e) => {
+                const id = $('#modalIdValue').val();
+                const name = $('#modalNameValue').val();
+                const logo = $('#modalLogoValue').val();
+
+                if (name.length == 0) {
+                    alert("변경할 이름을 적어주세요.");
+                    $('#modalNameValue').focus();
+                    e.preventDefault();
+                    return;
+                }
+                if (category == "team" && logo.length == 0) {
+                    alert("변경할 로고 주소를 적어주세요.");
+                    $('#modalLogoValue').focus();
+                    e.preventDefault();
+                    return;
+                }
+
+                const ok = window.confirm("이름 수정 시 등록된 일정에도 변동이 생길 수 있습니다. 변경하시겠습니까?");
+                if (ok) {
+                    $.ajax({
+                        url : "/admin/modify-team",
+                        method : "POST",
+                        data : "id=" + id + "&name=" + name + "&logo=" + logo + "&category=" + category,
+                        dataType : "text",
+                        success : (response, status, xhr) => {
+                            if (response == "success") {
+                                alert("변경되었습니다.");
+                                moduleBox.load("/admin/get-team?category=" + category + "&searchValue=" + searchValue + "&pageNo=" + pageNo);
+                                $('#exampleModal').modal('hide');
+                            }
+                            if (response == "fail") {
+                                alert("변경하지 못하였습니다. 다시 시도해주세요.");
+                            }
+                        },
+                        error : (status, xhr, error) => {
+                            alert("변경하지 못하였습니다. 다시 시도해주세요.");
+                        }
+                    });
+                }
+            });
+
+            // 대회명
+            insertCompetition.on('click', (e) => {
+                const value = $('#insertCompetitionValue').val();
+                $.ajax({
+                    url : "/admin/save-schedule-category",
+                    method : "POST",
+                    data : "value=" + value + "&from=competition",
+                    dataType : "text",
+                    success : (response, status, xhr) => {
+                        if (response == "success") {
+                            alert("대회명을 저장하였습니다.");
+                            location.reload();
+                        }
+                        if (response == "valueEmpty") {
+                            alert("대회명을 입력해주세요.");
+                            $('#insertCompetitionValue').focus();
+                        }
+                    },
+                    error : (status, xhr, error) => {
+                        alert("대회명을 저장하지 못하였습니다. 다시 시도해주세요.");
+                    }
+                });
+            });
+
+            // 라운드/주차
+            insertRound.on('click', (e) => {
+                const value = $('#insertRoundValue').val();
+                $.ajax({
+                    url : "/admin/save-schedule-category",
+                    method : "POST",
+                    data : "value=" + value + "&from=round",
+                    dataType : "text",
+                    success : (response, status, xhr) => {
+                        if (response == "success") {
+                            alert("라운드/주차를 저장하였습니다.");
+                            location.reload();
+                        }
+                        if (response == "valueEmpty") {
+                            alert("라운드/주차명을 입력해주세요.");
+                            $('#insertRoundValue').focus();
+                        }
+                    },
+                    error : (status, xhr, error) => {
+                        alert("라운드/주차를 저장하지 못하였습니다. 다시 시도해주세요.");
+                    }
+                });
+            });
+
+            // 팀
+            saveTeamButton.on('click', (e) => {
+                const value = $('#insertTeamValue').val();
+                const logo = $('#insertLogoValue').val();
+                $.ajax({
+                    url : "/admin/save-schedule-category",
+                    method : "POST",
+                    data : "value=" + value + "&logo=" + logo + "&from=team",
+                    dataType : "text",
+                    success : (response, status, xhr) => {
+                        if (response == "success") {
+                            alert("팀을 저장하였습니다.");
+                            location.reload();
+                        }
+                        if (response == "valueEmpty") {
+                            alert("팀명을 입력해주세요.");
+                            $('#insertTeamValue').focus();
+                        }
+                        if (response == "logoEmpty") {
+                            alert("로고 주소를 입력해주세요.");
+                            $('#insertLogoValue').focus();
+                        }
+                    },
+                    error : (status, xhr, error) => {
+                        alert("팀을 저장하지 못하였습니다. 다시 시도해주세요.");
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>

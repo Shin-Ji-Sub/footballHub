@@ -65,4 +65,20 @@ public interface AdminService {
     List<CompetitionDto> findAllCompetition();
 
     List<CompetitionRoundDto> findAllCompetitionRound();
+
+    void addSchedule(ScheduleDto schedule);
+
+    int findAllCompetitionCount(String searchValue);
+
+    List<CompetitionDto> findCompetition(int start, String searchValue);
+
+    int findAllCompetitionRoundCount(String searchValue);
+
+    List<CompetitionRoundDto> findCompetitionRound(int start, String searchValue);
+
+    int findAllTeamCount(String searchValue);
+
+    List<TeamDto> findTeam(int start, String searchValue);
+
+    void modifyNameAndLogo(int id, String name, String logo, String category);
 }

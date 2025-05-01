@@ -1,0 +1,61 @@
+<!-- 대회명 -->
+<div xmlns:th="http://www.thymeleaf.org"
+     th:if="${category == 'competition'}"
+     class="list-item-container">
+    <div th:each="competition : ${competitions}" class="list-item">
+        <div class="item-name"
+             th:data-id="${competition.competitionId}"
+             th:text="${competition.competitionName}"></div>
+        <button class="btn btn-success list-modify-button">수정</button>
+        <button class="btn btn-danger list-delete-button">삭제</button>
+    </div>
+    <div class="page-button-container">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination paging" th:data-pageno='${ pageNo }' th:data-datacount="${ dataCount }">
+                [(${ pager })]
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- 라운드/주차 -->
+<div xmlns:th="http://www.thymeleaf.org"
+     th:if="${category == 'round'}" class="list-item-container">
+    <div th:each="round : ${rounds}" class="list-item">
+        <div class="item-name"
+             th:data-id="${round.roundId}"
+             th:text="${round.roundName}"></div>
+        <button class="btn btn-success list-modify-button">수정</button>
+        <button class="btn btn-danger list-delete-button">삭제</button>
+    </div>
+    <div class="page-button-container">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination paging" th:data-pageno='${ pageNo }' th:data-datacount="${ dataCount }">
+                [(${ pager })]
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- 팀 -->
+<div xmlns:th="http://www.thymeleaf.org"
+     th:if="${category == 'team'}" class="list-item-container">
+    <div th:each="team : ${teams}" class="list-item">
+        <div class="team-item item-name"
+             th:data-address="${team.logoAddress}"
+             th:data-id="${team.teamId}"
+             th:data-name="${team.teamName}">
+            <img th:src="${team.logoAddress}" alt="LOGO">
+            <div th:text="${team.teamName}"></div>
+        </div>
+        <button class="btn btn-success list-modify-button">수정</button>
+        <button class="btn btn-danger list-delete-button">삭제</button>
+    </div>
+    <div class="page-button-container">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination paging" th:data-pageno='${ pageNo }' th:data-datacount="${ dataCount }">
+                [(${ pager })]
+            </ul>
+        </nav>
+    </div>
+</div>
