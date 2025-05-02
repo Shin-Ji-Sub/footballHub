@@ -22,23 +22,23 @@
                     <h5>경기 날짜</h5>
                     <div class="date-select-container">
                         <div class="date-select">
-                            <select id="yearSelect" class="form-select" aria-label="Default select example"></select>
+                            <select id="yearSelect" class="form-select year-select" aria-label="Default select example"></select>
                             <span>년</span>
                         </div>
                         <div class="date-select">
-                            <select id="monthSelect" class="form-select" aria-label="Default select example"></select>
+                            <select id="monthSelect" class="form-select month-select" aria-label="Default select example"></select>
                             <span>월</span>
                         </div>
                         <div class="date-select">
-                            <select id="daySelect" class="form-select" aria-label="Default select example"></select>
+                            <select id="daySelect" class="form-select day-select" aria-label="Default select example"></select>
                             <span>일</span>
                         </div>
                         <div class="date-select">
-                            <select id="hourSelect" class="form-select" aria-label="Default select example"></select>
+                            <select id="hourSelect" class="form-select hour-select" aria-label="Default select example"></select>
                             <span>시</span>
                         </div>
                         <div class="date-select">
-                            <select id="minuteSelect" class="form-select" aria-label="Default select example"></select>
+                            <select id="minuteSelect" class="form-select minute-select" aria-label="Default select example"></select>
                             <span>분</span>
                         </div>
                     </div>
@@ -85,8 +85,147 @@
                 </div>
                 <button type="button" class="btn btn-primary schedule-save-button" id="saveScheduleButton">저장</button>
             </div>
+            <!-- 리스트 -->
+            <div class="container section schedule-container">
+                <div class="schedule-control-container">
+                    <div>
+                        <h5>대회</h5>
+                        <select id="selectCompetitionName" class="form-select" aria-label="Default select example">
+                            <option value="all" selected>전체</option>
+                            <option th:each="comp : ${competitions}"
+                                    th:value="${comp.competitionId}"
+                                    th:text="${comp.competitionName}"></option>
+                        </select>
+                    </div>
+                    <div class="date-control-container">
+                        <div class="date-select">
+                            <select id="yearControl" class="form-select year-select date-lookup" aria-label="Default select example"></select>
+                            <span>년</span>
+                        </div>
+                        <div class="date-select">
+                            <select id="monthControl" class="form-select month-select date-lookup" aria-label="Default select example"></select>
+                            <span>월</span>
+                        </div>
+                        <div class="date-select">
+                            <select id="dayControl" class="form-select day-select date-lookup" aria-label="Default select example"></select>
+                            <span>일</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="moduleBox">
+                    <!-- 일정 리스트 모듈 -->
+                </div>
+            </div>
         </div>
     </main>
+
+    <!-- 일정 수정 Modal -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">일정 수정</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body schedule-modal-container">
+                    <div>
+                        <h5>경기 날짜</h5>
+                        <div class="date-select-container">
+                            <div class="date-select">
+                                <select id="modalYearSelect" class="form-select year-select" aria-label="Default select example"></select>
+                                <span>년</span>
+                            </div>
+                            <div class="date-select">
+                                <select id="modalMonthSelect" class="form-select month-select" aria-label="Default select example"></select>
+                                <span>월</span>
+                            </div>
+                            <div class="date-select">
+                                <select id="modalDaySelect" class="form-select day-select" aria-label="Default select example"></select>
+                                <span>일</span>
+                            </div>
+                            <div class="date-select">
+                                <select id="modalHourSelect" class="form-select hour-select" aria-label="Default select example"></select>
+                                <span>시</span>
+                            </div>
+                            <div class="date-select">
+                                <select id="modalMinuteSelect" class="form-select minute-select" aria-label="Default select example"></select>
+                                <span>분</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid-select-container">
+                        <div>
+                            <h5>대회명</h5>
+                            <select id="modalCompetition" class="form-select" aria-label="Default select example">
+                                <option th:each="comp : ${competitions}"
+                                        th:value="${comp.competitionId}"
+                                        th:text="${comp.competitionName}"></option>
+                            </select>
+                        </div>
+                        <div>
+                            <h5>라운드/주차</h5>
+                            <select id="modalRound" class="form-select" aria-label="Default select example">
+                                <option th:each="round : ${rounds}"
+                                        th:value="${round.roundId}"
+                                        th:text="${round.roundName}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-select-container">
+                        <div>
+                            <h5>홈팀</h5>
+                            <div class="input-group" data-value="home">
+                                <input type="text" class="form-control modal-team-value" id="modalHomeTeam" placeholder="팀 검색">
+                                <button class="btn btn-outline-secondary team-search-button" type="button">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <h5>어웨이팀</h5>
+                            <div class="input-group" data-value="away">
+                                <input type="text" class="form-control modal-team-value" id="modalAwayTeam" placeholder="팀 검색">
+                                <button class="btn btn-outline-secondary team-search-button" type="button">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-primary">변경</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 두 번째 모달 -->
+    <div class="modal fade" id="secondModal" tabindex="-1" aria-labelledby="secondModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="secondModalLabel">팀 선택</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h2 class="fs-5">팀 검색</h2>
+                    <input type="text" class="team-search" id="modalTeamSearch">
+                    <hr>
+                    <h2 class="fs-5">팀 목록</h2>
+                    <p class="fandom-item-container">
+                        <span class="btn btn-outline-primary fandom-item"
+                              th:each="team : ${teams}"
+                              th:data-value="${team.teamId}"
+                              th:text="${team.teamName}"></span>
+                    </p>
+                    <input type="hidden" id="modifyModalFrom">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -126,13 +265,113 @@
             locationCategories.eq(4).addClass('active');
             locationCategories.eq(4).addClass('text-primary');
 
-            /* 일정 Section */
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth() + 1;
+            const currentDate = today.getDate();
+
+            /* 일정 List Section */
+            const moduleBox = $('#moduleBox');
+            const selectComp = $('#selectCompetitionName');
+            const dateLookup = $('.date-lookup');
+            const modalTeamSearch = $('#modalTeamSearch');
+
+            let competitionCategory = "all";
+            let listYear = 0;
+            let listMonth = 0;
+            let listDay = 0;
+
+            // 처음 리스트 LOAD
+            moduleBox.load("/admin/get-schedule-list?category=" + competitionCategory + "&year=" + currentYear +
+                                                    "&month=" + currentMonth + "&day=" + currentDate);
+
+            // 대회 및 날짜 리스트 조회
+            function lookupDate() {
+                competitionCategory = $('#selectCompetitionName').val();
+                listYear = $('#yearControl').val();
+                listMonth = $('#monthControl').val();
+                listDay = $('#dayControl').val();
+
+                moduleBox.load("/admin/get-schedule-list?category=" + competitionCategory + "&year=" + listYear +
+                                                    "&month=" + listMonth + "&day=" + listDay);
+            }
+            selectComp.on('change', (e) => {
+                lookupDate();
+            });
+            dateLookup.on('change', (e) => {
+                lookupDate();
+            });
+
+            // 수정 버튼 - 클릭한 정보 Modal 셋팅
+            moduleBox.on('click', '.schedule-modify-button', (e) => {
+                listYear = $('#yearControl').val();
+                listMonth = $('#monthControl').val();
+                listDay = $('#dayControl').val();
+                const hour = $(e.currentTarget).siblings('.target-hour').val();
+                const minute = $(e.currentTarget).siblings('.target-minute').val();
+                const compId = $(e.currentTarget).siblings('.target-comp-id').val();
+                const roundId = $(e.currentTarget).siblings('.target-round-id').val();
+                const homeTeamName = $(e.currentTarget).siblings('.target-home-team').val();
+                const awayTeamName = $(e.currentTarget).siblings('.target-away-team').val();
+
+                $('#modalYearSelect').val(listYear);
+                $('#modalMonthSelect').val(listMonth);
+                $('#modalDaySelect').val(listDay);
+                $('#modalHourSelect').val(hour);
+                $('#modalMinuteSelect').val(minute);
+                $('#modalCompetition').val(compId);
+                $('#modalRound').val(roundId);
+                $('#modalHomeTeam').val(homeTeamName);
+                $('#modalAwayTeam').val(awayTeamName);
+
+                $('#exampleModal2').modal('show');
+            });
+            $('.modal-team-value').on('click', (e) => {
+                const from = $('.modal-team-value').parent().data('value');
+                $('#modifyModalFrom').val(from);
+                $('#secondModal').modal('show');
+            });
+
+            // Modal 안 팀 검색
+            modalTeamSearch.on('input', (e) => {
+                const keyword = $(e.currentTarget).val().trim();
+
+                $('.fandom-item').each(function() {
+                    const text = $(this).text();
+                    if (text.includes(keyword)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+            $('.fandom-item').on('click', (e) => {
+                const from = $('#modifyModalFrom').val();
+                if (from == "home") {
+                    $('#modalHomeTeam').val($(e.currentTarget).text());
+                }
+                if (from == "away") {
+                    $('#modalAwayTeam').val($(e.currentTarget).text());
+                }
+
+                $('#secondModal').modal('hide');
+            });
+
+
+
+            /* 일정 Control Section */
             const teamValue = $('.team-value');
             const teamSearchButton = $('.team-search-button');
             const modalFromValue = $('#modalFromValue');
             const teamSearchValue = $('#teamSearchValue');
 
-            const currentYear = new Date().getFullYear();
+            //const yearControl = $('#yearControl');
+            const yearControl = $('.year-select');
+            const monthControl = $('.month-select');
+            const dayControl = $('.day-select');
+            const hourControl = $('.hour-select');
+            const minuteControl = $('.minute-select');
 
             const saveScheduleButton = $('#saveScheduleButton');
             const yearSelect = $('#yearSelect');
@@ -147,33 +386,49 @@
             const homeTeamId = $('#homeTeamId');
             const awayTeamId = $('#awayTeamId');
 
-            // 연도 (현재 + 3년)
+            // 연도 (현재 + 3년) - 일정 입력
             for (let y = currentYear; y <= currentYear + 3; y++) {
                 yearSelect.append(`<option value="${y}">${y}</option>`);
             }
-
-            // 월 (1 ~ 12월)
-            for (let m = 1; m <= 12; m++) {
-                const paddedMonth = String(m).padStart(2, '0');
-                monthSelect.append(`<option value="${paddedMonth}">${paddedMonth}</option>`);
+            // 연도 (현재 + 3년) - 리스트
+            for (let y = currentYear - 10; y <= currentYear + 10; y++) {
+                if (y == currentYear) {
+                    yearControl.append(`<option value="${y}" selected>${y}</option>`);
+                } else {
+                    yearControl.append(`<option value="${y}">${y}</option>`);
+                }
             }
 
-            // 일 (1 ~ 31일)
+            // 월 (1 ~ 12월) - 일정 입력
+            for (let m = 1; m <= 12; m++) {
+                const paddedMonth = String(m).padStart(2, '0');
+                if (m == currentMonth) {
+                    monthControl.append(`<option value="${paddedMonth}" selected>${paddedMonth}</option>`);
+                } else {
+                    monthControl.append(`<option value="${paddedMonth}">${paddedMonth}</option>`);
+                }
+            }
+
+            // 일 (1 ~ 31일) - 일정 입력
             for (let d = 1; d <= 31; d++) {
                 const paddedDay = String(d).padStart(2, '0');
-                daySelect.append(`<option value="${paddedDay}">${paddedDay}</option>`);
+                if (d == currentDate) {
+                    dayControl.append(`<option value="${paddedDay}" selected>${paddedDay}</option>`);
+                } else {
+                    dayControl.append(`<option value="${paddedDay}">${paddedDay}</option>`);
+                }
             }
 
             // 시 (00 ~ 23시)
             for (let h = 0; h < 24; h++) {
                 const paddedHour = String(h).padStart(2, '0');
-                hourSelect.append(`<option value="${paddedHour}">${paddedHour}</option>`);
+                hourControl.append(`<option value="${paddedHour}">${paddedHour}</option>`);
             }
 
             // 분 (00 ~ 59분)
             for (let m = 0; m < 60; m++) {
                 const paddedMinute = String(m).padStart(2, '0');
-                minuteSelect.append(`<option value="${paddedMinute}">${paddedMinute}</option>`);
+                minuteControl.append(`<option value="${paddedMinute}">${paddedMinute}</option>`);
             }
 
             // 팀, 어웨이 검색 클릭 시 Modal 열기
@@ -254,7 +509,10 @@
                     data : JSON.stringify(schedule),
                     dataType : "text",
                     success : (response, status, xhr) => {
-                        if (response == "success") alert("일정을 저장하였습니다.");
+                        if (response == "success") {
+                            alert("일정을 저장하였습니다.");
+                            lookupDate();
+                        }
                     },
                     error : (status, xhr, error) => {
                         alert("일정을 저장하지 못했습니다. 다시 시도해주세요.");

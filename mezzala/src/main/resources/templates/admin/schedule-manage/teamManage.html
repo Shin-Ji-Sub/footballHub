@@ -211,15 +211,14 @@
                 const name = $('#modalNameValue').val();
                 const logo = $('#modalLogoValue').val();
 
-                if (name.length == 0) {
+                if (name.length == 0 && category != "team") {
                     alert("변경할 이름을 적어주세요.");
                     $('#modalNameValue').focus();
                     e.preventDefault();
                     return;
                 }
-                if (category == "team" && logo.length == 0) {
-                    alert("변경할 로고 주소를 적어주세요.");
-                    $('#modalLogoValue').focus();
+                if (category == "team" && logo.length == 0 && name.length == 0) {
+                    alert("변경할 값을 입력해주세요.");
                     e.preventDefault();
                     return;
                 }
@@ -243,6 +242,36 @@
                         },
                         error : (status, xhr, error) => {
                             alert("변경하지 못하였습니다. 다시 시도해주세요.");
+                        }
+                    });
+                }
+            });
+
+            // 삭제 기능
+            moduleBox.on('click', '.list-delete-button', (e) => {
+                const idValue = $(e.currentTarget).siblings('.item-name').data('id');
+                const name = category == "team"
+                             ? $(e.currentTarget).siblings('.item-name').data('name')
+                             : $(e.currentTarget).siblings('.item-name').text();
+
+                const ok = window.confirm(`${name}을/를 삭제하시겠습니까? ${name}과 관련된 일정이 있다면 삭제가 불가능합니다.`);
+                if (ok) {
+                    $.ajax({
+                        url : "/admin/delete-team",
+                        method : "POST",
+                        data : "id=" + idValue + "&category=" + category,
+                        dataType : "text",
+                        success : (response, status, xhr) => {
+                            if (response == "success") {
+                                alert(`${name}을/를 삭제하였습니다.`);
+                                moduleBox.load("/admin/get-team?category=" + category + "&searchValue=" + searchValue + "&pageNo=" + pageNo);
+                            }
+                            if (response == "fail") {
+                                alert(`${name}과 관련된 일정이 있어 삭제가 불가능합니다.`);
+                            }
+                        },
+                        error : (status, xhr, error) => {
+                            alert(`${name}을/를 삭제하지 못했습니다. 다시 시도해주세요.`);
                         }
                     });
                 }

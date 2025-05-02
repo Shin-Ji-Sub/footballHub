@@ -110,4 +110,12 @@ public interface AdminMapper {
     void updateCompetitionRoundName(@Param("id") int id, @Param("name") String name);
 
     void updateTeam(@Param("id") int id, @Param("name") String name, @Param("logo") String logo);
+
+    void deleteTeam(@Param("id") int id, @Param("category") String category);
+
+    int selectAllScheduleCount(@Param("category") String category, @Param("fromDay") String fromDay,
+                               @Param("tillDay") String tillDay);
+
+    List<ScheduleDto> selectSchedule(@Param("category") String category, @Param("fromDay") String fromDay,
+                                     @Param("tillDay") String tillDay);
 }

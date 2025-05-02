@@ -6,10 +6,13 @@ import com.mezzala.mapper.BoardMapper;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AdminServiceImpl implements AdminService {
     @Setter
@@ -247,6 +250,50 @@ public class AdminServiceImpl implements AdminService {
         if (category.equals("team")) {
             adminMapper.updateTeam(id, name, logo);
         }
+    }
+
+    @Override
+    public void deleteTeam(int id, String category) {
+        adminMapper.deleteTeam(id, category);
+    }
+
+    @Override
+    public int findAllScheduleCount(String category, int year, int month, int day) {
+        LocalDate fromDate = LocalDate.of(year, month, day);
+        LocalDate tillDate = fromDate.plusDays(1);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String fromDay = fromDate.format(formatter);
+        String tillDay = tillDate.format(formatter);
+        return adminMapper.selectAllScheduleCount(category, fromDay, tillDay);
+    }
+
+    @Override
+    public Map<Integer, List<ScheduleDto>> findSchedule(int start, String category, int year, int month, int day) {
+        LocalDate fromDate = LocalDate.of(year, month, day);
+        LocalDate tillDate = fromDate.plusDays(1);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String fromDay = fromDate.format(formatter);
+        String tillDay = tillDate.format(formatter);
+
+        List<ScheduleDto> schedules = adminMapper.selectSchedule(category, fromDay, tillDay);
+
+        Map<Integer, List<ScheduleDto>> groupedSchedules = schedules.stream()
+                .collect(Collectors.groupingBy(ScheduleDto::getCompetitionId));
+
+        for (Map.Entry<Integer, List<ScheduleDto>> entry : groupedSchedules.entrySet()) {
+            System.out.println("\uD83C\uDFC6 : " + entry.getValue());
+//            Integer competitionId = entry.getKey();
+//            List<ScheduleDto> scheduleList = entry.getValue();
+//
+//            System.out.println("🏆 대회 ID: " + competitionId);
+//            for (ScheduleDto schedule : scheduleList) {
+//                System.out.println(" - 경기 ID: " + schedule.getScheduleId() + ", 시간: " + schedule.getScheduleDate());
+//            }
+        }
+
+        return groupedSchedules;
     }
 
 }

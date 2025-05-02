@@ -81,4 +81,10 @@ public interface AdminService {
     List<TeamDto> findTeam(int start, String searchValue);
 
     void modifyNameAndLogo(int id, String name, String logo, String category);
+
+    void deleteTeam(int id, String category);
+
+    int findAllScheduleCount(String category, int year, int month, int day);
+
+    Map<Integer, List<ScheduleDto>> findSchedule(int start, String category, int year, int month, int day);
 }

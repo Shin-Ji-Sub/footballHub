@@ -610,4 +610,52 @@ public class AdminController {
         return "success";
     }
 
+    @PostMapping(path = {"/delete-team"})
+    @ResponseBody
+    public String deleteTeam(@RequestParam(name = "id") int id,
+                             @RequestParam(name = "category") String category) {
+        try {
+            adminService.deleteTeam(id, category);
+        } catch (Exception e) {
+            return "fail";
+        }
+        return "success";
+    }
+
+    @GetMapping(path = {"/get-schedule-list"})
+    public String getScheduleList(Model model, HttpServletRequest req,
+                                  @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                                  @RequestParam(name = "category", defaultValue = "all") String category,
+                                  @RequestParam(name = "year") int year,
+                                  @RequestParam(name = "month") int month,
+                                  @RequestParam(name = "day") int day) {
+
+        // paging
+        int pageSize = 10;
+        int pagerSize = 5;
+        int dataCount = adminService.findAllScheduleCount(category, year, month, day);
+        String uri = req.getRequestURI();
+        String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
+        String queryString = req.getQueryString();
+
+        int start = pageSize * (pageNo - 1);
+
+        ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
+        Map<Integer, List<ScheduleDto>> schedules = adminService.findSchedule(start, category, year, month, day);
+
+        if (schedules.isEmpty()) {
+            return "/modules/noDataModule";
+        }
+
+        System.out.println("[SCHEDULES] : " + schedules);
+
+        model.addAttribute("pager", pager);
+        model.addAttribute("pageNo", pageNo);
+        model.addAttribute("dataCount", dataCount);
+
+        model.addAttribute("schedules", schedules);
+
+        return "/admin/schedule-manage/modules/scheduleList";
+    }
+
 }

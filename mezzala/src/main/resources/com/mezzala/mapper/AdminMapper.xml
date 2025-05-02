@@ -128,6 +128,33 @@
             <result property="boardId" column="c_board_id"/>
         </association>
     </resultMap>
+    <resultMap id="ScheduleResultMap" type="com.mezzala.dto.ScheduleDto">
+        <id property="scheduleId" column="s_schedule_id"/>
+        <result property="scheduleDate" column="s_schedule_date"/>
+        <result property="competitionId" column="s_competition_id"/>
+        <result property="roundId" column="s_round_id"/>
+        <result property="homeTeamId" column="s_home_team_id"/>
+        <result property="awayTeamId" column="s_away_team_id"/>
+        <association property="competition" javaType="com.mezzala.dto.CompetitionDto">
+            <id property="competitionId" column="c_competition_id"/>
+            <result property="competitionName" column="c_competition_name"/>
+            <result property="logoAddress" column="c_logo_address"/>
+        </association>
+        <association property="competitionRound" javaType="com.mezzala.dto.CompetitionRoundDto">
+            <id property="roundId" column="cr_round_id"/>
+            <result property="roundName" column="cr_round_name"/>
+        </association>
+        <association property="homeTeam" javaType="com.mezzala.dto.TeamDto">
+            <id property="teamId" column="ht_team_id"/>
+            <result property="teamName" column="ht_team_name"/>
+            <result property="logoAddress" column="ht_logo_address"/>
+        </association>
+        <association property="awayTeam" javaType="com.mezzala.dto.TeamDto">
+            <id property="teamId" column="at_team_id"/>
+            <result property="teamName" column="at_team_name"/>
+            <result property="logoAddress" column="at_logo_address"/>
+        </association>
+    </resultMap>
 
     <insert id="insertBoard" parameterType="BoardDto" useGeneratedKeys="true" keyProperty="boardId">
         INSERT INTO
@@ -1225,11 +1252,148 @@
     <update id="updateTeam" parameterType="hashmap">
         UPDATE
             team
-        SET
-            team_name = #{name},
-            logo_address = #{logo}
+        <choose>
+            <when test="name.length == null or name == ''">
+                SET
+                    logo_address = #{logo}
+            </when>
+            <when test="logo.length == null or logo == ''">
+                SET
+                    team_name = #{name}
+            </when>
+            <otherwise>
+                SET
+                    team_name = #{name},
+                    logo_address = #{logo}
+            </otherwise>
+        </choose>
         WHERE
             team_id = #{id}
     </update>
+
+    <delete id="deleteTeam" parameterType="hashmap">
+        DELETE FROM
+            <choose>
+                <when test="category == 'competition'">
+                    competition
+                </when>
+                <when test="category == 'round'">
+                    competition_round
+                </when>
+                <when test="category == 'team'">
+                    team
+                </when>
+            </choose>
+        WHERE
+            <choose>
+                <when test="category == 'competition'">
+                    competition_id = #{id}
+                </when>
+                <when test="category == 'round'">
+                    round_id = #{id}
+                </when>
+                <when test="category == 'team'">
+                    team_id = #{id}
+                </when>
+            </choose>
+    </delete>
+
+    <select id="selectAllScheduleCount" parameterType="hashmap" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            schedule s
+        LEFT JOIN
+            competition c
+        ON
+            s.competition_id = c.competition_id
+        LEFT JOIN
+            competition_round cr
+        ON
+            s.round_id = cr.round_id
+        LEFT JOIN
+            team ht
+        ON
+            s.home_team_id = ht.team_id
+        LEFT JOIN
+            team at
+        ON
+            s.away_team_id = at.team_id
+        <where>
+            <if test="fromDay != null and tillDay != null">
+                s.schedule_date &gt;= #{fromDay}
+                AND s.schedule_date &lt; #{tillDay}
+            </if>
+
+            <if test="category != null and category != 'all'">
+                AND c.competition_id = #{category}
+            </if>
+        </where>
+<!--        WHERE-->
+<!--            s.schedule_date &gt;= #{fromDay}-->
+<!--            s.schedule_date &lt; #{tillDay}-->
+<!--        <choose>-->
+<!--            <when test="category != 'all'">-->
+<!--                AND-->
+<!--                    c.competition_name = #{category}-->
+<!--            </when>-->
+<!--        </choose>-->
+    </select>
+
+    <select id="selectSchedule" parameterType="hashmap" resultMap="ScheduleResultMap">
+        SELECT
+            s.schedule_id AS s_schedule_id,
+            s.schedule_date AS s_schedule_date,
+            s.competition_id AS s_competition_id,
+            s.round_id AS s_round_id,
+            s.home_team_id AS s_home_team_id,
+            s.away_team_id AS s_away_team_id,
+
+            c.competition_id AS c_competition_id,
+            c.competition_name AS c_competition_name,
+            c.logo_address AS c_logo_address,
+
+            cr.round_id AS cr_round_id,
+            cr.round_name AS cr_round_name,
+
+            ht.team_id AS ht_team_id,
+            ht.team_name AS ht_team_name,
+            ht.logo_address AS ht_logo_address,
+
+            at.team_id AS at_team_id,
+            at.team_name AS at_team_name,
+            at.logo_address AS at_logo_address
+        FROM
+            schedule s
+        LEFT JOIN
+            competition c
+        ON
+            s.competition_id = c.competition_id
+        LEFT JOIN
+            competition_round cr
+        ON
+            s.round_id = cr.round_id
+        LEFT JOIN
+            team ht
+        ON
+            s.home_team_id = ht.team_id
+        LEFT JOIN
+            team at
+        ON
+            s.away_team_id = at.team_id
+        <where>
+            <if test="fromDay != null and tillDay != null">
+                s.schedule_date &gt;= #{fromDay}
+                AND s.schedule_date &lt; #{tillDay}
+            </if>
+
+            <if test="category != null and category != 'all'">
+                AND c.competition_id = #{category}
+            </if>
+        </where>
+        ORDER BY
+            s.competition_id,
+            s.schedule_date
+    </select>
 
 </mapper>
