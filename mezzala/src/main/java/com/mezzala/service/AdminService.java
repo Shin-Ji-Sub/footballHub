@@ -87,4 +87,8 @@ public interface AdminService {
     int findAllScheduleCount(String category, int year, int month, int day);
 
     Map<Integer, List<ScheduleDto>> findSchedule(int start, String category, int year, int month, int day);
+
+    void modifySchedule(ScheduleDto schedule, int year, int month, int day, int hour, int minute);
+
+    void removeSchedule(int scheduleId);
 }

@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -277,13 +278,13 @@ public class AdminServiceImpl implements AdminService {
         String fromDay = fromDate.format(formatter);
         String tillDay = tillDate.format(formatter);
 
-        List<ScheduleDto> schedules = adminMapper.selectSchedule(category, fromDay, tillDay);
+        List<ScheduleDto> schedules = adminMapper.selectSchedule(start, category, fromDay, tillDay);
 
         Map<Integer, List<ScheduleDto>> groupedSchedules = schedules.stream()
                 .collect(Collectors.groupingBy(ScheduleDto::getCompetitionId));
 
-        for (Map.Entry<Integer, List<ScheduleDto>> entry : groupedSchedules.entrySet()) {
-            System.out.println("\uD83C\uDFC6 : " + entry.getValue());
+//        for (Map.Entry<Integer, List<ScheduleDto>> entry : groupedSchedules.entrySet()) {
+//            System.out.println("\uD83C\uDFC6 : " + entry.getValue());
 //            Integer competitionId = entry.getKey();
 //            List<ScheduleDto> scheduleList = entry.getValue();
 //
@@ -291,9 +292,20 @@ public class AdminServiceImpl implements AdminService {
 //            for (ScheduleDto schedule : scheduleList) {
 //                System.out.println(" - 경기 ID: " + schedule.getScheduleId() + ", 시간: " + schedule.getScheduleDate());
 //            }
-        }
+//        }
 
         return groupedSchedules;
+    }
+
+    @Override
+    public void modifySchedule(ScheduleDto schedule, int year, int month, int day, int hour, int minute) {
+        LocalDateTime date = LocalDateTime.of(year, month, day, hour, minute);
+        adminMapper.updateSchedule(schedule, date);
+    }
+
+    @Override
+    public void removeSchedule(int scheduleId) {
+        adminMapper.deleteSchedule(scheduleId);
     }
 
 }

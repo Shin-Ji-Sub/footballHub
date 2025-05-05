@@ -83,6 +83,13 @@ public class RootConfiguration {
     }
 
     @Bean
+    public ScheduleService scheduleService(ScheduleMapper scheduleMapper) throws Exception {
+        ScheduleServiceImpl scheduleService = new ScheduleServiceImpl();
+        scheduleService.setScheduleMapper(scheduleMapper);
+        return scheduleService;
+    }
+
+    @Bean
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource(hikariConfig());
         return dataSource;

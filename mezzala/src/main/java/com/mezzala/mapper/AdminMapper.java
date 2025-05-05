@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -116,6 +117,10 @@ public interface AdminMapper {
     int selectAllScheduleCount(@Param("category") String category, @Param("fromDay") String fromDay,
                                @Param("tillDay") String tillDay);
 
-    List<ScheduleDto> selectSchedule(@Param("category") String category, @Param("fromDay") String fromDay,
-                                     @Param("tillDay") String tillDay);
+    List<ScheduleDto> selectSchedule(@Param("start") int start, @Param("category") String category,
+                                     @Param("fromDay") String fromDay, @Param("tillDay") String tillDay);
+
+    void updateSchedule(@Param("schedule") ScheduleDto schedule, @Param("date") LocalDateTime date);
+
+    void deleteSchedule(int scheduleId);
 }

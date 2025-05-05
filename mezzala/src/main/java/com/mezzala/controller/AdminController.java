@@ -17,7 +17,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -656,6 +660,28 @@ public class AdminController {
         model.addAttribute("schedules", schedules);
 
         return "/admin/schedule-manage/modules/scheduleList";
+    }
+
+    @PostMapping(path = {"/modify-schedule"})
+    @ResponseBody
+    public String modifySchedule(@RequestBody ScheduleRequestDto requestDto) {
+
+        ScheduleDto schedule = requestDto.getSchedule();
+        int year = requestDto.getYear();
+        int month = requestDto.getMonth();
+        int day = requestDto.getDay();
+        int hour = requestDto.getHour();
+        int minute = requestDto.getMinute();
+
+        adminService.modifySchedule(schedule, year, month, day, hour, minute);
+        return "success";
+    }
+
+    @PostMapping(path = {"/remove-schedule"})
+    @ResponseBody
+    public String removeSchedule(@RequestParam(name = "scheduleId") int scheduleId) {
+        adminService.removeSchedule(scheduleId);
+        return "success";
     }
 
 }

@@ -30,6 +30,7 @@
 		<mapper resource="com/mezzala/mapper/FandomhubMapper.xml"/>
 		<mapper resource="com/mezzala/mapper/RequestMapper.xml"/>
 		<mapper resource="com/mezzala/mapper/AdminMapper.xml"/>
+		<mapper resource="com/mezzala/mapper/ScheduleMapper.xml"/>
 	</mappers>
 
 </configuration>

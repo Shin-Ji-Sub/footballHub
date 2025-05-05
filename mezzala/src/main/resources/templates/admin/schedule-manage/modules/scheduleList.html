@@ -23,6 +23,7 @@
                     <td>
                         <button class="btn btn-success schedule-modify-button">수정</button>
                         <button class="btn btn-danger schedule-delete-button">삭제</button>
+                        <input type="hidden" class="target-schedule-id" th:value="${schedule.scheduleId}">
                         <input type="hidden" class="target-hour" th:value="${#dates.format(schedule.scheduleDate, 'HH')}">
                         <input type="hidden" class="target-minute" th:value="${#dates.format(schedule.scheduleDate, 'mm')}">
                         <input type="hidden" class="target-comp-id" th:value="${entry.value[0].competition.competitionId}">

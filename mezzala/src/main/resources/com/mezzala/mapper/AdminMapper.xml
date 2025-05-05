@@ -1394,6 +1394,38 @@
         ORDER BY
             s.competition_id,
             s.schedule_date
+        LIMIT
+            10
+        OFFSET
+            #{start}
     </select>
+
+    <update id="updateSchedule" parameterType="hashmap">
+        UPDATE
+            schedule
+        SET
+            schedule_date = #{date}
+            , competition_id = #{schedule.competitionId}
+            , round_id = #{schedule.roundId}
+            <choose>
+                <when test="schedule.homeTeamId != 0 or schedule.homeTeamId == null">
+                    , home_team_id = #{schedule.homeTeamId}
+                </when>
+            </choose>
+            <choose>
+                <when test="schedule.awayTeamId != 0 or schedule.awayTeamId == null">
+                    , away_team_id = #{schedule.awayTeamId}
+                </when>
+            </choose>
+        WHERE
+            schedule_id = #{schedule.scheduleId}
+    </update>
+
+    <delete id="deleteSchedule" parameterType="int">
+        DELETE FROM
+            schedule
+        WHERE
+            schedule_id = #{scheduleId}
+    </delete>
 
 </mapper>

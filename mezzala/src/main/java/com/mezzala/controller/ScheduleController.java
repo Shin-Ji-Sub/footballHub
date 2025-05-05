@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mezzala.dto.*;
 import com.mezzala.service.AdminService;
+import com.mezzala.service.ScheduleService;
 import com.mezzala.ui.ThePager;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,11 +25,34 @@ import java.util.Map;
 public class ScheduleController {
 
     @Setter(onMethod_ = {@Autowired})
-    private AdminService adminService;
+    private ScheduleService scheduleService;
 
     @GetMapping(path = {"/table"})
     public String table() {
         return "/scheduleTable/scheduleTable";
+    }
+
+    @GetMapping(path = {"/get-schedule"})
+    public String getSchedule(Model model,
+                              @RequestParam(name = "year") int year,
+                              @RequestParam(name = "month") int month,
+                              @RequestParam(name = "day") int day) {
+
+        try {
+
+            Map<Integer, List<ScheduleDto>> schedules = scheduleService.findSchedule(year, month, day);
+            model.addAttribute("schedules", schedules);
+
+            if (schedules.isEmpty()) {
+                return "/modules/noDataModule";
+            }
+
+        } catch (Exception e) {
+            return "/modules/noDataModule";
+        }
+
+
+        return "/scheduleTable/modules/scheduleList";
     }
 
 }

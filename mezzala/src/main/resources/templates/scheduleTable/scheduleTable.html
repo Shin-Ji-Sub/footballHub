@@ -34,81 +34,8 @@
         </div>
     </header>
     <main>
-        <div class="schedule-container">
-            <h4>프리미어리그</h4>
-            <table class="schedule-table">
-                <thead>
-                    <tr>
-                        <th>시간</th>
-                        <th>라운드/주차</th>
-                        <th>경기</th>
-                    </tr>
-                </thead>
-                <tbody class="schedule-body">
-                    <tr>
-                        <td>04:00</td>
-                        <td>8강 1차전</td>
-                        <td>
-                            <span>리버풀 </span><img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" class="logo"> :
-                            <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" class="logo"><span> 아스날</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>04:00</td>
-                        <td>8강 1차전</td>
-                        <td>
-                            <span>리버풀 </span><img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" class="logo"> :
-                            <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" class="logo"><span> 아스날</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>04:00</td>
-                        <td>8강 1차전</td>
-                        <td>
-                            <span>리버풀 </span><img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" class="logo"> :
-                            <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" class="logo"><span> 아스날</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="schedule-container">
-            <h4>라리가</h4>
-            <table class="schedule-table">
-                <thead>
-                    <tr>
-                        <th>시간</th>
-                        <th>라운드/주차</th>
-                        <th>경기</th>
-                    </tr>
-                </thead>
-                <tbody class="schedule-body">
-                    <tr>
-                        <td>04:00</td>
-                        <td>8강 1차전</td>
-                        <td>
-                            <span>리버풀 </span><img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" class="logo"> :
-                            <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" class="logo"><span> 아스날</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>04:00</td>
-                        <td>8강 1차전</td>
-                        <td>
-                            <span>리버풀 </span><img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" class="logo"> :
-                            <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" class="logo"><span> 아스날</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>04:00</td>
-                        <td>8강 1차전</td>
-                        <td>
-                            <span>리버풀 </span><img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" class="logo"> :
-                            <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" class="logo"><span> 아스날</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div id="moduleBox">
+            <!-- 일정 모듈 -->
         </div>
     </main>
 
@@ -117,6 +44,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script type="text/javascript" th:inline="javascript">
         $(window).on('load', function() {
+            const moduleBox = $('#moduleBox');
+
             const today = new Date();
             const todayYear = today.getFullYear();
             const todayMonth = today.getMonth() + 1;
@@ -128,6 +57,13 @@
             const daysPerPage = 7;
 
             const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+
+            /* 일정 LOAD Section */
+            let currentDay = todayDate;
+
+            // 처음 일정 LOAD
+            moduleBox.load("/schedule/get-schedule?year=" + currentYear + "&month=" + currentMonth +
+                                                   "&day=" + currentDay);
 
             // 일자 이전, 다음 버튼 표시 함수
             function updateDayPageButtons(currentPage, totalPages) {
@@ -185,8 +121,11 @@
                 pageDays.forEach(({ date, day }) => {
                     const isToday =
                         date === todayDate &&
+                        //date === currentDay &&
                         month === todayMonth &&
                         year === todayYear;
+
+                    const clickDay = date === currentDay;
 
                     const $item = $(`
                         <div class="day-item">
@@ -197,6 +136,10 @@
 
                     if (isToday) {
                         $item.addClass("today");
+                        //$item.addClass("selected");
+                    }
+
+                    if (clickDay) {
                         $item.addClass("selected");
                     }
 
@@ -232,6 +175,7 @@
                     currentMonth = 12;
                     currentYear--;
                 }
+                currentDay = 0;
                 currentDayPage = getTodayPage(currentYear, currentMonth);
                 renderDays(currentYear, currentMonth, currentDayPage);
             });
@@ -243,6 +187,7 @@
                     currentMonth = 1;
                     currentYear++;
                 }
+                currentDay = 0;
                 currentDayPage = getTodayPage(currentYear, currentMonth);
                 renderDays(currentYear, currentMonth, currentDayPage);
             });
@@ -275,6 +220,7 @@
             $("#yearSelect, #monthSelect").change(() => {
                 currentYear = parseInt($("#yearSelect").val());
                 currentMonth = parseInt($("#monthSelect").val());
+                currentDay = 0;
                 currentDayPage = getTodayPage(currentYear, currentMonth);
                 renderDays(currentYear, currentMonth, currentDayPage);
                 $("#monthYearSelect").addClass("d-none");
@@ -302,6 +248,17 @@
                 if (!isToday) {
                     $(".day-item.today").removeClass("selected"); // 오늘 날짜 선택 해제
                 }
+
+                const clickDay = $(this).children().eq(1).text().trim();
+                if (clickDay === "Today") {
+                    const prevDayText = $(this).prev(".day-item").children().eq(1).text().trim();
+                    currentDay = parseInt(prevDayText) + 1;
+                } else {
+                    currentDay = parseInt(clickDay);
+                }
+
+                moduleBox.load("/schedule/get-schedule?year=" + currentYear + "&month=" + currentMonth +
+                                                       "&day=" + currentDay);
             });
 
         });

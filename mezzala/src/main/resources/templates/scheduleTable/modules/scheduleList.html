@@ -1,0 +1,26 @@
+<div xmlns:th="http://www.thymeleaf.org">
+    <div th:each="entry, entryState : ${schedules}" class="schedule-container">
+        <h4 th:text="${entry.value[0].competition.competitionName}"></h4>
+        <table class="schedule-table">
+            <thead>
+                <tr>
+                    <th>시간</th>
+                    <th>라운드/주차</th>
+                    <th>경기</th>
+                </tr>
+            </thead>
+            <tbody class="schedule-body">
+                <tr th:each="schedule : ${entry.value}">
+                    <td th:text="${#dates.format(schedule.scheduleDate, 'HH:mm')}"></td>
+                    <td th:text="${schedule.competitionRound.roundName}"></td>
+                    <td>
+                        <span th:text="${schedule.homeTeam.teamName}"> </span>
+                        <img th:src="${schedule.homeTeam.logoAddress}" class="logo"> :
+                        <img th:src="${schedule.awayTeam.logoAddress}" class="logo">
+                        <span th:text="${schedule.awayTeam.teamName}"> </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
