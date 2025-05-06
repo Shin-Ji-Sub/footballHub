@@ -80,7 +80,7 @@ public interface AdminMapper {
 
     void updateUserRole(@Param("roleValue") int roleValue, @Param("userId") String userId);
 
-    void insertCompetition(String value);
+    void insertCompetition(@Param("value") String value, @Param("competitionCategory") String competitionCategory);
 
     void insertCompetitionRound(String value);
 
@@ -106,7 +106,8 @@ public interface AdminMapper {
 
     List<TeamDto> selectTeam(@Param("start") int start, @Param("searchValue") String searchValue);
 
-    void updateCompetitionName(@Param("id") int id, @Param("name") String name);
+    void updateCompetitionName(@Param("id") int id, @Param("name") String name,
+                               @Param("competitionCategory") String competitionCategory);
 
     void updateCompetitionRoundName(@Param("id") int id, @Param("name") String name);
 

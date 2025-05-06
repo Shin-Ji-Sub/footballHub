@@ -7,6 +7,6 @@ public class CompetitionDto {
 
     private int competitionId;
     private String competitionName;
-    private String logoAddress;
+    private String competitionCategory;
 
 }

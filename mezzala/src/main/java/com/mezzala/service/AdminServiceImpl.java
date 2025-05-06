@@ -178,9 +178,9 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void addScheduleCategory(String value, String logo, String from) {
+    public void addScheduleCategory(String value, String logo, String from, String competitionCategory) {
         if (from.equals("competition")) {
-            adminMapper.insertCompetition(value);
+            adminMapper.insertCompetition(value, competitionCategory);
         }
         if (from.equals("round")) {
             adminMapper.insertCompetitionRound(value);
@@ -241,9 +241,9 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void modifyNameAndLogo(int id, String name, String logo, String category) {
+    public void modifyNameAndLogo(int id, String name, String logo, String category, String competitionCategory) {
         if (category.equals("competition")) {
-            adminMapper.updateCompetitionName(id, name);
+            adminMapper.updateCompetitionName(id, name, competitionCategory);
         }
         if (category.equals("round")) {
             adminMapper.updateCompetitionRoundName(id, name);

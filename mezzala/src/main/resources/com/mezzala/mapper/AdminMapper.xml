@@ -138,7 +138,7 @@
         <association property="competition" javaType="com.mezzala.dto.CompetitionDto">
             <id property="competitionId" column="c_competition_id"/>
             <result property="competitionName" column="c_competition_name"/>
-            <result property="logoAddress" column="c_logo_address"/>
+            <result property="competitionCategory" column="c_competition_category"/>
         </association>
         <association property="competitionRound" javaType="com.mezzala.dto.CompetitionRoundDto">
             <id property="roundId" column="cr_round_id"/>
@@ -1050,14 +1050,16 @@
             user_id = #{userId}
     </update>
 
-    <insert id="insertCompetition" parameterType="String">
+    <insert id="insertCompetition" parameterType="hashmap">
         INSERT INTO
             competition (
-                competition_name
+                competition_name,
+                competition_category
             )
         VALUES
             (
-                #{value}
+                #{value},
+                #{competitionCategory}
             )
     </insert>
 
@@ -1098,7 +1100,7 @@
         SELECT
             competition_id AS competitionId,
             competition_name AS competitionName,
-            logo_address AS logoAddress
+            competition_category AS competitionCategory
         FROM
             competition
     </select>
@@ -1147,7 +1149,7 @@
         SELECT
             competition_id AS competitionId,
             competition_name AS competitionName,
-            logo_address AS logoAddress
+            competition_category AS competitionCategory
         FROM
             competition
         <choose>
@@ -1235,7 +1237,8 @@
         UPDATE
             competition
         SET
-            competition_name = #{name}
+            competition_name = #{name},
+            competition_category = #{competitionCategory}
         WHERE
             competition_id = #{id}
     </update>
@@ -1329,15 +1332,6 @@
                 AND c.competition_id = #{category}
             </if>
         </where>
-<!--        WHERE-->
-<!--            s.schedule_date &gt;= #{fromDay}-->
-<!--            s.schedule_date &lt; #{tillDay}-->
-<!--        <choose>-->
-<!--            <when test="category != 'all'">-->
-<!--                AND-->
-<!--                    c.competition_name = #{category}-->
-<!--            </when>-->
-<!--        </choose>-->
     </select>
 
     <select id="selectSchedule" parameterType="hashmap" resultMap="ScheduleResultMap">
@@ -1351,7 +1345,7 @@
 
             c.competition_id AS c_competition_id,
             c.competition_name AS c_competition_name,
-            c.logo_address AS c_logo_address,
+            c.competition_category AS c_competition_category,
 
             cr.round_id AS cr_round_id,
             cr.round_name AS cr_round_name,

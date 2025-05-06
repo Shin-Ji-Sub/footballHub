@@ -198,6 +198,12 @@
   column-gap: 2rem;
 }
 
+.competition-container {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    row-gap: 1rem;
+}
+
 .schedule-save-button {
   width: 50%;
   align-self: center;

@@ -579,6 +579,7 @@ public class AdminController {
     @PostMapping(path = {"/save-schedule-category"})
     @ResponseBody
     public String saveScheduleCategory(@RequestParam(name = "value") String value,
+                                       @RequestParam(name = "competitionCategory", required = false) String competitionCategory,
                                        @RequestParam(name = "logo", required = false) String logo,
                                        @RequestParam(name = "from") String from) {
         if (value.isEmpty()) {
@@ -587,7 +588,11 @@ public class AdminController {
         if (from.equals("team") && logo.isEmpty()) {
             return "logoEmpty";
         }
-        adminService.addScheduleCategory(value, logo, from);
+        try {
+            adminService.addScheduleCategory(value, logo, from, competitionCategory);
+        } catch (Exception e) {
+            return "fail";
+        }
         return "success";
     }
 
@@ -603,10 +608,11 @@ public class AdminController {
     public String modifyTeam(@RequestParam(name = "id") int id,
                              @RequestParam(name = "name") String name,
                              @RequestParam(name = "logo") String logo,
-                             @RequestParam(name = "category") String category) {
+                             @RequestParam(name = "category") String category,
+                             @RequestParam(name = "competitionCategory") String competitionCategory) {
 
         try {
-            adminService.modifyNameAndLogo(id, name, logo, category);
+            adminService.modifyNameAndLogo(id, name, logo, category, competitionCategory);
         } catch (Exception e) {
             return "fail";
         }

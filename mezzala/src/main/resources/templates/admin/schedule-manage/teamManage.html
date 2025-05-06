@@ -19,13 +19,22 @@
             <div class="container section schedule-container">
                 <h4>대회 및 팀 입력</h4>
                 <div class="grid-select-container">
-                    <div>
-                        <h5>대회명</h5>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="insertCompetitionValue" placeholder="대회명 (ex: 프리미어리그)">
-                            <button class="btn btn-primary" id="insertCompetition" type="button">
-                                저장
-                            </button>
+                    <div class="competition-container">
+                        <div>
+                            <h5>대회명</h5>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="insertCompetitionValue" placeholder="대회명 (ex: 프리미어리그)">
+                                <button class="btn btn-primary" id="insertCompetition" type="button">
+                                    저장
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <h5>대회 종류</h5>
+                            <select id="competitionCategory" class="form-select" aria-label="Default select example">
+                                <option value="리그" selected>리그</option>
+                                <option value="컵대회">컵대회</option>
+                            </select>
                         </div>
                     </div>
                     <div>
@@ -86,6 +95,10 @@
                             <span>NAME</span>
                             <input type="text" class="form-control" id="modalPresentNameValue" readonly>
                         </div>
+                        <div class="modal-competition-category display-none">
+                            <span>CATEGORY</span>
+                            <input type="text" class="form-control" id="modalPresentCompetitionCategoryValue" readonly>
+                        </div>
                         <div class="modal-logo-container display-none">
                             <span>LOGO</span>
                             <input type="text" class="form-control" id="modalPresentLogoValue" readonly>
@@ -98,6 +111,13 @@
                             <span>NAME</span>
                             <input type="text" class="form-control" id="modalNameValue">
                             <input type="hidden" id="modalIdValue">
+                        </div>
+                        <div class="modal-competition-category display-none">
+                            <span>CATEGORY</span>
+                            <select id="modalCompetitionCategoryValue" class="form-select" aria-label="Default select example">
+                                <option value="리그" selected>리그</option>
+                                <option value="컵대회">컵대회</option>
+                            </select>
                         </div>
                         <div class="modal-logo-container display-none">
                             <span>LOGO</span>
@@ -182,6 +202,7 @@
                 let idValue = "";
                 let nameValue = "";
                 let logoValue = "";
+                let categoryValue = "";
 
                 if (category == "team") {
                     idValue = $(e.currentTarget).siblings('.item-name').data('id');
@@ -189,12 +210,22 @@
                     logoValue = $(e.currentTarget).siblings('.item-name').data('address');
 
                     $('#modalPresentLogoValue').val(logoValue);
+                    $('.modal-competition-category').addClass('display-none');
                     $('.modal-logo-container').removeClass('display-none');
+                } else if (category == "competition") {
+                    idValue = $(e.currentTarget).siblings('.item-name').data('id');
+                    nameValue = $(e.currentTarget).siblings('.item-name').text();
+                    categoryValue = $(e.currentTarget).siblings('.item-name').data('category');
+
+                    $('#modalPresentCompetitionCategoryValue').val(categoryValue);
+                    $('.modal-competition-category').removeClass('display-none');
+                    $('.modal-logo-container').addClass('display-none');
                 } else {
                     idValue = $(e.currentTarget).siblings('.item-name').data('id');
                     nameValue = $(e.currentTarget).siblings('.item-name').text();
 
                     $('#modalPresentLogoValue').val();
+                    $('.modal-competition-category').addClass('display-none');
                     $('.modal-logo-container').addClass('display-none');
                 }
 
@@ -210,6 +241,7 @@
                 const id = $('#modalIdValue').val();
                 const name = $('#modalNameValue').val();
                 const logo = $('#modalLogoValue').val();
+                const competitionCategory = $('#modalCompetitionCategoryValue').val();
 
                 if (name.length == 0 && category != "team") {
                     alert("변경할 이름을 적어주세요.");
@@ -228,7 +260,7 @@
                     $.ajax({
                         url : "/admin/modify-team",
                         method : "POST",
-                        data : "id=" + id + "&name=" + name + "&logo=" + logo + "&category=" + category,
+                        data : "id=" + id + "&name=" + name + "&logo=" + logo + "&category=" + category + "&competitionCategory=" + competitionCategory,
                         dataType : "text",
                         success : (response, status, xhr) => {
                             if (response == "success") {
@@ -280,10 +312,11 @@
             // 대회명
             insertCompetition.on('click', (e) => {
                 const value = $('#insertCompetitionValue').val();
+                const categoryValue = $('#competitionCategory').val();
                 $.ajax({
                     url : "/admin/save-schedule-category",
                     method : "POST",
-                    data : "value=" + value + "&from=competition",
+                    data : "value=" + value + "&competitionCategory=" + categoryValue + "&from=competition",
                     dataType : "text",
                     success : (response, status, xhr) => {
                         if (response == "success") {
@@ -293,6 +326,9 @@
                         if (response == "valueEmpty") {
                             alert("대회명을 입력해주세요.");
                             $('#insertCompetitionValue').focus();
+                        }
+                        if (response == "fail") {
+                            alert("이미 추가된 대회입니다.");
                         }
                     },
                     error : (status, xhr, error) => {

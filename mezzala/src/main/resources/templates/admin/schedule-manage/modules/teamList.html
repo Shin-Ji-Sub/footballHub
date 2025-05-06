@@ -5,6 +5,7 @@
     <div th:each="competition : ${competitions}" class="list-item">
         <div class="item-name"
              th:data-id="${competition.competitionId}"
+             th:data-category="${competition.competitionCategory}"
              th:text="${competition.competitionName}"></div>
         <button class="btn btn-success list-modify-button">수정</button>
         <button class="btn btn-danger list-delete-button">삭제</button>

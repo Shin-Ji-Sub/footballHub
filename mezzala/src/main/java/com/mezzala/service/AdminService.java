@@ -58,7 +58,7 @@ public interface AdminService {
 
     void modifyUserRole(int roleValue, String userId);
 
-    void addScheduleCategory(String value, String logo, String from);
+    void addScheduleCategory(String value, String logo, String from, String competitionCategory);
 
     List<TeamDto> findAllTeam();
 
@@ -80,7 +80,7 @@ public interface AdminService {
 
     List<TeamDto> findTeam(int start, String searchValue);
 
-    void modifyNameAndLogo(int id, String name, String logo, String category);
+    void modifyNameAndLogo(int id, String name, String logo, String category, String competitionCategory);
 
     void deleteTeam(int id, String category);
 
