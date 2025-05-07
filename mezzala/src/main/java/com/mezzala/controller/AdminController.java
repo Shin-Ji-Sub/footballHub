@@ -657,8 +657,6 @@ public class AdminController {
             return "/modules/noDataModule";
         }
 
-        System.out.println("[SCHEDULES] : " + schedules);
-
         model.addAttribute("pager", pager);
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("dataCount", dataCount);
@@ -687,6 +685,52 @@ public class AdminController {
     @ResponseBody
     public String removeSchedule(@RequestParam(name = "scheduleId") int scheduleId) {
         adminService.removeSchedule(scheduleId);
+        return "success";
+    }
+
+    @GetMapping(path = {"/ranking-manage"})
+    public String rankingManage(Model model) {
+        List<CompetitionDto> competitions = adminService.findAllCompetition();
+        List<TeamDto> teams = adminService.findAllTeam();
+
+        model.addAttribute("competitions", competitions);
+        model.addAttribute("teams", teams);
+        return "/admin/ranking-manage/rankingManage";
+    }
+
+    @PostMapping(path = {"/save-ranking"})
+    @ResponseBody
+    public String saveRanking(@RequestParam(name = "seasonValue") int seasonValue,
+                              @RequestParam(name = "competitionId") int competitionId,
+                              @RequestParam(name = "homeId") int homeId,
+                              @RequestParam(name = "homeScore") int homeScore,
+                              @RequestParam(name = "awayId") int awayId,
+                              @RequestParam(name = "awayScore") int awayScore) {
+
+        adminService.addRanking(seasonValue, competitionId, homeId, homeScore, awayId, awayScore);
+
+        return "success";
+    }
+
+    @PostMapping(path = {"/save-competition-league"})
+    @ResponseBody
+    public String saveCompetitionLeague(@RequestParam(name = "competitionId") int competitionId,
+                                        @RequestParam(name = "clFrom") int clFrom,
+                                        @RequestParam(name = "clTo") int clTo,
+                                        @RequestParam(name = "olFrom") int olFrom,
+                                        @RequestParam(name = "olTo") int olTo) {
+        if (clFrom > clTo) {
+            return  "clTo";
+        }
+        if (olFrom > olTo) {
+            return "olTo";
+        }
+        if (clTo >= olFrom) {
+            return "dup";
+        }
+
+        adminService.addCompetitionLeague(competitionId, clFrom, clTo, olFrom, olTo);
+
         return "success";
     }
 

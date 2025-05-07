@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/admin.css">
+    <title>FootballHub</title>
+</head>
+<body>
+    <div th:replace="~{/admin/modules/header}"></div>
+    <input id="socialMethod" type="hidden" th:if="${session.user != null}" th:value="${session.user.socialMethod}">
+
+    <main>
+        <div class="main-container">
+            <div class="container section result-game-container">
+                <h4>경기 결과</h4>
+                <div class="game-category-container">
+                    <div>
+                        <h5>시즌</h5>
+                        <input type="text" id="seasonValue" class="form-control" readonly>
+                    </div>
+                    <div>
+                        <h5>리그</h5>
+                        <select id="competitionSelect" class="form-select" aria-label="Default select example">
+                            <option th:each="competition : ${competitions}"
+                                    th:value="${competition.competitionId}"
+                                    th:text="${competition.competitionName}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="game-team-container">
+                    <div class="team-header-container">
+                        <h5>홈팀</h5>
+                        <h5>어웨이팀</h5>
+                    </div>
+                    <div class="game-score-container">
+                        <div class="input-group" data-value="home">
+                            <input type="text" class="form-control team-value" id="homeTeam" placeholder="팀 검색">
+                            <input type="hidden" id="homeTeamId">
+                            <button class="btn btn-outline-secondary team-search-button" type="button">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                        <input type="number" class="form-control score-value" id="homeScore" placeholder="0">
+                        <span> : </span>
+                        <input type="number" class="form-control score-value" id="awayScore" placeholder="0">
+                        <div class="input-group" data-value="away">
+                            <input type="text" class="form-control team-value" id="awayTeam" placeholder="팀 검색">
+                            <input type="hidden" id="awayTeamId">
+                            <button class="btn btn-outline-secondary team-search-button" type="button">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary result-save-button" id="resultSaveButton">저장</button>
+            </div>
+            <div class="container section ranking-table-container">
+                <h4>순위표</h4>
+                <div class="game-category-container">
+                    <div>
+                        <h5>시즌</h5>
+                        <select id="seasonSelect" class="form-select" aria-label="Default select example"></select>
+                    </div>
+                    <div>
+                        <h5>리그</h5>
+                        <select id="rankingCompetitionSelect" class="form-select" aria-label="Default select example">
+                            <option th:each="competition : ${competitions}"
+                                    th:value="${competition.competitionId}"
+                                    th:text="${competition.competitionName}"></option>
+                        </select>
+                    </div>
+                </div>
+                <h4>유럽대항전 순위 조정</h4>
+                <div class="adjust-league-container">
+                    <div>
+                        <h5>챔피언스리그</h5>
+                        <div class="adjust-ranking-container">
+                            <select class="form-select ranking-item" aria-label="Default select example"></select>
+                            <span>~</span>
+                            <select class="form-select ranking-item" aria-label="Default select example"></select>
+                        </div>
+                        <button type="button" class="btn btn-primary bg-gradient">저장</button>
+                    </div>
+                    <div>
+                        <h5>유로파 및 컨퍼런스</h5>
+                        <div class="adjust-ranking-container">
+                            <select class="form-select ranking-item" aria-label="Default select example"></select>
+                            <span>~</span>
+                            <select class="form-select ranking-item" aria-label="Default select example"></select>
+                        </div>
+                        <button type="button" class="btn btn-success bg-gradient">저장</button>
+                    </div>
+                </div>
+                <div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                            <tr class="bg-black">
+                                <th class="text-white">순위</th>
+                                <th class="text-white">팀명</th>
+                                <th class="text-white">경기수</th>
+                                <th class="text-white">승</th>
+                                <th class="text-white">무</th>
+                                <th class="text-white">패</th>
+                                <th class="text-white">득</th>
+                                <th class="text-white">실</th>
+                                <th class="text-white">승점</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="bg-primary bg-gradient">
+                                <td>1</td>
+                                <td><img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" class="logo"> 리버풀</td>
+                                <td>31</td><td>22</td><td>7</td><td>2</td><td>72</td><td>30</td><td>73</td>
+                            </tr>
+                            <tr class="bg-primary bg-gradient">
+                                <td>2</td>
+                                <td><img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" class="logo"> 아스널</td>
+                                <td>31</td><td>17</td><td>11</td><td>3</td><td>56</td><td>26</td><td>62</td>
+                            </tr>
+                            <tr class="bg-primary bg-gradient">
+                                <td>3</td>
+                                <td><img src="https://upload.wikimedia.org/wikipedia/en/e/e5/Nottingham_Forest_F.C._logo.svg" class="logo"> 노팅햄 포레스트</td>
+                                <td>31</td><td>17</td><td>6</td><td>8</td><td>51</td><td>37</td><td>57</td>
+                            </tr>
+                            <tr class="bg-primary bg-gradient">
+                                <td>4</td>
+                                <td><img src="https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg" class="logo"> 첼시</td>
+                                <td>31</td><td>15</td><td>8</td><td>8</td><td>54</td><td>37</td><td>53</td>
+                            </tr>
+                            <tr class="bg-success bg-gradient">
+                                <td>5</td>
+                                <td><img src="https://upload.wikimedia.org/wikipedia/en/5/56/Newcastle_United_Logo.svg" class="logo"> 뉴캐슬 유나이티드</td>
+                                <td>30</td><td>16</td><td>5</td><td>9</td><td>52</td><td>39</td><td>53</td>
+                            </tr>
+                            <tr class="bg-success bg-gradient">
+                                <td>6</td>
+                                <td><img src="https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" class="logo"> 맨체스터 시티</td>
+                                <td>31</td><td>15</td><td>7</td><td>9</td><td>57</td><td>40</td><td>52</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/9/9a/Aston_Villa_FC_new_crest.svg/250px-Aston_Villa_FC_new_crest.svg.png" class="logo"> 아스톤 빌라</td>
+                                <td>31</td><td>14</td><td>9</td><td>8</td><td>46</td><td>46</td><td>51</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/e/eb/Fulham_FC_%28shield%29.svg/250px-Fulham_FC_%28shield%29.svg.png" class="logo"> 풀햄</td>
+                                <td>31</td><td>13</td><td>9</td><td>9</td><td>47</td><td>42</td><td>48</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/d/d0/Brighton_and_Hove_Albion_FC_crest.svg/250px-Brighton_and_Hove_Albion_FC_crest.svg.png" class="logo"> 브라이튼&호프 알비온</td>
+                                <td>31</td><td>12</td><td>11</td><td>8</td><td>49</td><td>47</td><td>47</td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/e/e5/AFC_Bournemouth_%282013%29.svg/150px-AFC_Bournemouth_%282013%29.svg.png" class="logo"> AFC 본머스</td>
+                                <td>31</td><td>12</td><td>9</td><td>10</td><td>51</td><td>40</td><td>45</td>
+                            </tr>
+                            <tr>
+                                <td>11</td>
+                                <td><img src="//upload.wikimedia.org/wikipedia/ko/thumb/f/f7/%ED%81%AC%EB%A6%AC%EC%8A%A4%ED%84%B8_%ED%8C%B0%EB%A6%AC%EC%8A%A4_%EB%A1%9C%EA%B3%A0.svg/175px-%ED%81%AC%EB%A6%AC%EC%8A%A4%ED%84%B8_%ED%8C%B0%EB%A6%AC%EC%8A%A4_%EB%A1%9C%EA%B3%A0.svg.png"
+                                         class="logo"> 크리스털 팰리스</td>
+                                <td>30</td><td>11</td><td>10</td><td>9</td><td>39</td><td>35</td><td>43</td>
+                            </tr>
+                            <tr>
+                                <td>12</td>
+                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/2/2a/Brentford_FC_crest.svg/190px-Brentford_FC_crest.svg.png" class="logo"> 브렌트포드</td>
+                                <td>31</td><td>12</td><td>6</td><td>13</td><td>51</td><td>47</td><td>42</td>
+                            </tr>
+                            <tr>
+                                <td>13</td>
+                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/7/7a/Manchester_United_FC_crest.svg/210px-Manchester_United_FC_crest.svg.png" class="logo"> 맨체스터 유나이티드</td>
+                                <td>31</td><td>10</td><td>8</td><td>13</td><td>37</td><td>41</td><td>38</td>
+                            </tr>
+                            <tr>
+                                <td>14</td>
+                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/b/b4/Tottenham_Hotspur.svg/120px-Tottenham_Hotspur.svg.png" class="logo"> 토트넘 홋스퍼</td>
+                                <td>31</td><td>11</td><td>4</td><td>16</td><td>58</td><td>45</td><td>37</td>
+                            </tr>
+                            <tr>
+                                <td>15</td>
+                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/7/7c/Everton_FC_logo.svg/250px-Everton_FC_logo.svg.png" class="logo"> 에버튼</td>
+                                <td>31</td><td>7</td><td>14</td><td>10</td><td>33</td><td>38</td><td>35</td>
+                            </tr>
+                            <tr>
+                                <td>16</td>
+                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/c/c2/West_Ham_United_FC_logo.svg/175px-West_Ham_United_FC_logo.svg.png" class="logo"> 웨스트햄 유나이티드</td>
+                                <td>31</td><td>9</td><td>8</td><td>14</td><td>35</td><td>52</td><td>35</td>
+                            </tr>
+                            <tr>
+                                <td>17</td>
+                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/c/c9/Wolverhampton_Wanderers_FC_crest.svg/200px-Wolverhampton_Wanderers_FC_crest.svg.png" class="logo"> 울버햄튼 원더러스</td>
+                                <td>31</td><td>9</td><td>5</td><td>17</td><td>43</td><td>59</td><td>32</td>
+                            </tr>
+                            <tr class="bg-danger bg-gradient">
+                                <td>18</td>
+                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/4/43/Ipswich_Town.svg/250px-Ipswich_Town.svg.png" class="logo"> 입스위치 타운</td>
+                                <td>31</td><td>4</td><td>8</td><td>19</td><td>31</td><td>65</td><td>20</td>
+                            </tr>
+                            <tr class="bg-danger bg-gradient">
+                                <td>19</td>
+                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/2/2d/Leicester_City_crest.svg/190px-Leicester_City_crest.svg.png" class="logo"> 레스터 시티</td>
+                                <td>31</td><td>4</td><td>5</td><td>22</td><td>25</td><td>70</td><td>17</td>
+                            </tr>
+                            <tr class="bg-danger bg-gradient">
+                                <td>20</td>
+                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/c/c9/FC_Southampton.svg/250px-FC_Southampton.svg.png" class="logo"> 사우샘프턴</td>
+                                <td>31</td><td>2</td><td>4</td><td>25</td><td>23</td><td>74</td><td>10</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">팀 선택</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h2 class="fs-5">팀 검색</h2>
+                    <input type="text" class="team-search" id="teamSearchValue">
+                    <hr>
+                    <h2 class="fs-5">팀 목록</h2>
+                    <p class="fandom-item-container">
+                        <span class="btn btn-outline-primary fandom-item"
+                              th:each="team : ${teams}"
+                              th:data-value="${team.teamId}"
+                              th:text="${team.teamName}"></span>
+                    </p>
+                    <input type="hidden" id="modalFromValue">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 팀수정 Modal -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModal2Label" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModal2Label">기록 수정</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-body-header">
+                        <div>1위</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" alt="team_logo">
+                        <div>리버풀</div>
+                    </div>
+                    <div class="modal-body-main">
+                        <div>
+                            <h5>승</h5>
+                            <input type="number" class="form-control">
+                        </div>
+                        <div>
+                            <h5>무</h5>
+                            <input type="number" class="form-control">
+                        </div>
+                        <div>
+                            <h5>패</h5>
+                            <input type="number" class="form-control">
+                        </div>
+                        <div>
+                            <h5>득</h5>
+                            <input type="number" class="form-control">
+                        </div>
+                        <div>
+                            <h5>실</h5>
+                            <input type="number" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-primary">변경</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(window).on('load', function() {
+            // 현재 page nav에 표시
+            const locationCategories = $('.location-category');
+            locationCategories.eq(5).addClass('active');
+            locationCategories.eq(5).addClass('text-primary');
+
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1
+
+            const startYear = month < 7 ? year - 1 : year;
+            const endYear = startYear + 1;
+
+            // 두 자리수로 만들기 위해 slice(-2) 사용
+            const seasonValue = `${String(startYear).slice(-2)}/${String(endYear).slice(-2)}`;
+            $('#seasonValue').val(seasonValue);
+
+            const teamValue = $('.team-value');
+            const teamSearchButton = $('.team-search-button');
+            const scoreValue = $('.score-value');
+            const teamSearchValue = $('#teamSearchValue');
+            const seasonSelect = $('#seasonSelect');
+            const rankingItem = $('.ranking-item');
+            const teamItem = $('.table-container tbody tr');
+            const homeTeam = $('#homeTeam');
+            const homeTeamId = $('#homeTeamId');
+            const awayTeam = $('#awayTeam');
+            const awayTeamId = $('#awayTeamId');
+            const modalFromValue = $('#modalFromValue');
+            const resultSaveButton = $('#resultSaveButton');
+
+            // 경기 결과 저장 버튼
+            resultSaveButton.on('click', (e) => {
+                
+            });
+
+            // 홈팀, 어웨이팀 클릭 시 모달창 열기
+            teamValue.on('click', (e) => {
+                $('#exampleModal').modal('show');
+                modalFromValue.val($(e.currentTarget).parent().data('value'));
+            });
+            teamSearchButton.on('click', (e) => {
+                $('#exampleModal').modal('show');
+                modalFromValue.val($(e.currentTarget).parent().data('value'));
+            });
+
+            // 스코어에 음수 입력 방지
+            scoreValue.on('keydown', (e) => {
+                if (e.key === '-' || e.key === "Subtract") {
+                    alert("음수는 입력할 수 없습니다.");
+                    e.preventDefault();
+                }
+            });
+            scoreValue.on('input', (e) => {
+                const value = Number($(e.currentTarget).val());
+                if (value < 0) {
+                    alert("음수는 입력할 수 없습니다.");
+                    $(e.currentTarget).val(0);
+                }
+            });
+
+            // 홈팀, 어웨이팀 검색 (Modal)
+            teamSearchValue.on('input', (e) => {
+                const keyword = $(e.currentTarget).val().trim();
+
+                $('.fandom-item').each(function() {
+                    const text = $(this).text();
+                    if (text.includes(keyword)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+            $('.fandom-item').on('click', (e) => {
+                const from = modalFromValue.val();
+                const value = $(e.currentTarget).text();
+                const id = $(e.currentTarget).data('value');
+
+                if (from == "home") {
+                    homeTeam.val(value);
+                    homeTeamId.val(id);
+                }
+                if (from == "away") {
+                    awayTeam.val(value);
+                    awayTeamId.val(id);
+                }
+                $('#exampleModal').modal('hide');
+            });
+
+
+            let start = (month < 7) ? 14 : 15; // 시작 연도
+            let end = (month < 7) ? 24 : 25;   // 끝 연도
+
+            // selected가 될 시즌 값 계산
+            const selectedValue = `${(month < 7 ? year - 1 : year).toString().slice(-2)}${(month < 7 ? year : year + 1).toString().slice(-2)}`;
+
+            const $select = $('#seasonSelect');
+            $select.empty(); // 기존 option 제거
+
+            for (let i = start; i <= end; i++) {
+                const from = i;
+                const to = i + 1;
+                const value = `${from}${to.toString().padStart(2, '0')}`;
+                const text = `${from}/${to.toString().padStart(2, '0')}`;
+
+                const isSelected = (value === selectedValue) ? 'selected' : '';
+
+                $select.append(`<option value="${value}" ${isSelected}>${text}</option>`);
+            }
+
+            for (let i = 1; i <= 10; i++) {
+                const text = `${i}위`;
+                rankingItem.append(`<option value="${i}">${text}</option>`);
+            }
+
+            teamItem.on('click', (e) => {
+                $('#exampleModal2').modal('show');
+            });
+
+        });
+    </script>
+</body>
+</html>

@@ -1103,6 +1103,8 @@
             competition_category AS competitionCategory
         FROM
             competition
+        ORDER BY
+            competition_id ASC
     </select>
 
     <select id="selectAllCompetitionRound" resultType="CompetitionRoundDto">
@@ -1421,5 +1423,87 @@
         WHERE
             schedule_id = #{scheduleId}
     </delete>
+
+    <select id="selectRankingWithSeasonAndTeamId" parameterType="hashmap" resultType="RankingDto">
+        SELECT
+            ranking_id AS rankingId,
+            season AS season,
+            competition_id AS competitionId,
+            team_id AS teamId,
+            win,
+            draw,
+            lose,
+            score_point AS scorePoint,
+            lose_point AS losePoint
+        FROM
+            ranking
+        WHERE
+            season = #{seasonValue}
+        AND
+            team_id = #{teamId}
+    </select>
+
+    <insert id="insertRanking" parameterType="hashmap">
+        INSERT INTO
+            ranking (
+                season,
+                competition_id,
+                team_id,
+                win,
+                draw,
+                lose,
+                score_point,
+                lose_point
+            )
+        VALUES (
+                #{seasonValue},
+                #{competitionId},
+                #{teamId},
+                <choose>
+                    <when test="result == 'win'">
+                        1,
+                        0,
+                        0,
+                    </when>
+                    <when test="result == 'lose'">
+                        0,
+                        0,
+                        1,
+                    </when>
+                    <when test="result == 'draw'">
+                        0,
+                        1,
+                        0,
+                    </when>
+                </choose>
+                #{scorePoint},
+                #{losePoint}
+            )
+    </insert>
+
+    <update id="updateRanking" parameterType="RankingDto">
+        UPDATE
+            ranking
+        SET
+            win = #{win},
+            draw = #{draw},
+            lose = #{lose},
+            score_point = #{scorePoint},
+            lose_point = #{losePoint}
+        WHERE
+            ranking_id = #{rankingId}
+    </update>
+
+    <update id="updateCompetitionLeague" parameterType="hashmap">
+        UPDATE
+            competition
+        SET
+            champions_league_from = #{clFrom},
+            champions_league_to = #{clTo},
+            other_league_from = #{olFrom},
+            other_league_to = #{olTo}
+        WHERE
+            competition_id = #{competitionId}
+    </update>
 
 </mapper>

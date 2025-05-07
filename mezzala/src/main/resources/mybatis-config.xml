@@ -20,6 +20,7 @@
 		<typeAlias type="com.mezzala.dto.CompetitionRoundDto" alias="CompetitionRoundDto" />
 		<typeAlias type="com.mezzala.dto.TeamDto" alias="TeamDto" />
 		<typeAlias type="com.mezzala.dto.ScheduleDto" alias="ScheduleDto" />
+		<typeAlias type="com.mezzala.dto.RankingDto" alias="RankingDto" />
 	</typeAliases>
 
 	<mappers>

@@ -308,4 +308,65 @@ public class AdminServiceImpl implements AdminService {
         adminMapper.deleteSchedule(scheduleId);
     }
 
+    @Override
+    public void addRanking(int seasonValue, int competitionId, int homeId, int homeScore, int awayId, int awayScore) {
+        String homeResult = "";
+        String awayResult = "";
+        if (homeScore > awayScore) {
+            homeResult = "win";
+            awayResult = "lose";
+        } else if (awayScore > homeScore) {
+            homeResult = "lose";
+            awayResult = "win";
+        } else {
+            homeResult = "draw";
+            awayResult = "draw";
+        }
+
+        RankingDto homeRanking = adminMapper.selectRankingWithSeasonAndTeamId(seasonValue, homeId);
+        RankingDto awayRanking = adminMapper.selectRankingWithSeasonAndTeamId(seasonValue, awayId);
+
+        if (homeRanking == null) {
+            adminMapper.insertRanking(seasonValue, competitionId, homeId, homeScore, awayScore, homeResult);
+        } else {
+            if (homeResult.equals("win")) {
+                homeRanking.setWin(homeRanking.getWin() + 1);
+            }
+            if (homeResult.equals("draw")) {
+                homeRanking.setDraw(homeRanking.getDraw() + 1);
+            }
+            if (homeResult.equals("lose")) {
+                homeRanking.setLose(homeRanking.getLose() + 1);
+            }
+            homeRanking.setScorePoint(homeRanking.getScorePoint() + homeScore);
+            homeRanking.setLosePoint(homeRanking.getLosePoint() + awayScore);
+            System.out.println("[HOME] : " + homeRanking);
+            adminMapper.updateRanking(homeRanking);
+        }
+
+        if (awayRanking == null) {
+            adminMapper.insertRanking(seasonValue, competitionId, awayId, awayScore, homeScore, awayResult);
+        } else {
+            if (awayResult.equals("win")) {
+                awayRanking.setWin(awayRanking.getWin() + 1);
+            }
+            if (awayResult.equals("draw")) {
+                awayRanking.setDraw(awayRanking.getDraw() + 1);
+            }
+            if (awayResult.equals("lose")) {
+                awayRanking.setLose(awayRanking.getLose() + 1);
+            }
+            awayRanking.setScorePoint(awayRanking.getScorePoint() + awayScore);
+            awayRanking.setLosePoint(awayRanking.getLosePoint() + homeScore);
+            System.out.println("[AWAY] : " + awayRanking);
+            adminMapper.updateRanking(awayRanking);
+        }
+
+    }
+
+    @Override
+    public void addCompetitionLeague(int competitionId, int clFrom, int clTo, int olFrom, int olTo) {
+        adminMapper.updateCompetitionLeague(competitionId, clFrom, clTo, olFrom, olTo);
+    }
+
 }

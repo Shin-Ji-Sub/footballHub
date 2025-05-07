@@ -91,4 +91,8 @@ public interface AdminService {
     void modifySchedule(ScheduleDto schedule, int year, int month, int day, int hour, int minute);
 
     void removeSchedule(int scheduleId);
+
+    void addRanking(int seasonValue, int competitionId, int homeId, int homeScore, int awayId, int awayScore);
+
+    void addCompetitionLeague(int competitionId, int clFrom, int clTo, int olFrom, int olTo);
 }

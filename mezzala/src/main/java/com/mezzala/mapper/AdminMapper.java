@@ -124,4 +124,15 @@ public interface AdminMapper {
     void updateSchedule(@Param("schedule") ScheduleDto schedule, @Param("date") LocalDateTime date);
 
     void deleteSchedule(int scheduleId);
+
+    RankingDto selectRankingWithSeasonAndTeamId(@Param("seasonValue") int seasonValue, @Param("teamId") int teamId);
+
+    void insertRanking(@Param("seasonValue") int seasonValue, @Param("competitionId") int competitionId,
+                       @Param("teamId") int teamId, @Param("scorePoint") int scorePoint, @Param("losePoint") int losePoint,
+                       @Param("result") String result);
+
+    void updateRanking(RankingDto ranking);
+
+    void updateCompetitionLeague(@Param("competitionId") int competitionId, @Param("clFrom") int clFrom,
+                                 @Param("clTo") int clTo, @Param("olFrom") int olFrom, @Param("olTo") int olTo);
 }
