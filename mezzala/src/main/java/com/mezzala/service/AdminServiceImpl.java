@@ -369,4 +369,14 @@ public class AdminServiceImpl implements AdminService {
         adminMapper.updateCompetitionLeague(competitionId, clFrom, clTo, olFrom, olTo);
     }
 
+    @Override
+    public List<RankingDto> findRanking(int competitionValue, int seasonValue) {
+        return adminMapper.selectRanking(competitionValue, seasonValue);
+    }
+
+    @Override
+    public void modifyRanking(RankingDto ranking) {
+        adminMapper.updateRanking(ranking);
+    }
+
 }

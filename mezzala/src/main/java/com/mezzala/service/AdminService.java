@@ -95,4 +95,8 @@ public interface AdminService {
     void addRanking(int seasonValue, int competitionId, int homeId, int homeScore, int awayId, int awayScore);
 
     void addCompetitionLeague(int competitionId, int clFrom, int clTo, int olFrom, int olTo);
+
+    List<RankingDto> findRanking(int competitionValue, int seasonValue);
+
+    void modifyRanking(RankingDto ranking);
 }

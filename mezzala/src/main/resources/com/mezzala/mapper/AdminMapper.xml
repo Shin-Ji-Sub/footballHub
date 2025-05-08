@@ -155,6 +155,33 @@
             <result property="logoAddress" column="at_logo_address"/>
         </association>
     </resultMap>
+    <resultMap id="RankingResultMap" type="com.mezzala.dto.RankingDto">
+        <id property="rankingId" column="r_ranking_id"/>
+        <result property="season" column="r_season"/>
+        <result property="competitionId" column="r_competition_id"/>
+        <result property="teamId" column="r_team_id"/>
+        <result property="matchCount" column="r_match_count"/>
+        <result property="point" column="r_point"/>
+        <result property="win" column="r_win"/>
+        <result property="draw" column="r_draw"/>
+        <result property="lose" column="r_lose"/>
+        <result property="scorePoint" column="r_score_point"/>
+        <result property="losePoint" column="r_lose_point"/>
+        <association property="competition" javaType="com.mezzala.dto.CompetitionDto">
+            <id property="competitionId" column="c_competition_id"/>
+            <result property="competitionName" column="c_competition_name"/>
+            <result property="competitionCategory" column="c_competition_category"/>
+            <result property="championsLeagueFrom" column="c_champions_league_from"/>
+            <result property="championsLeagueTo" column="c_champions_league_to"/>
+            <result property="otherLeagueFrom" column="c_other_league_from"/>
+            <result property="otherLeagueTo" column="c_other_league_to"/>
+        </association>
+        <association property="team" javaType="com.mezzala.dto.TeamDto">
+            <id property="teamId" column="t_team_id"/>
+            <result property="teamName" column="t_team_name"/>
+            <result property="logoAddress" column="t_logo_address"/>
+        </association>
+    </resultMap>
 
     <insert id="insertBoard" parameterType="BoardDto" useGeneratedKeys="true" keyProperty="boardId">
         INSERT INTO
@@ -1100,7 +1127,11 @@
         SELECT
             competition_id AS competitionId,
             competition_name AS competitionName,
-            competition_category AS competitionCategory
+            competition_category AS competitionCategory,
+            champions_league_from AS championsLeagueFrom,
+            champions_league_to AS championsLeagueTo,
+            other_league_from AS otherLeagueFrom,
+            other_league_to AS otherLeagueTo
         FROM
             competition
         ORDER BY
@@ -1505,5 +1536,49 @@
         WHERE
             competition_id = #{competitionId}
     </update>
+
+    <select id="selectRanking" parameterType="hashmap" resultMap="RankingResultMap">
+        SELECT
+            r.ranking_id AS r_ranking_id,
+            r.season AS r_season,
+            r.competition_id AS r_competition_id,
+            r.team_id AS r_team_id,
+            r.win + r.draw + r.lose AS r_match_count,
+            (r.win * 3) + r.draw AS r_point,
+            r.win AS r_win,
+            r.draw AS r_draw,
+            r.lose AS r_lose,
+            r.score_point AS r_score_point,
+            r.lose_point AS r_lose_point,
+
+            c.competition_id AS c_competition_id,
+            c.competition_name AS c_competition_name,
+            c.competition_category AS c_competition_category,
+            c.champions_league_from AS c_champions_league_from,
+            c.champions_league_to AS c_champions_league_to,
+            c.other_league_from AS c_other_league_from,
+            c.other_league_to AS c_other_league_to,
+
+            t.team_id AS t_team_id,
+            t.team_name AS t_team_name,
+            t.logo_address AS t_logo_address
+        FROM
+            ranking r
+        LEFT JOIN
+            competition c
+        ON
+            r.competition_id = c.competition_id
+        LEFT JOIN
+            team t
+        ON
+            r.team_id = t.team_id
+        WHERE
+            r.competition_id = #{competitionValue}
+        AND
+            r.season = #{seasonValue}
+        ORDER BY
+            (r.win * 3) + r.draw DESC,
+            r.score_point - r.lose_point DESC
+    </select>
 
 </mapper>

@@ -74,147 +74,8 @@
                         </select>
                     </div>
                 </div>
-                <h4>유럽대항전 진출 순위 조정</h4>
-                <div class="adjust-league-container">
-                    <div>
-                        <h5>챔피언스리그</h5>
-                        <div class="adjust-ranking-container">
-                            <select id="championsLeagueFrom" class="form-select ranking-item" aria-label="Default select example"></select>
-                            <span>~</span>
-                            <select id="championsLeagueTo" class="form-select ranking-item" aria-label="Default select example"></select>
-                        </div>
-                    </div>
-                    <div>
-                        <h5>유로파 및 컨퍼런스</h5>
-                        <div class="adjust-ranking-container">
-                            <select id="otherLeagueFrom" class="form-select ranking-item" aria-label="Default select example"></select>
-                            <span>~</span>
-                            <select id="otherLeagueTo" class="form-select ranking-item" aria-label="Default select example"></select>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-primary bg-gradient" id="leagueSaveButton">저장</button>
-                </div>
-                <div>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                            <tr class="bg-black">
-                                <th class="text-white">순위</th>
-                                <th class="text-white">팀명</th>
-                                <th class="text-white">경기수</th>
-                                <th class="text-white">승</th>
-                                <th class="text-white">무</th>
-                                <th class="text-white">패</th>
-                                <th class="text-white">득</th>
-                                <th class="text-white">실</th>
-                                <th class="text-white">승점</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr class="bg-primary bg-gradient">
-                                <td>1</td>
-                                <td><img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" class="logo"> 리버풀</td>
-                                <td>31</td><td>22</td><td>7</td><td>2</td><td>72</td><td>30</td><td>73</td>
-                            </tr>
-                            <tr class="bg-primary bg-gradient">
-                                <td>2</td>
-                                <td><img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" class="logo"> 아스널</td>
-                                <td>31</td><td>17</td><td>11</td><td>3</td><td>56</td><td>26</td><td>62</td>
-                            </tr>
-                            <tr class="bg-primary bg-gradient">
-                                <td>3</td>
-                                <td><img src="https://upload.wikimedia.org/wikipedia/en/e/e5/Nottingham_Forest_F.C._logo.svg" class="logo"> 노팅햄 포레스트</td>
-                                <td>31</td><td>17</td><td>6</td><td>8</td><td>51</td><td>37</td><td>57</td>
-                            </tr>
-                            <tr class="bg-primary bg-gradient">
-                                <td>4</td>
-                                <td><img src="https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg" class="logo"> 첼시</td>
-                                <td>31</td><td>15</td><td>8</td><td>8</td><td>54</td><td>37</td><td>53</td>
-                            </tr>
-                            <tr class="bg-success bg-gradient">
-                                <td>5</td>
-                                <td><img src="https://upload.wikimedia.org/wikipedia/en/5/56/Newcastle_United_Logo.svg" class="logo"> 뉴캐슬 유나이티드</td>
-                                <td>30</td><td>16</td><td>5</td><td>9</td><td>52</td><td>39</td><td>53</td>
-                            </tr>
-                            <tr class="bg-success bg-gradient">
-                                <td>6</td>
-                                <td><img src="https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" class="logo"> 맨체스터 시티</td>
-                                <td>31</td><td>15</td><td>7</td><td>9</td><td>57</td><td>40</td><td>52</td>
-                            </tr>
-                            <tr>
-                                <td>7</td>
-                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/9/9a/Aston_Villa_FC_new_crest.svg/250px-Aston_Villa_FC_new_crest.svg.png" class="logo"> 아스톤 빌라</td>
-                                <td>31</td><td>14</td><td>9</td><td>8</td><td>46</td><td>46</td><td>51</td>
-                            </tr>
-                            <tr>
-                                <td>8</td>
-                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/e/eb/Fulham_FC_%28shield%29.svg/250px-Fulham_FC_%28shield%29.svg.png" class="logo"> 풀햄</td>
-                                <td>31</td><td>13</td><td>9</td><td>9</td><td>47</td><td>42</td><td>48</td>
-                            </tr>
-                            <tr>
-                                <td>9</td>
-                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/d/d0/Brighton_and_Hove_Albion_FC_crest.svg/250px-Brighton_and_Hove_Albion_FC_crest.svg.png" class="logo"> 브라이튼&호프 알비온</td>
-                                <td>31</td><td>12</td><td>11</td><td>8</td><td>49</td><td>47</td><td>47</td>
-                            </tr>
-                            <tr>
-                                <td>10</td>
-                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/e/e5/AFC_Bournemouth_%282013%29.svg/150px-AFC_Bournemouth_%282013%29.svg.png" class="logo"> AFC 본머스</td>
-                                <td>31</td><td>12</td><td>9</td><td>10</td><td>51</td><td>40</td><td>45</td>
-                            </tr>
-                            <tr>
-                                <td>11</td>
-                                <td><img src="//upload.wikimedia.org/wikipedia/ko/thumb/f/f7/%ED%81%AC%EB%A6%AC%EC%8A%A4%ED%84%B8_%ED%8C%B0%EB%A6%AC%EC%8A%A4_%EB%A1%9C%EA%B3%A0.svg/175px-%ED%81%AC%EB%A6%AC%EC%8A%A4%ED%84%B8_%ED%8C%B0%EB%A6%AC%EC%8A%A4_%EB%A1%9C%EA%B3%A0.svg.png"
-                                         class="logo"> 크리스털 팰리스</td>
-                                <td>30</td><td>11</td><td>10</td><td>9</td><td>39</td><td>35</td><td>43</td>
-                            </tr>
-                            <tr>
-                                <td>12</td>
-                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/2/2a/Brentford_FC_crest.svg/190px-Brentford_FC_crest.svg.png" class="logo"> 브렌트포드</td>
-                                <td>31</td><td>12</td><td>6</td><td>13</td><td>51</td><td>47</td><td>42</td>
-                            </tr>
-                            <tr>
-                                <td>13</td>
-                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/7/7a/Manchester_United_FC_crest.svg/210px-Manchester_United_FC_crest.svg.png" class="logo"> 맨체스터 유나이티드</td>
-                                <td>31</td><td>10</td><td>8</td><td>13</td><td>37</td><td>41</td><td>38</td>
-                            </tr>
-                            <tr>
-                                <td>14</td>
-                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/b/b4/Tottenham_Hotspur.svg/120px-Tottenham_Hotspur.svg.png" class="logo"> 토트넘 홋스퍼</td>
-                                <td>31</td><td>11</td><td>4</td><td>16</td><td>58</td><td>45</td><td>37</td>
-                            </tr>
-                            <tr>
-                                <td>15</td>
-                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/7/7c/Everton_FC_logo.svg/250px-Everton_FC_logo.svg.png" class="logo"> 에버튼</td>
-                                <td>31</td><td>7</td><td>14</td><td>10</td><td>33</td><td>38</td><td>35</td>
-                            </tr>
-                            <tr>
-                                <td>16</td>
-                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/c/c2/West_Ham_United_FC_logo.svg/175px-West_Ham_United_FC_logo.svg.png" class="logo"> 웨스트햄 유나이티드</td>
-                                <td>31</td><td>9</td><td>8</td><td>14</td><td>35</td><td>52</td><td>35</td>
-                            </tr>
-                            <tr>
-                                <td>17</td>
-                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/c/c9/Wolverhampton_Wanderers_FC_crest.svg/200px-Wolverhampton_Wanderers_FC_crest.svg.png" class="logo"> 울버햄튼 원더러스</td>
-                                <td>31</td><td>9</td><td>5</td><td>17</td><td>43</td><td>59</td><td>32</td>
-                            </tr>
-                            <tr class="bg-danger bg-gradient">
-                                <td>18</td>
-                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/4/43/Ipswich_Town.svg/250px-Ipswich_Town.svg.png" class="logo"> 입스위치 타운</td>
-                                <td>31</td><td>4</td><td>8</td><td>19</td><td>31</td><td>65</td><td>20</td>
-                            </tr>
-                            <tr class="bg-danger bg-gradient">
-                                <td>19</td>
-                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/2/2d/Leicester_City_crest.svg/190px-Leicester_City_crest.svg.png" class="logo"> 레스터 시티</td>
-                                <td>31</td><td>4</td><td>5</td><td>22</td><td>25</td><td>70</td><td>17</td>
-                            </tr>
-                            <tr class="bg-danger bg-gradient">
-                                <td>20</td>
-                                <td><img src="//upload.wikimedia.org/wikipedia/en/thumb/c/c9/FC_Southampton.svg/250px-FC_Southampton.svg.png" class="logo"> 사우샘프턴</td>
-                                <td>31</td><td>2</td><td>4</td><td>25</td><td>23</td><td>74</td><td>10</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div id="moduleBox">
+                    <!-- 유럽대항전, 순위표 모듈 -->
                 </div>
             </div>
         </div>
@@ -258,36 +119,37 @@
                 </div>
                 <div class="modal-body">
                     <div class="modal-body-header">
-                        <div>1위</div>
-                        <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" alt="team_logo">
-                        <div>리버풀</div>
+                        <div id="modalRankingNumber"></div>
+                        <img id="modalTeamLogo" alt="team_logo">
+                        <div id="modalTeamName"></div>
                     </div>
                     <div class="modal-body-main">
                         <div>
                             <h5>승</h5>
-                            <input type="number" class="form-control">
+                            <input type="number" id="modalTeamWin" class="form-control">
                         </div>
                         <div>
                             <h5>무</h5>
-                            <input type="number" class="form-control">
+                            <input type="number" id="modalTeamDraw" class="form-control">
                         </div>
                         <div>
                             <h5>패</h5>
-                            <input type="number" class="form-control">
+                            <input type="number" id="modalTeamLose" class="form-control">
                         </div>
                         <div>
                             <h5>득</h5>
-                            <input type="number" class="form-control">
+                            <input type="number" id="modalTeamScorePoint" class="form-control">
                         </div>
                         <div>
                             <h5>실</h5>
-                            <input type="number" class="form-control">
+                            <input type="number" id="modalTeamLosePoint" class="form-control">
                         </div>
+                        <input type="hidden" id="rankingId">
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                    <button type="button" class="btn btn-primary">변경</button>
+                    <button type="button" id="modifyRecordButton" class="btn btn-primary">수정</button>
                 </div>
             </div>
         </div>
@@ -319,7 +181,7 @@
             const scoreValue = $('.score-value');
             const teamSearchValue = $('#teamSearchValue');
             const seasonSelect = $('#seasonSelect');
-            const rankingItem = $('.ranking-item');
+            const rankingCompetitionSelect = $('#rankingCompetitionSelect');
             const teamItem = $('.table-container tbody tr');
             const homeTeam = $('#homeTeam');
             const homeTeamId = $('#homeTeamId');
@@ -327,7 +189,222 @@
             const awayTeamId = $('#awayTeamId');
             const modalFromValue = $('#modalFromValue');
             const resultSaveButton = $('#resultSaveButton');
-            const leagueSaveButton = $('#leagueSaveButton');
+            const moduleBox = $('#moduleBox');
+
+            // 홈팀, 어웨이팀 클릭 시 모달창 열기
+            teamValue.on('click', (e) => {
+                $('#exampleModal').modal('show');
+                modalFromValue.val($(e.currentTarget).parent().data('value'));
+            });
+            teamSearchButton.on('click', (e) => {
+                $('#exampleModal').modal('show');
+                modalFromValue.val($(e.currentTarget).parent().data('value'));
+            });
+
+            // 스코어에 음수 입력 방지
+            scoreValue.on('keydown', (e) => {
+                if (e.key === '-' || e.key === "Subtract") {
+                    alert("음수는 입력할 수 없습니다.");
+                    e.preventDefault();
+                }
+            });
+            scoreValue.on('input', (e) => {
+                const value = Number($(e.currentTarget).val());
+                if (value < 0) {
+                    alert("음수는 입력할 수 없습니다.");
+                    $(e.currentTarget).val(0);
+                }
+            });
+
+            // 홈팀, 어웨이팀 검색 (Modal)
+            teamSearchValue.on('input', (e) => {
+                const keyword = $(e.currentTarget).val().trim();
+
+                $('.fandom-item').each(function() {
+                    const text = $(this).text();
+                    if (text.includes(keyword)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+            $('.fandom-item').on('click', (e) => {
+                const from = modalFromValue.val();
+                const value = $(e.currentTarget).text();
+                const id = $(e.currentTarget).data('value');
+
+                if (from == "home") {
+                    homeTeam.val(value);
+                    homeTeamId.val(id);
+                }
+                if (from == "away") {
+                    awayTeam.val(value);
+                    awayTeamId.val(id);
+                }
+                $('#exampleModal').modal('hide');
+            });
+
+
+            let start = (month < 7) ? 14 : 15; // 시작 연도
+            let end = (month < 7) ? 24 : 25;   // 끝 연도
+
+            // selected가 될 시즌 값 계산
+            const selectedValue = `${(month < 7 ? year - 1 : year).toString().slice(-2)}${(month < 7 ? year : year + 1).toString().slice(-2)}`;
+
+            const $select = $('#seasonSelect');
+            $select.empty(); // 기존 option 제거
+
+            // 시즌 Option 추가
+            for (let i = start; i <= end; i++) {
+                const from = i;
+                const to = i + 1;
+                const value = `${from}${to.toString().padStart(2, '0')}`;
+                const text = `${from}/${to.toString().padStart(2, '0')}`;
+
+                const isSelected = (value === selectedValue) ? 'selected' : '';
+
+                $select.append(`<option value="${value}" ${isSelected}>${text}</option>`);
+            }
+
+            // 챔피언스리그, 유로파 및 컨퍼런스 Select Option 추가
+            function appendOption() {
+                const clFrom = $('#clFromValue').val();
+                const clTo = $('#clToValue').val();
+                const olFrom = $('#olFromValue').val();
+                const olTo = $('#olToValue').val();
+
+                for (let i = 1; i <= 10; i++) {
+                    const text = `${i}위`;
+                    if (i == clFrom) {
+                        $('#championsLeagueFrom').append(`<option value="${i}" selected>${text}</option>`);
+                    } else {
+                        $('#championsLeagueFrom').append(`<option value="${i}">${text}</option>`);
+                    }
+
+                    if (i == clTo) {
+                        $('#championsLeagueTo').append(`<option value="${i}" selected>${text}</option>`);
+                    } else {
+                        $('#championsLeagueTo').append(`<option value="${i}">${text}</option>`);
+                    }
+
+                    if (i == olFrom) {
+                        $('#otherLeagueFrom').append(`<option value="${i}" selected>${text}</option>`);
+                    } else {
+                        $('#otherLeagueFrom').append(`<option value="${i}">${text}</option>`);
+                    }
+
+                    if (i == olTo) {
+                        $('#otherLeagueTo').append(`<option value="${i}" selected>${text}</option>`);
+                    } else {
+                        $('#otherLeagueTo').append(`<option value="${i}">${text}</option>`);
+                    }
+                }
+            }
+
+            /* 순위표 설정 Section */
+            let competitionValue = $('#rankingCompetitionSelect').val();
+            let season = $('#seasonSelect').val();
+            const modifyRecordButton = $('#modifyRecordButton');
+
+            // 유럽대항전 진출 순위 조정, 순위표 LOAD
+            moduleBox.load("/admin/get-rankingTable?competitionValue=" + competitionValue + "&seasonValue=" + season, () => {
+                appendOption();
+            });
+
+            // 시즌별 LOAD
+            seasonSelect.on('change', (e) => {
+                season = seasonSelect.val();
+                competitionValue = rankingCompetitionSelect.val();
+
+                moduleBox.load("/admin/get-rankingTable?competitionValue=" + competitionValue + "&seasonValue=" + season, () => {
+                    appendOption();
+                });
+            });
+            rankingCompetitionSelect.on('change', (e) => {
+                season = seasonSelect.val();
+                competitionValue = rankingCompetitionSelect.val();
+
+                moduleBox.load("/admin/get-rankingTable?competitionValue=" + competitionValue + "&seasonValue=" + season, () => {
+                    appendOption();
+                });
+            });
+
+            // 순위 클릭 시 모달창 열기
+            moduleBox.on('click', '.table-container tbody tr', (e) => {
+                const $row = $(e.currentTarget); // 클릭한 tr
+
+                // 각 셀 텍스트 가져오기
+                const count = $row.find('td').eq(0).text().trim();
+                const teamName = $row.find('td').eq(1).find('span').text().trim();
+                const teamTd = $row.find('td').eq(1);
+                const logoAddress = teamTd.find('img').attr('src');
+                const matchCount = $row.find('td').eq(2).text().trim();
+                const win = $row.find('td').eq(3).text().trim();
+                const draw = $row.find('td').eq(4).text().trim();
+                const lose = $row.find('td').eq(5).text().trim();
+                const scorePoint = $row.find('td').eq(6).text().trim();
+                const losePoint = $row.find('td').eq(7).text().trim();
+                const rankingId = $row.find('input[type="hidden"]').val();
+
+                $('#modalRankingNumber').text(`${count}위`);
+                $('#modalTeamLogo').attr('src', logoAddress);
+                $('#modalTeamName').text(teamName);
+                $('#modalTeamWin').val(win);
+                $('#modalTeamDraw').val(draw);
+                $('#modalTeamLose').val(lose);
+                $('#modalTeamScorePoint').val(scorePoint);
+                $('#modalTeamLosePoint').val(losePoint);
+                $('#rankingId').val(rankingId);
+
+                $('#exampleModal2').modal('show');
+            });
+
+            // 기록 수정 버튼
+            modifyRecordButton.on('click', (e) => {
+                const rankingId = $('#rankingId').val();
+                const win = $('#modalTeamWin').val();
+                const draw = $('#modalTeamDraw').val();
+                const lose = $('#modalTeamLose').val();
+                const scorePoint = $('#modalTeamScorePoint').val();
+                const losePoint = $('#modalTeamLosePoint').val();
+
+                if (win.length == 0 || draw.length == 0 || lose.length == 0 ||
+                    scorePoint.length == 0 || losePoint.length == 0) {
+                    alert("값이 비어있으면 기록 변경이 안됩니다.");
+                    e.preventDefault();
+                    return;
+                }
+
+                const ranking = {
+                    rankingId : rankingId,
+                    win : win,
+                    draw : draw,
+                    lose : lose,
+                    scorePoint : scorePoint,
+                    losePoint : losePoint
+                };
+
+                $.ajax({
+                    url : "/admin/modify-ranking",
+                    method : "POST",
+                    contentType : "application/json",
+                    data : JSON.stringify(ranking),
+                    dataType : "text",
+                    success : (response, status, xhr) => {
+                        if (response == "success") {
+                            alert("기록 수정하였습니다.");
+                            moduleBox.load("/admin/get-rankingTable?competitionValue=" + competitionValue + "&seasonValue=" + season, () => {
+                                appendOption();
+                            });
+                            $('#exampleModal2').modal('hide');
+                        }
+                    },
+                    error : (status, xhr, error) => {
+                        alert("기록 수정을하지 못했습니다. 다시 시도해주세요.");
+                    }
+                });
+            });
 
             // 경기 결과 저장 버튼
             resultSaveButton.on('click', (e) => {
@@ -373,7 +450,7 @@
             });
 
             // 유럽대항전 진출 순위 조정
-            leagueSaveButton.on('click', (e) => {
+            moduleBox.on('click', '#leagueSaveButton', (e) => {
                 const competitionId = $('#rankingCompetitionSelect').val();
                 const clFrom = $('#championsLeagueFrom').val();
                 const clTo = $('#championsLeagueTo').val();
@@ -389,6 +466,9 @@
                     success : (response, status, xhr) => {
                         if (response == "success") {
                             alert("진출 순위가 저장되었습니다.");
+                            moduleBox.load("/admin/get-rankingTable?competitionValue=" + competitionValue + "&seasonValue=" + season, () => {
+                                appendOption();
+                            });
                         }
                         if (response == "clTo") {
                             alert("챔피언스리그 진출 순위가 맞지 않습니다. 다시 설정해주세요.");
@@ -404,91 +484,6 @@
                         alert("진출 순위를 저장하지 못했습니다. 다시 시도해주세요.");
                     }
                 });
-            });
-
-            // 홈팀, 어웨이팀 클릭 시 모달창 열기
-            teamValue.on('click', (e) => {
-                $('#exampleModal').modal('show');
-                modalFromValue.val($(e.currentTarget).parent().data('value'));
-            });
-            teamSearchButton.on('click', (e) => {
-                $('#exampleModal').modal('show');
-                modalFromValue.val($(e.currentTarget).parent().data('value'));
-            });
-
-            // 스코어에 음수 입력 방지
-            scoreValue.on('keydown', (e) => {
-                if (e.key === '-' || e.key === "Subtract") {
-                    alert("음수는 입력할 수 없습니다.");
-                    e.preventDefault();
-                }
-            });
-            scoreValue.on('input', (e) => {
-                const value = Number($(e.currentTarget).val());
-                if (value < 0) {
-                    alert("음수는 입력할 수 없습니다.");
-                    $(e.currentTarget).val(0);
-                }
-            });
-
-            // 홈팀, 어웨이팀 검색 (Modal)
-            teamSearchValue.on('input', (e) => {
-                const keyword = $(e.currentTarget).val().trim();
-
-                $('.fandom-item').each(function() {
-                    const text = $(this).text();
-                    if (text.includes(keyword)) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            });
-
-            $('.fandom-item').on('click', (e) => {
-                const from = modalFromValue.val();
-                const value = $(e.currentTarget).text();
-                const id = $(e.currentTarget).data('value');
-
-                if (from == "home") {
-                    homeTeam.val(value);
-                    homeTeamId.val(id);
-                }
-                if (from == "away") {
-                    awayTeam.val(value);
-                    awayTeamId.val(id);
-                }
-                $('#exampleModal').modal('hide');
-            });
-
-
-            let start = (month < 7) ? 14 : 15; // 시작 연도
-            let end = (month < 7) ? 24 : 25;   // 끝 연도
-
-            // selected가 될 시즌 값 계산
-            const selectedValue = `${(month < 7 ? year - 1 : year).toString().slice(-2)}${(month < 7 ? year : year + 1).toString().slice(-2)}`;
-
-            const $select = $('#seasonSelect');
-            $select.empty(); // 기존 option 제거
-
-            for (let i = start; i <= end; i++) {
-                const from = i;
-                const to = i + 1;
-                const value = `${from}${to.toString().padStart(2, '0')}`;
-                const text = `${from}/${to.toString().padStart(2, '0')}`;
-
-                const isSelected = (value === selectedValue) ? 'selected' : '';
-
-                $select.append(`<option value="${value}" ${isSelected}>${text}</option>`);
-            }
-
-            for (let i = 1; i <= 10; i++) {
-                const text = `${i}위`;
-                rankingItem.append(`<option value="${i}">${text}</option>`);
-            }
-
-            teamItem.on('click', (e) => {
-                $('#exampleModal2').modal('show');
             });
 
         });

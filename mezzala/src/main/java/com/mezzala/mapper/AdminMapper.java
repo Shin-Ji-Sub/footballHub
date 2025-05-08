@@ -135,4 +135,6 @@ public interface AdminMapper {
 
     void updateCompetitionLeague(@Param("competitionId") int competitionId, @Param("clFrom") int clFrom,
                                  @Param("clTo") int clTo, @Param("olFrom") int olFrom, @Param("olTo") int olTo);
+
+    List<RankingDto> selectRanking(@Param("competitionValue") int competitionValue, @Param("seasonValue") int seasonValue);
 }

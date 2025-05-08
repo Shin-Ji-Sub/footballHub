@@ -698,6 +698,26 @@ public class AdminController {
         return "/admin/ranking-manage/rankingManage";
     }
 
+    @GetMapping(path = {"/get-rankingTable"})
+    public String getRankingTable(Model model,
+                                  @RequestParam(name = "competitionValue") int competitionValue,
+                                  @RequestParam(name = "seasonValue") int seasonValue) {
+
+        try {
+            List<RankingDto> rankings = adminService.findRanking(competitionValue, seasonValue);
+
+            if (rankings.isEmpty()) {
+                return "/modules/noDataModule";
+            }
+
+            model.addAttribute("rankings", rankings);
+        } catch (Exception e) {
+            return "/modules/noDataModule";
+        }
+
+        return "/admin/ranking-manage/modules/rankingList";
+    }
+
     @PostMapping(path = {"/save-ranking"})
     @ResponseBody
     public String saveRanking(@RequestParam(name = "seasonValue") int seasonValue,
@@ -731,6 +751,13 @@ public class AdminController {
 
         adminService.addCompetitionLeague(competitionId, clFrom, clTo, olFrom, olTo);
 
+        return "success";
+    }
+
+    @PostMapping(path = {"/modify-ranking"})
+    @ResponseBody
+    public String modifyRanking(@RequestBody RankingDto ranking) {
+        adminService.modifyRanking(ranking);
         return "success";
     }
 
