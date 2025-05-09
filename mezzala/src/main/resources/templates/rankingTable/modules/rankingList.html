@@ -1,0 +1,83 @@
+<div class="table-container">
+    <table xmlns:th="http://www.thymeleaf.org">
+        <thead>
+            <tr>
+                <th>순위</th>
+                <th>팀명</th>
+                <th>경기수</th>
+                <th>승</th>
+                <th>무</th>
+                <th>패</th>
+                <th>득</th>
+                <th>실</th>
+                <th>승점</th>
+            </tr>
+        </thead>
+        <tbody>
+            <th:block th:each="ranking, rankingState : ${rankings}">
+                <th:block th:if="${rankingState.count >= ranking.competition.championsLeagueFrom &&
+                                               rankingState.count <= ranking.competition.championsLeagueTo}">
+                    <tr class="bg-primary bg-gradient">
+                        <td th:text="${rankingState.count}"></td>
+                        <td><img th:src="${ranking.team.logoAddress}" class="logo"> <span th:text="${ranking.team.teamName}"></span></td>
+                        <td th:text="${ranking.matchCount}"></td>
+                        <td th:text="${ranking.win}"></td>
+                        <td th:text="${ranking.draw}"></td>
+                        <td th:text="${ranking.lose}"></td>
+                        <td th:text="${ranking.scorePoint}"></td>
+                        <td th:text="${ranking.losePoint}"></td>
+                        <td th:text="${ranking.point}"></td>
+                        <input type="hidden" th:value="${ranking.rankingId}">
+                    </tr>
+                </th:block>
+                <th:block th:if="${rankingState.count >= ranking.competition.otherLeagueFrom &&
+                                               rankingState.count <= ranking.competition.otherLeagueTo}">
+                    <tr class="bg-success bg-gradient">
+                        <td th:text="${rankingState.count}"></td>
+                        <td><img th:src="${ranking.team.logoAddress}" class="logo"> <span th:text="${ranking.team.teamName}"></span></td>
+                        <td th:text="${ranking.matchCount}"></td>
+                        <td th:text="${ranking.win}"></td>
+                        <td th:text="${ranking.draw}"></td>
+                        <td th:text="${ranking.lose}"></td>
+                        <td th:text="${ranking.scorePoint}"></td>
+                        <td th:text="${ranking.losePoint}"></td>
+                        <td th:text="${ranking.point}"></td>
+                        <input type="hidden" th:value="${ranking.rankingId}">
+                    </tr>
+                </th:block>
+                <th:block th:if="${rankingState.count == 18 || rankingState.count == 19 || rankingState.count == 20}">
+                    <tr class="bg-danger bg-gradient">
+                        <td th:text="${rankingState.count}"></td>
+                        <td><img th:src="${ranking.team.logoAddress}" class="logo"> <span th:text="${ranking.team.teamName}"></span></td>
+                        <td th:text="${ranking.matchCount}"></td>
+                        <td th:text="${ranking.win}"></td>
+                        <td th:text="${ranking.draw}"></td>
+                        <td th:text="${ranking.lose}"></td>
+                        <td th:text="${ranking.scorePoint}"></td>
+                        <td th:text="${ranking.losePoint}"></td>
+                        <td th:text="${ranking.point}"></td>
+                        <input type="hidden" th:value="${ranking.rankingId}">
+                    </tr>
+                </th:block>
+                <th:block th:if="${rankingState.count > ranking.competition.otherLeagueTo &&
+                                               rankingState.count != 18 &&
+                                               rankingState.count != 19 &&
+                                               rankingState.count != 20}">
+                    <tr>
+                        <td th:text="${rankingState.count}"></td>
+                        <td><img th:src="${ranking.team.logoAddress}" class="logo"> <span th:text="${ranking.team.teamName}"></span></td>
+                        <td th:text="${ranking.matchCount}"></td>
+                        <td th:text="${ranking.win}"></td>
+                        <td th:text="${ranking.draw}"></td>
+                        <td th:text="${ranking.lose}"></td>
+                        <td th:text="${ranking.scorePoint}"></td>
+                        <td th:text="${ranking.losePoint}"></td>
+                        <td th:text="${ranking.point}"></td>
+                        <input type="hidden" th:value="${ranking.rankingId}">
+                    </tr>
+                </th:block>
+            </th:block>
+        </tbody>
+    </table>
+</div>
+<button class="more-ranking-button" id="moreRankingButton">더보기</button>

@@ -466,3 +466,20 @@ td img.logo {
 .modal-body-main h5 {
   text-align: center;
 }
+
+/* Youtube Manage Section */
+.youtube-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2rem;
+}
+
+.control-youtube-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 2rem;
+  text-align: center;
+}
+.control-youtube-container i {
+  font-size: 1.3rem;
+}

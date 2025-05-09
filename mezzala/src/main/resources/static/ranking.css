@@ -1,24 +1,61 @@
 /* Ranking Table Section */
-.nav-ranking {
+* {
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  color: #333 !important;
+}
+
+li {
+  list-style: none;
+}
+
+body {
+  background-color: #f9f9f9;
+}
+
+header {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  max-width: 1000px;
-  overflow-x: auto;
+  row-gap: 1rem;
+}
+
+nav {
+    padding: 20px;
+}
+
+.header-container {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: #333;
+}
+
+.nav-pills {
+  column-gap: 5rem;
+}
+
+.nav-link {
+  font-weight: bold;
 }
 
 .main-ranking {
   font-family: 'Segoe UI', sans-serif;
   background-color: #f9f9f9;
+  /* background-color: #333; */
   padding: 20px;
 }
 
 .table-container {
   max-width: 1000px;
   margin: 0 auto;
-  background-color: white;
-  border-radius: 12px;
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #fff;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  overflow-x: auto;
 }
 
 table {
@@ -27,7 +64,16 @@ table {
 }
 
 thead {
-  background-color: #f2f2f2;
+  /* background-color: #f2f2f2; */
+  position: sticky;
+  top: 0;
+  background-color: #000000;
+  color: #fff;
+  z-index: 2;
+}
+
+tbody td:first-child {
+  font-weight: bold;
 }
 
 th, td {
@@ -38,7 +84,7 @@ th, td {
 
 th {
   font-weight: bold;
-  color: #333;
+  color: #fff;
 }
 
 td img.logo {
@@ -50,7 +96,7 @@ td img.logo {
 
 .more-ranking-button {
   position: absolute;
-  bottom: 2rem;
+  bottom: 5px;
   left: 50%;
   transform: translateX(-50%);
   padding: 5px;
@@ -63,4 +109,20 @@ td img.logo {
 }
 .more-ranking-button:hover {
   box-shadow: inset 0px 0px 10px #666;
+}
+
+.no-data-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    border-radius: 10px;
 }

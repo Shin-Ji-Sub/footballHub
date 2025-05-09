@@ -99,4 +99,8 @@ public interface AdminService {
     List<RankingDto> findRanking(int competitionValue, int seasonValue);
 
     void modifyRanking(RankingDto ranking);
+
+    YoutubeDto findYoutube();
+
+    void modifyYoutube(String part, String value, int youtubeId);
 }

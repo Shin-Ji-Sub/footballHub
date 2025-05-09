@@ -63,7 +63,7 @@ public class MypageController {
                                     @RequestParam(name = "userId") String userId,
                                     @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
         // paging
-        int pageSize = 5;
+        int pageSize = 10;
         int pagerSize = 5;
         int dataCount = mypageService.findBoardCountWithUserId(userId);
         String uri = req.getRequestURI();
@@ -93,7 +93,7 @@ public class MypageController {
                                     @RequestParam(name = "userId") String userId,
                                     @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
         // paging
-        int pageSize = 5;
+        int pageSize = 10;
         int pagerSize = 5;
         int dataCount = mypageService.findCommentCountWithUserId(userId);
         String uri = req.getRequestURI();
@@ -123,7 +123,7 @@ public class MypageController {
                                   @RequestParam(name = "userId") String userId,
                                   @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
         // paging
-        int pageSize = 5;
+        int pageSize = 10;
         int pagerSize = 5;
         int dataCount = mypageService.findLikedBoardCountWithUserId(userId);
         String uri = req.getRequestURI();
@@ -153,7 +153,7 @@ public class MypageController {
                                   @RequestParam(name = "userId") String userId,
                                   @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
         // paging
-        int pageSize = 5;
+        int pageSize = 10;
         int pagerSize = 5;
         int dataCount = mypageService.findLikedCommentCountWithUserId(userId);
         String uri = req.getRequestURI();
@@ -183,7 +183,7 @@ public class MypageController {
                                        @RequestParam(name = "userId") String userId,
                                        @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
         // paging
-        int pageSize = 5;
+        int pageSize = 10;
         int pagerSize = 5;
         int dataCount = mypageService.findBookmarkedBoardCountWithUserId(userId);
         String uri = req.getRequestURI();
@@ -213,7 +213,7 @@ public class MypageController {
                                @RequestParam(name = "userId") String userId,
                                @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
         // paging
-        int pageSize = 5;
+        int pageSize = 10;
         int pagerSize = 5;
         int dataCount = mypageService.findBlockUserCount(userId);
         String uri = req.getRequestURI();

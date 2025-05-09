@@ -137,4 +137,11 @@ public interface AdminMapper {
                                  @Param("clTo") int clTo, @Param("olFrom") int olFrom, @Param("olTo") int olTo);
 
     List<RankingDto> selectRanking(@Param("competitionValue") int competitionValue, @Param("seasonValue") int seasonValue);
+
+    YoutubeDto selectYoutube();
+
+    void updateYoutube(@Param("part") String part, @Param("value") String value,
+                       @Param("youtubeId") int youtubeId);
+
+    void insertYoutube(@Param("part") String part, @Param("value") String value);
 }

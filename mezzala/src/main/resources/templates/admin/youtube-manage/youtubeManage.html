@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/admin.css">
+    <title>FootballHub</title>
+</head>
+<body>
+    <div th:replace="~{/admin/modules/header}"></div>
+    <input id="socialMethod" type="hidden" th:if="${session.user != null}" th:value="${session.user.socialMethod}">
+
+    <main>
+        <div class="main-container">
+            <div class="container section youtube-container">
+                <h4>Youtube 관리</h4>
+                <input th:unless="${empty == 'empty'}" type="hidden" id="youtubeId" th:value="${youtube.youtubeId}">
+                <div class="control-youtube-container">
+                    <div>
+                        <h5>현재 최신 동영상</h5>
+                        <input th:if="${empty == 'empty'}" type="text" id="presentLatest" class="form-control" value="표시되는 동영상이 없습니다." readonly>
+                        <input th:unless="${empty == 'empty'}" type="text" id="presentLatest" class="form-control" th:value="${youtube.latestId}" readonly>
+                    </div>
+                    <div>
+                        <h5>현재 인기 동영상</h5>
+                        <input th:if="${empty == 'empty'}" type="text" id="presentBest" class="form-control" value="표시되는 동영상이 없습니다." readonly>
+                        <input th:unless="${empty == 'empty'}" type="text" id="presentBest" class="form-control" th:value="${youtube.bestId}" readonly>
+                    </div>
+                </div>
+                <div class="control-youtube-container">
+                    <i class="bi bi-arrow-down-circle"></i>
+                    <i class="bi bi-arrow-down-circle"></i>
+                </div>
+                <div class="control-youtube-container">
+                    <div>
+                        <h5>변경할 최신 동영상</h5>
+                        <input type="text" id="modifyLatestValue" class="form-control">
+                    </div>
+                    <div>
+                        <h5>변경할 인기 동영상</h5>
+                        <input type="text" id="modifyBestValue" class="form-control">
+                    </div>
+                </div>
+                <div class="control-youtube-container">
+                    <button type="button" class="btn btn-primary save-button" data-value="latest">저장</button>
+                    <button type="button" class="btn btn-primary save-button" data-value="best">저장</button>
+                </div>
+            </div>
+            <div class="container section control-youtube-container">
+                <div>
+                    <h5>최신 동영상</h5>
+                    <div id="latestPlayer"></div>
+                </div>
+                <div>
+                    <h5>인기 동영상</h5>
+                    <div id="bestPlayer"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(window).on('load', function() {
+            // 현재 page nav에 표시
+            const locationCategories = $('.location-category');
+            locationCategories.eq(6).addClass('active');
+            locationCategories.eq(6).addClass('text-primary');
+
+            const modifyLatestValue = $('#modifyLatestValue');
+            const modifyBestValue = $('#modifyBestValue');
+            const saveButton = $('.save-button');
+            const presentLatest = $('#presentLatest').val() == "표시되는 동영상이 없습니다." ? "none" : $('#presentLatest').val();
+            const presentBest = $('#presentBest').val() == "표시되는 동영상이 없습니다." ? "none" : $('#presentBest').val();
+            console.log(presentLatest);
+            console.log(presentBest);
+
+            // 저장 버튼
+            saveButton.on('click', (e) => {
+                const part = $(e.currentTarget).data('value');
+                const youtubeId = $('#youtubeId').val() == undefined ? 0 : $('#youtubeId').val();
+
+                if (part === 'latest') {
+                    const latestValue = modifyLatestValue.val();
+
+                    if (latestValue.length == 0) {
+                        alert("변경할 값이 비었습니다.");
+                        modifyLatestValue.focus();
+                        e.preventDefault();
+                        return;
+                    }
+
+                    $.ajax({
+                        url : "/admin/modify-youtube",
+                        method : "POST",
+                        data : "part=latest" + "&value=" + latestValue + "&youtubeId=" + youtubeId,
+                        dataType : "text",
+                        success : (response, status, xhr) => {
+                            if (response == "success") {
+                                alert("수정되었습니다.");
+                                location.reload();
+                            }
+                        },
+                        error : (status, xhr, error) => {
+                            alert("수정하지 못하였습니다. 다시 시도해주세요.");
+                        }
+                    });
+                }
+
+                if (part === 'best') {
+                    const bestValue = modifyBestValue.val();
+
+                    if (bestValue.length == 0) {
+                        alert("변경할 값이 비었습니다.");
+                        modifyBestValue.focus();
+                        e.preventDefault();
+                        return;
+                    }
+
+                    $.ajax({
+                        url : "/admin/modify-youtube",
+                        method : "POST",
+                        data : "part=best" + "&value=" + bestValue + "&youtubeId=" + youtubeId,
+                        dataType : "text",
+                        success : (response, status, xhr) => {
+                            if (response == "success") {
+                                alert("수정되었습니다.");
+                                location.reload();
+                            }
+                        },
+                        error : (status, xhr, error) => {
+                            alert("수정하지 못하였습니다. 다시 시도해주세요.");
+                        }
+                    });
+                }
+
+            });
+
+            // Youtube LOAD
+            const tag = document.createElement('script');
+
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+            // 4. API는 비디오 플레이어가 준비되면 아래의 function을 불러올 것이다.
+            function onPlayerReady(event) {
+                event.target.playVideo();
+            }
+
+            // 5. API는 플레이어의 상태가 변화될 때 아래의 function을 불러올 것이다.
+            //    이 function은 비디오가 재생되고 있을 때를 가르킨다.(state=1),
+            //    플레이어는 6초 이상 재생되고 정지되어야 한다.
+            var done = false;
+            function onPlayerStateChange(event) {
+                if (event.data == YT.PlayerState.PLAYING && !done) {
+                    setTimeout(stopVideo, 6000);
+                    done = true;
+                }
+            }
+            function stopVideo() {
+                latestPlayer.stopVideo();
+                bestPlayer.stopVideo();
+            }
+
+            let latestPlayer;
+            let bestPlayer;
+            window.onYouTubeIframeAPIReady = function() {
+                latestPlayer = new YT.Player('latestPlayer', {
+                    height: '360',  //변경가능-영상 높이
+                    width: '100%',  //변경가능-영상 너비
+                    videoId: presentLatest,  //변경-영상ID
+                    playerVars: {
+                        'rel': 0,    //연관동영상 표시여부(0:표시안함)
+                        'controls': 0,    //플레이어 컨트롤러 표시여부(0:표시안함)
+                        'autoplay' : 1,   //자동재생 여부(1:자동재생 함, mute와 함께 설정)
+                        'mute' : 1,   //음소거여부(1:음소거 함)
+                        'loop' : 1,    //반복재생여부(1:반복재생 함)
+                        'playsinline' : 1,    //iOS환경에서 전체화면으로 재생하지 않게
+                        'playlist' : presentLatest   //재생할 영상 리스트
+                    },
+                    events: {
+                        'onReady': onPlayerReady, //onReady 상태일 때 작동하는 function이름
+                        'onStateChange': onPlayerStateChange //onStateChange 상태일 때 작동하는 function이름
+                    }
+                });
+
+                bestPlayer = new YT.Player('bestPlayer', {
+                    height: '360',  //변경가능-영상 높이
+                    width: '100%',  //변경가능-영상 너비
+                    videoId: presentBest,  //변경-영상ID
+                    playerVars: {
+                        'rel': 0,    //연관동영상 표시여부(0:표시안함)
+                        'controls': 0,    //플레이어 컨트롤러 표시여부(0:표시안함)
+                        'autoplay' : 1,   //자동재생 여부(1:자동재생 함, mute와 함께 설정)
+                        'mute' : 1,   //음소거여부(1:음소거 함)
+                        'loop' : 1,    //반복재생여부(1:반복재생 함)
+                        'playsinline' : 1,    //iOS환경에서 전체화면으로 재생하지 않게
+                        'playlist' : presentBest   //재생할 영상 리스트
+                    },
+                    events: {
+                        'onReady': onPlayerReady, //onReady 상태일 때 작동하는 function이름
+                        'onStateChange': onPlayerStateChange //onStateChange 상태일 때 작동하는 function이름
+                    }
+                });
+            }
+
+        });
+    </script>
+</body>
+</html>

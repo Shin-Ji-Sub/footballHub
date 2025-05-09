@@ -1,9 +1,6 @@
 package com.mezzala.service;
 
-import com.mezzala.dto.BoardDto;
-import com.mezzala.dto.BoardLargeCategoryDto;
-import com.mezzala.dto.CommentDto;
-import com.mezzala.dto.UserDto;
+import com.mezzala.dto.*;
 import com.mezzala.mapper.BoardMapper;
 import lombok.Setter;
 
@@ -162,6 +159,11 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<BoardDto> findNoticeBoard(int boardNo, String fromPage) {
         return boardMapper.selectNoticeBoard(boardNo, fromPage);
+    }
+
+    @Override
+    public YoutubeDto findYoutube() {
+        return boardMapper.selectYoutube();
     }
 
 }

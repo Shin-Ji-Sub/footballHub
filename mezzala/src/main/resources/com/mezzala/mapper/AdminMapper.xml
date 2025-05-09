@@ -1581,4 +1581,47 @@
             r.score_point - r.lose_point DESC
     </select>
 
+    <select id="selectYoutube" resultType="YoutubeDto">
+        SELECT
+            youtube_id AS youtubeId,
+            latest_id AS latestId,
+            best_id AS bestId
+        FROM
+            youtube
+    </select>
+
+    <update id="updateYoutube" parameterType="hashmap">
+        UPDATE
+            youtube
+        SET
+            <choose>
+                <when test="part == 'latest'">
+                    latest_id = #{value}
+                </when>
+                <when test="part == 'best'">
+                    best_id = #{value}
+                </when>
+            </choose>
+        WHERE
+            youtube_id = #{youtubeId}
+    </update>
+
+    <insert id="insertYoutube" parameterType="hashmap">
+        INSERT INTO
+            youtube (
+                <choose>
+                    <when test="part == 'latest'">
+                        latest_id
+                    </when>
+                    <when test="part == 'best'">
+                        best_id
+                    </when>
+                </choose>
+            )
+        VALUES
+            (
+                #{value}
+            )
+    </insert>
+
 </mapper>

@@ -20,8 +20,25 @@
                     <!-- 공지사항 모듈 -->
                 </div>
             </div>
-            <div class="section">
-                youtube section
+            <div class="section youtube-container">
+                <div>
+                    <h5>
+                        <i class="bi bi-youtube text-danger"></i>
+                        최신 동영상
+                    </h5>
+                    <div id="latestPlayer"></div>
+                    <input th:if="${empty == 'empty'}" type="hidden" id="youtubeLatest" value="empty">
+                    <input th:unless="${empty == 'empty'}" type="hidden" id="youtubeLatest" th:value="${youtube.latestId}">
+                </div>
+                <div>
+                    <h5>
+                        <i class="bi bi-youtube text-danger"></i>
+                        인기 동영상
+                    </h5>
+                    <div id="bestPlayer"></div>
+                    <input th:if="${empty == 'empty'}" type="hidden" id="youtubeBest" value="empty">
+                    <input th:unless="${empty == 'empty'}" type="hidden" id="youtubeBest" th:value="${youtube.bestId}">
+                </div>
             </div>
             <div class="container section content-container">
                 <div class="subject-container">
@@ -68,17 +85,8 @@
             let noticePageNo = $('#noticePageNo').val();
             let mainPageNo = $('#mainPageNo').val();
             let sortValue = $('#sortValue').val();
-
-            // F5 새로고침 시 URL 변경
-<!--            $(window).on('beforeunload', () => {-->
-<!--                const urlWithoutParams = window.location.origin + window.location.pathname;-->
-<!--                console.log(noticePageNo);-->
-<!--                console.log(mainPageNo);-->
-<!--                console.log(sortValue);-->
-<!--                console.log(searchValue);-->
-<!--                location.href = urlWithoutParams + "&noticePageNo=" + noticePageNo +-->
-<!--                                                "&mainPageNo=" + mainPageNo + "&sortValue=" + sortValue + "&searchValue=" + searchValue;-->
-<!--            });-->
+            const youtubeLatest = $('#youtubeLatest').val() == "empty" ? "" : $('#youtubeLatest').val();
+            const youtubeBest = $('#youtubeBest').val() == "empty" ? "" : $('#youtubeBest').val();
 
             // 처음 list select
             moduleBox.load('content-list?pageNo=' + mainPageNo + '&sortValue=' + sortValue + '&searchValue=' + searchValue);
@@ -103,9 +111,6 @@
             noticeModule.on('click', '.notice-content', (e) => {
                 const index = $(e.currentTarget).data('index');
                 const count = $('.notice-paging .paging').data('datacount');
-
-<!--                console.log("index : " + index);-->
-<!--                console.log("pageNo : " + noticePageNo);-->
 
                 location.href = '/board/notice-content?index=' + index + '&pageNo=' + noticePageNo +
                                                        '&count=' + count + '&fromPage=home';
@@ -167,16 +172,76 @@
                                                 '&from=home' + '&sortValue=' + sortValue +
                                                 '&count=' + count + '&searchValue=' + searchValue;
 
-
-<!--                const boardId = $(e.currentTarget).data('id');-->
-<!--                const index = $(e.currentTarget).data('index');-->
-<!--                const count = $('.paging').data('datacount');-->
-<!--                const pageNo = $('.paging').data('pageno');-->
-
-<!--                location.href = '/board/content?boardId=' + boardId + '&index=' + index +-->
-<!--                                                '&count=' + count + '&pageNo=' + pageNo +-->
-<!--                                                '&from=home';-->
             });
+
+            // Youtube LOAD
+            const tag = document.createElement('script');
+
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+            // 4. API는 비디오 플레이어가 준비되면 아래의 function을 불러올 것이다.
+            function onPlayerReady(event) {
+                event.target.playVideo();
+            }
+
+            // 5. API는 플레이어의 상태가 변화될 때 아래의 function을 불러올 것이다.
+            //    이 function은 비디오가 재생되고 있을 때를 가르킨다.(state=1),
+            //    플레이어는 6초 이상 재생되고 정지되어야 한다.
+            var done = false;
+            function onPlayerStateChange(event) {
+                if (event.data == YT.PlayerState.PLAYING && !done) {
+                    setTimeout(stopVideo, 6000);
+                    done = true;
+                }
+            }
+            function stopVideo() {
+                latestPlayer.stopVideo();
+                bestPlayer.stopVideo();
+            }
+
+            let latestPlayer;
+            let bestPlayer;
+            window.onYouTubeIframeAPIReady = function() {
+                latestPlayer = new YT.Player('latestPlayer', {
+                    height: '360',  //변경가능-영상 높이
+                    width: '100%',  //변경가능-영상 너비
+                    videoId: youtubeLatest,  //변경-영상ID
+                    playerVars: {
+                        'rel': 0,    //연관동영상 표시여부(0:표시안함)
+                        'controls': 0,    //플레이어 컨트롤러 표시여부(0:표시안함)
+                        'autoplay' : 1,   //자동재생 여부(1:자동재생 함, mute와 함께 설정)
+                        'mute' : 1,   //음소거여부(1:음소거 함)
+                        'loop' : 1,    //반복재생여부(1:반복재생 함)
+                        'playsinline' : 1,    //iOS환경에서 전체화면으로 재생하지 않게
+                        'playlist' : youtubeLatest   //재생할 영상 리스트
+                    },
+                    events: {
+                        'onReady': onPlayerReady, //onReady 상태일 때 작동하는 function이름
+                        'onStateChange': onPlayerStateChange //onStateChange 상태일 때 작동하는 function이름
+                    }
+                });
+
+                bestPlayer = new YT.Player('bestPlayer', {
+                    height: '360',  //변경가능-영상 높이
+                    width: '100%',  //변경가능-영상 너비
+                    videoId: youtubeBest,  //변경-영상ID
+                    playerVars: {
+                        'rel': 0,    //연관동영상 표시여부(0:표시안함)
+                        'controls': 0,    //플레이어 컨트롤러 표시여부(0:표시안함)
+                        'autoplay' : 1,   //자동재생 여부(1:자동재생 함, mute와 함께 설정)
+                        'mute' : 1,   //음소거여부(1:음소거 함)
+                        'loop' : 1,    //반복재생여부(1:반복재생 함)
+                        'playsinline' : 1,    //iOS환경에서 전체화면으로 재생하지 않게
+                        'playlist' : youtubeBest   //재생할 영상 리스트
+                    },
+                    events: {
+                        'onReady': onPlayerReady, //onReady 상태일 때 작동하는 function이름
+                        'onStateChange': onPlayerStateChange //onStateChange 상태일 때 작동하는 function이름
+                    }
+                });
+            }
 
         });
     </script>

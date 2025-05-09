@@ -21,6 +21,7 @@
 		<typeAlias type="com.mezzala.dto.TeamDto" alias="TeamDto" />
 		<typeAlias type="com.mezzala.dto.ScheduleDto" alias="ScheduleDto" />
 		<typeAlias type="com.mezzala.dto.RankingDto" alias="RankingDto" />
+		<typeAlias type="com.mezzala.dto.YoutubeDto" alias="YoutubeDto" />
 	</typeAliases>
 
 	<mappers>
@@ -32,6 +33,7 @@
 		<mapper resource="com/mezzala/mapper/RequestMapper.xml"/>
 		<mapper resource="com/mezzala/mapper/AdminMapper.xml"/>
 		<mapper resource="com/mezzala/mapper/ScheduleMapper.xml"/>
+		<mapper resource="com/mezzala/mapper/RankingMapper.xml"/>
 	</mappers>
 
 </configuration>

@@ -1,9 +1,6 @@
 package com.mezzala.service;
 
-import com.mezzala.dto.BoardDto;
-import com.mezzala.dto.BoardLargeCategoryDto;
-import com.mezzala.dto.CommentDto;
-import com.mezzala.dto.UserDto;
+import com.mezzala.dto.*;
 
 import java.util.List;
 import java.util.Map;
@@ -56,4 +53,6 @@ public interface BoardService {
     List<BoardDto> findNoticeBoardWithPaging(int start);
 
     List<BoardDto> findNoticeBoard(int boardNo, String fromPage);
+
+    YoutubeDto findYoutube();
 }

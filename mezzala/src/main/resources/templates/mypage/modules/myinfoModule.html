@@ -12,6 +12,10 @@
         <div class="myinfo-label">가입날짜</div>
         <input readonly type="text" class="data-input bg-secondary" th:value="${#dates.format(session.user.joinDate, 'yy-MM-dd')}">
     </div>
+    <div class="myinfo-section">
+        <div class="myinfo-label">내 등급</div>
+        <input readonly type="text" class="data-input bg-secondary" th:value="${session.user.userRole.roleKorName}">
+    </div>
     <button class="custom-button bg-warning">
         <i class="bi bi-x"></i>
         회원탈퇴

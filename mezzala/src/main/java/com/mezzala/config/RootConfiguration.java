@@ -90,6 +90,13 @@ public class RootConfiguration {
     }
 
     @Bean
+    public RankingService rankingService(RankingMapper rankingMapper) throws Exception {
+        RankingServiceImpl rankingService = new RankingServiceImpl();
+        rankingService.setRankingMapper(rankingMapper);
+        return rankingService;
+    }
+
+    @Bean
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource(hikariConfig());
         return dataSource;

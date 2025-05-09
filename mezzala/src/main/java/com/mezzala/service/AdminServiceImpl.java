@@ -379,4 +379,18 @@ public class AdminServiceImpl implements AdminService {
         adminMapper.updateRanking(ranking);
     }
 
+    @Override
+    public YoutubeDto findYoutube() {
+        return adminMapper.selectYoutube();
+    }
+
+    @Override
+    public void modifyYoutube(String part, String value, int youtubeId) {
+        if (youtubeId == 0) {
+            adminMapper.insertYoutube(part, value);
+        } else {
+            adminMapper.updateYoutube(part, value, youtubeId);
+        }
+    }
+
 }

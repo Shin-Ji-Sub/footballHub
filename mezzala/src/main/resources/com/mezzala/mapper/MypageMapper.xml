@@ -214,7 +214,7 @@
         ORDER BY
             b.reg_date DESC
         LIMIT
-            5
+            10
         OFFSET
             #{start}
     </select>
@@ -276,7 +276,7 @@
         ORDER BY
             c.reg_date DESC
         LIMIT
-            5
+            10
         OFFSET
             #{start}
     </select>
@@ -356,7 +356,7 @@
         ORDER BY
             b.reg_date DESC
         LIMIT
-            5
+            10
         OFFSET
             #{start}
     </select>
@@ -426,7 +426,7 @@
         ORDER BY
             c.reg_date DESC
         LIMIT
-            5
+            10
         OFFSET
             #{start}
     </select>
@@ -502,7 +502,7 @@
         ORDER BY
             b.reg_date DESC
         LIMIT
-            5
+            10
         OFFSET
             #{start}
     </select>
@@ -592,7 +592,7 @@
         ORDER BY
             block_id DESC
         LIMIT
-            5
+            10
         OFFSET
             #{start}
     </select>

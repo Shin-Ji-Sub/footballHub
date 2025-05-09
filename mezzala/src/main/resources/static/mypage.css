@@ -3,7 +3,7 @@
   color: black;
 }
 
-.mypage-section {
+/*.mypage-section {
   border: 1px solid lightgray;
   border-radius: 10px;
   position: absolute;
@@ -12,6 +12,20 @@
   transform: translate(-50%, -50%);
   width: 60%;
   height: 50%;
+}*/
+.mypage-section {
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  padding: 1rem 0 1rem 0;
+}
+
+.mypage-container {
+    border: none;
 }
 
 .myinfo-container {
@@ -105,13 +119,6 @@
 .thumbnail-img {
   width: 50px;
   height: 50px;
-}
-
-.page-button-container {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
 }
 
 .no-data-container {

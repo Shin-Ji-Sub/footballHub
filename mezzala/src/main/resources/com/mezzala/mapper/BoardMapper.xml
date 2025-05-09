@@ -1031,4 +1031,13 @@
             )
     </select>
 
+    <select id="selectYoutube" resultType="YoutubeDto">
+        SELECT
+            youtube_id AS youtubeId,
+            latest_id AS latestId,
+            best_id AS bestId
+        FROM
+            youtube
+    </select>
+
 </mapper>

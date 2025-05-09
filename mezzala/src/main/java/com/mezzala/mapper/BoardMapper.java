@@ -3,6 +3,7 @@ package com.mezzala.mapper;
 import com.mezzala.dto.BoardDto;
 import com.mezzala.dto.BoardLargeCategoryDto;
 import com.mezzala.dto.CommentDto;
+import com.mezzala.dto.YoutubeDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -68,4 +69,6 @@ public interface BoardMapper {
     List<BoardDto> selectNoticeBoardWithPaging(int start);
 
     List<BoardDto> selectNoticeBoard(@Param("boardNo") int boardNo, @Param("fromPage") String fromPage);
+
+    YoutubeDto selectYoutube();
 }

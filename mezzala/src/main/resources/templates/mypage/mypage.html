@@ -38,7 +38,10 @@
                 </li>
             </ul>
             <!-- 내정보 -->
-            <div class="mypage-section">
+<!--            <div class="mypage-section">-->
+
+<!--            </div>-->
+            <div class="container section mypage-container">
 
             </div>
         </div>
@@ -53,7 +56,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script type="text/javascript" th:inline="javascript">
         $(window).on('load', function() {
-            const mypageSectionEl = $('.mypage-section');
+            //const mypageSectionEl = $('.mypage-section');
+            const mypageSectionEl = $('.mypage-container');
             const userId = $('#userId').val();
             let tabNo = $('#tabNo').val();
             let pageNo = $('#pageNo').val();
@@ -96,21 +100,6 @@
                 const index = $(e.currentTarget).data('index');
                 tabNo = index;
                 tabLoad(tabNo, 1);
-<!--                if (index === 0) {-->
-<!--                    mypageSectionEl.load('/mypage/get-myinfo');-->
-<!--                } else if (index === 1) {-->
-<!--                    mypageSectionEl.load('/mypage/get-written-content?userId=' + userId);-->
-<!--                } else if (index === 2) {-->
-<!--                    mypageSectionEl.load('/mypage/get-written-comment?userId=' + userId);-->
-<!--                } else if (index === 3) {-->
-<!--                    mypageSectionEl.load('/mypage/get-liked-content?userId=' + userId);-->
-<!--                } else if (index === 4) {-->
-<!--                    mypageSectionEl.load('/mypage/get-liked-comment?userId=' + userId);-->
-<!--                } else if (index === 5) {-->
-<!--                    mypageSectionEl.load('/mypage/get-bookmarked-content?userId=' + userId);-->
-<!--                } else if (index === 6) {-->
-<!--                    mypageSectionEl.load('/mypage/get-block-user?userId=' + userId);-->
-<!--                }-->
             });
 
             mypageSectionEl.on('click', '#infoModifyButton', (e) => {
@@ -147,7 +136,7 @@
             // 작성한 글 pagination
             mypageSectionEl.on('click', '#writtenContentPaging .page-item', function(e) {
                 pageNo = $('.paging').data('pageno');
-                const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
+                const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
                 if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
                 if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
@@ -160,7 +149,7 @@
             // 작성한 댓글 pagination
             mypageSectionEl.on('click', '#writtenCommentPaging .page-item', function(e) {
                 pageNo = $('.paging').data('pageno');
-                const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
+                const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
                 if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
                 if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
@@ -173,7 +162,7 @@
             // 좋아요 한 글 pagination
             mypageSectionEl.on('click', '#likedContentPaging .page-item', function(e) {
                 pageNo = $('.paging').data('pageno');
-                const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
+                const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
                 if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
                 if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
@@ -186,7 +175,7 @@
             // 좋아요 한 댓글 pagination
             mypageSectionEl.on('click', '#likedContentPaging .page-item', function(e) {
                 pageNo = $('.paging').data('pageno');
-                const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
+                const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
                 if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
                 if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
@@ -199,7 +188,7 @@
             // 북마크한 글 pagination
             mypageSectionEl.on('click', '#bookmarkedContent .page-item', function(e) {
                 pageNo = $('.paging').data('pageno');
-                const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
+                const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
                 if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
                 if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;
@@ -212,7 +201,7 @@
             // 차단한 사용자 pagination
             mypageSectionEl.on('click', '#blockUserPaging .page-item', function(e) {
                 pageNo = $('.paging').data('pageno');
-                const lastPageNo = Math.floor(($('.paging').data('datacount') / 5) + (($('.paging').data('datacount') % 5) > 0 ? 1 : 0));
+                const lastPageNo = Math.floor(($('.paging').data('datacount') / 10) + (($('.paging').data('datacount') % 10) > 0 ? 1 : 0));
                 if (/«/.test($(this).text())) pageNo = 1;
                 if ($(this).text() == '<') pageNo = pageNo - 1 < 1 ? 1 : pageNo - 1;
                 if ($(this).text() == '>') pageNo = pageNo + 1 > lastPageNo ? lastPageNo : pageNo + 1;

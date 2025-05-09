@@ -761,4 +761,26 @@ public class AdminController {
         return "success";
     }
 
+    @GetMapping(path = {"/youtube-manage"})
+    public String youtubeManage(Model model) {
+        YoutubeDto youtube = adminService.findYoutube();
+        if (youtube == null) {
+            String empty = "empty";
+            model.addAttribute("empty", empty);
+        } else {
+            model.addAttribute("youtube", youtube);
+        }
+
+        return "/admin/youtube-manage/youtubeManage";
+    }
+
+    @PostMapping(path = {"/modify-youtube"})
+    @ResponseBody
+    public String modifyYoutube(@RequestParam(name = "part") String part,
+                                @RequestParam(name = "value") String value,
+                                @RequestParam(name = "youtubeId") int youtubeId) {
+        adminService.modifyYoutube(part, value, youtubeId);
+        return "success";
+    }
+
 }

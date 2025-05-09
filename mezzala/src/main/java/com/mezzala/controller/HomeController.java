@@ -2,6 +2,7 @@ package com.mezzala.controller;
 
 import com.mezzala.dto.BoardDto;
 import com.mezzala.dto.UserDto;
+import com.mezzala.dto.YoutubeDto;
 import com.mezzala.service.BoardService;
 import com.mezzala.ui.ThePager;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,14 @@ public class HomeController {
                        @RequestParam(name = "mainPageNo", defaultValue = "1") int mainPageNo,
                        @RequestParam(name = "sortValue", defaultValue = "bestList") String sortValue,
                        @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+
+        YoutubeDto youtube = boardService.findYoutube();
+        if (youtube == null) {
+            String empty = "empty";
+            model.addAttribute("empty", empty);
+        } else {
+            model.addAttribute("youtube", youtube);
+        }
 
         model.addAttribute("noticePageNo", noticePageNo);
         model.addAttribute("mainPageNo", mainPageNo);
