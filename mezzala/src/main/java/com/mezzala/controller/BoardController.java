@@ -47,7 +47,7 @@ public class BoardController {
         } else if (fromPage.equals("fandomhub")) {
             categoryText = "공화국";
         }
-        System.out.println("largeCategories : " + largeCategories);
+
         model.addAttribute("largeCategories", largeCategories);
         model.addAttribute("fromPage", fromPage);
         model.addAttribute("categoryText", categoryText);
@@ -157,13 +157,13 @@ public class BoardController {
     @PostMapping(path = {"/write-board"})
     @ResponseBody
     public String writeBoard(BoardDto board, @RequestParam(name = "ImageFilesArr", required = false) String ImageFilesArr) {
-        System.out.println("board : " + board);
+
         List<Map<String, String>> imageFiles = new ArrayList<>();
         if (ImageFilesArr != null && !ImageFilesArr.isEmpty()) {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
                 imageFiles = objectMapper.readValue(ImageFilesArr, new TypeReference<List<Map<String, String>>>() {});
-                System.out.println("이미지 리스트: " + imageFiles);
+
             } catch (Exception e) {
                 e.printStackTrace();
                 return "error";
@@ -178,13 +178,13 @@ public class BoardController {
     @PostMapping(path = {"/modify-board"})
     @ResponseBody
     public String modifyBoard(BoardDto board, @RequestParam(name = "ImageFilesArr", required = false) String ImageFilesArr) {
-        System.out.println("board : " + board);
+
         List<Map<String, String>> imageFiles = new ArrayList<>();
         if (ImageFilesArr != null && !ImageFilesArr.isEmpty()) {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
                 imageFiles = objectMapper.readValue(ImageFilesArr, new TypeReference<List<Map<String, String>>>() {});
-                System.out.println("이미지 리스트: " + imageFiles);
+
             } catch (Exception e) {
                 e.printStackTrace();
                 return "error";
@@ -466,7 +466,6 @@ public class BoardController {
 
         List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
         model.addAttribute("board", boards.get(0));
-        System.out.println("[board] : " + boards.get(0));
 
         List<BoardLargeCategoryDto> largeCategories = boardService.findAllCategory();
         model.addAttribute("largeCategories", largeCategories);
@@ -585,13 +584,7 @@ public class BoardController {
         }
 
         List<CommentDto> comments = boardService.findCommentsWithBoardId(boardId, start);
-//        System.out.println("[DATACOUNT] : " + dataCount);
-//        System.out.println("[PAGENO] : " + pageNo);
-//        System.out.println("[PAGESIZE] : " + pageSize);
-//        System.out.println("[PAGERSIZE] : " + pagerSize);
-//        System.out.println("[LINKURL] : " + linkUrl);
-//        System.out.println("[QUERYSTRING] : " + queryString);
-//        System.out.println("[COMMENT SIZE] : " + comments.size());
+
         int best = -1;
         int bestCommentId = -1;
         for (CommentDto c : comments) {

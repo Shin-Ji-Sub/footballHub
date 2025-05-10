@@ -1,16 +1,30 @@
 package com.mezzala.config;
 
+import com.mezzala.interceptor.AuthInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Properties;
 
 @Configuration
-public class WebConfiguration {
+public class WebConfiguration implements WebMvcConfigurer {
+    // Interceptor
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authInterceptor()).addPathPatterns("/board/**", "/admin/**", "/request/**", "/mypage/**");
+//                .excludePathPatterns("/board/list", "/board/detail");
+    }
+    @Bean
+    public AuthInterceptor authInterceptor() {
+        return new AuthInterceptor();
+    }
+
     // Mail Config
     @Bean
     public JavaMailSender mailSender() {
