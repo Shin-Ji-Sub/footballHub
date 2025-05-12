@@ -274,11 +274,25 @@ header nav {
   text-align: center;
 }
 
-.main-container .span-container {
+/*.main-container .span-container {
   display: flex;
   column-gap: 1rem;
   align-items: center;
   justify-content: space-evenly;
+  font-size: 0.9rem;
+}*/
+
+.main-container .board-number-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 1rem;
+  align-items: center;
+}
+.main-container .span-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1rem;
+  align-items: center;
   font-size: 0.9rem;
 }
 

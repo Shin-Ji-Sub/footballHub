@@ -3,10 +3,10 @@
          th:data-id="${board.boardId}"
          th:data-index="${boardState.index}"
          class="row content notice-content">
-        <div class="col-6 notice-subject">
+        <div class="col-7 notice-subject">
             <div th:text="${board.subject}"></div>
         </div>
-        <div class="col-3 span-container">
+        <div class="col-3 board-number-container">
             <span class="icon">
                 <i class="bi bi-chat-dots"></i>
                 <span th:text="${board.commentCount}"></span>
@@ -20,7 +20,7 @@
                 <span th:text="${board.visitCount}"></span>
             </span>
         </div>
-        <div class="col-3 span-container">
+        <div class="col-2 span-container">
             <span th:text="${board.user.nickname}"></span>
             <span th:text="${board.getRegDateFormatted()}"></span>
         </div>
