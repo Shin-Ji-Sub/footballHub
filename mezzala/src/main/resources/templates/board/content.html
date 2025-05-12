@@ -85,7 +85,8 @@
                         <!-- 좋아요, 스크랩하기 버튼 -->
                         <!-- userActionModule -->
                     </div>
-                    <div class="bottom-button-list" th:if="${from == 'home'}">
+<!--                    <div class="bottom-button-list" th:if="${from == 'home'}">-->
+                    <div class="bottom-button-list">
                         <th:block th:if="${index == 0 && pageNo == 1}">
                             <button class="content-button" style="visibility : hidden">
                                 <i class="bi bi-arrow-bar-left"></i>
@@ -115,20 +116,20 @@
                             </button>
                         </th:block>
                     </div>
-                    <div class="bottom-button-list" th:unless="${from == 'home'}">
-                        <button class="content-button" style="visibility : hidden">
-                            <i class="bi bi-arrow-bar-left"></i>
-                            <span>이전글</span>
-                        </button>
-                        <button class="content-button" id="toList">
-                            <i class="bi bi-list-task"></i>
-                            <span>목록</span>
-                        </button>
-                        <button class="content-button" style="visibility : hidden">
-                            <span>다음글</span>
-                            <i class="bi bi-arrow-bar-right"></i>
-                        </button>
-                    </div>
+<!--                    <div class="bottom-button-list" th:unless="${from == 'home'}">-->
+<!--                        <button class="content-button" style="visibility : hidden">-->
+<!--                            <i class="bi bi-arrow-bar-left"></i>-->
+<!--                            <span>이전글</span>-->
+<!--                        </button>-->
+<!--                        <button class="content-button" id="toList">-->
+<!--                            <i class="bi bi-list-task"></i>-->
+<!--                            <span>목록</span>-->
+<!--                        </button>-->
+<!--                        <button class="content-button" style="visibility : hidden">-->
+<!--                            <span>다음글</span>-->
+<!--                            <i class="bi bi-arrow-bar-right"></i>-->
+<!--                        </button>-->
+<!--                    </div>-->
                 </div>
                 <!-- 댓글 -->
                 <div class="dividing-line">
@@ -327,7 +328,8 @@
             const page = indexValue + 1 == 10 ? pageNo + 1 : pageNo;
             location.href = '/board/content?index=' + index + '&pageNo=' + page +
                                             '&count=' + count + '&from=' + from +
-                                            '&sortValue=' + sortValue + '&searchValue=' + searchValue;
+                                            '&sortValue=' + sortValue + '&searchValue=' + searchValue +
+                                            '&tabNo=' + tabNo;
         });
         previousButton.on('click', () => {
             //const boardNo = (pageNo - 1) * 10 + indexValue - 1;
@@ -335,7 +337,8 @@
             const page = indexValue - 1 == -1 ? pageNo - 1 : pageNo;
             location.href = '/board/content?index=' + index + '&pageNo=' + page +
                                             '&count=' + count + '&from=' + from +
-                                            '&sortValue=' + sortValue + '&searchValue=' + searchValue;
+                                            '&sortValue=' + sortValue + '&searchValue=' + searchValue +
+                                            '&tabNo=' + tabNo;
         });
 
         // 좋아요 버튼

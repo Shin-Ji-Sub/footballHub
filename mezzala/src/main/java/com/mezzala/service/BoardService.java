@@ -55,4 +55,6 @@ public interface BoardService {
     List<BoardDto> findNoticeBoard(int boardNo, String fromPage);
 
     YoutubeDto findYoutube();
+
+    List<BoardDto> findMypageBoard(int boardNo, String userId, int tabNo);
 }

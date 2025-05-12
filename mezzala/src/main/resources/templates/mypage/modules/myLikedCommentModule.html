@@ -1,5 +1,7 @@
 <div class="container written-content-container" xmlns:th="http://www.thymeleaf.org">
-    <div class="row written-content" th:each="comment : ${comments}" th:data-boardid="${comment.board.boardId}">
+    <div class="row written-content" th:each="comment, commentState : ${comments}"
+         th:data-index="${commentState.index}"
+         th:data-boardid="${comment.board.boardId}">
         <div class="col">
             <div th:text="${comment.board.subject}"></div>
             <div>

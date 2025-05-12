@@ -71,4 +71,10 @@ public interface BoardMapper {
     List<BoardDto> selectNoticeBoard(@Param("boardNo") int boardNo, @Param("fromPage") String fromPage);
 
     YoutubeDto selectYoutube();
+
+    List<BoardDto> selectMypageBoard(@Param("boardNo") int boardNo, @Param("userId") String userId,
+                                     @Param("tabNo") int tabNo);
+
+    List<BoardDto> selectMypageCommentBoard(@Param("boardNo") int boardNo, @Param("userId") String userId,
+                                            @Param("tabNo") int tabNo);
 }

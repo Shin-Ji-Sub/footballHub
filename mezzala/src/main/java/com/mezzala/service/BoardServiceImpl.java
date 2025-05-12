@@ -166,4 +166,17 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.selectYoutube();
     }
 
+    @Override
+    public List<BoardDto> findMypageBoard(int boardNo, String userId, int tabNo) {
+        List<BoardDto> boards = null;
+        if (tabNo == 1 || tabNo == 3 || tabNo == 5) {
+            // 작성한 글, 좋아요 한 글, 스크랩 한 글
+            boards = boardMapper.selectMypageBoard(boardNo, userId, tabNo);
+        } else {
+            // 작성한 댓글, 좋아요 한 댓글
+            boards = boardMapper.selectMypageCommentBoard(boardNo, userId, tabNo);
+        }
+        return boards;
+    }
+
 }

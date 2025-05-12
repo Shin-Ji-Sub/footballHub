@@ -234,8 +234,12 @@
             // 해당 글로 이동
             mypageSectionEl.on('click', '.written-content', (e) => {
                 const boardId = $(e.currentTarget).data('boardid');
-                location.href = '/board/content?boardId=' + boardId + '&from=mypage' +
-                                                '&tabNo=' + tabNo + '&pageNo=' + pageNo;
+                const index = $(e.currentTarget).data('index');
+                const count = $('.paging').data('datacount');
+
+                location.href = '/board/content?index=' + index + '&count=' + count +
+                                                '&tabNo=' + tabNo + '&pageNo=' + pageNo +
+                                                '&from=mypage';
             });
 
         });

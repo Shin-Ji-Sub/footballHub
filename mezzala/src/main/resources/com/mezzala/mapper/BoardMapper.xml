@@ -546,6 +546,211 @@
             )
     </select>
 
+    <select id="selectMypageBoard" parameterType="hashmap" resultMap="BoardResultMap">
+        SELECT
+            b.board_id,
+            b.subject,
+            b.content,
+            b.reg_date,
+            b.visit_count,
+            b.board_state,
+            u.user_id,
+            u.nickname,
+            u.social_method,
+            u.join_date,
+            u.role_id,
+            u.state,
+            ba.attach_id,
+            ba.user_file_name,
+            ba.saved_file_name,
+            lc.large_category_id,
+            lc.large_category_name,
+            sc.small_category_index,
+            sc.small_category_name,
+            ua.action_id,
+            ua.action_category,
+            ua.user_id,
+            ua.board_id
+        FROM
+            board b
+        LEFT JOIN
+            user_action ua
+        ON
+            b.board_id = ua.board_id
+        AND
+            ua.action_category = "like"
+        LEFT JOIN
+            user u
+        ON
+            b.user_id = u.user_id
+        LEFT JOIN
+            board_attach ba
+        ON
+            b.board_id = ba.board_id
+        LEFT JOIN
+            board_large_category lc
+        ON
+            b.large_category_id = lc.large_category_id
+        LEFT JOIN
+            board_small_category sc
+        ON
+            b.small_category_index = sc.small_category_index
+        WHERE
+            b.board_id = (
+                SELECT
+                    b.board_id
+                FROM
+                    board b
+                LEFT JOIN
+                    user_action ua
+                ON
+                    b.board_id = ua.board_id
+                AND
+                    <choose>
+                        <when test="tabNo == 5">
+                            ua.action_category = "bookmark"
+                        </when>
+                        <otherwise>
+                            ua.action_category = "like"
+                        </otherwise>
+                    </choose>
+                LEFT JOIN
+                    comment c
+                ON
+                    b.board_id = c.board_id
+                LEFT JOIN
+                    user u
+                ON
+                    b.user_id = u.user_id
+                LEFT JOIN
+                    board_attach ba
+                ON
+                    b.board_id = ba.board_id
+                LEFT JOIN
+                    board_large_category lc
+                ON
+                    b.large_category_id = lc.large_category_id
+                LEFT JOIN
+                    board_small_category sc
+                ON
+                    b.small_category_index = sc.small_category_index
+                WHERE
+                    b.board_state = true
+                AND
+                    <choose>
+                        <when test="tabNo == 1">
+                            b.user_id = #{userId}
+                        </when>
+                        <when test="tabNo == 3 || tabNo == 5">
+                            ua.user_id = #{userId}
+                        </when>
+                    </choose>
+                GROUP BY
+                    b.board_id
+                ORDER BY
+                    b.reg_date DESC
+                LIMIT
+                    1
+                OFFSET
+                    #{boardNo}
+            )
+    </select>
+
+    <select id="selectMypageCommentBoard" parameterType="hashmap" resultMap="BoardResultMap">
+        SELECT
+            b.board_id,
+            b.subject,
+            b.content,
+            b.reg_date,
+            b.visit_count,
+            b.board_state,
+            u.user_id,
+            u.nickname,
+            u.social_method,
+            u.join_date,
+            u.role_id,
+            u.state,
+            ba.attach_id,
+            ba.user_file_name,
+            ba.saved_file_name,
+            lc.large_category_id,
+            lc.large_category_name,
+            sc.small_category_index,
+            sc.small_category_name,
+            ua.action_id,
+            ua.action_category,
+            ua.user_id,
+            ua.board_id
+        FROM
+            board b
+        LEFT JOIN
+            user_action ua
+        ON
+            b.board_id = ua.board_id
+        AND
+            ua.action_category = "like"
+        LEFT JOIN
+            user u
+        ON
+            b.user_id = u.user_id
+        LEFT JOIN
+            board_attach ba
+        ON
+            b.board_id = ba.board_id
+        LEFT JOIN
+            board_large_category lc
+        ON
+            b.large_category_id = lc.large_category_id
+        LEFT JOIN
+            board_small_category sc
+        ON
+            b.small_category_index = sc.small_category_index
+        WHERE
+            b.board_id = (
+                SELECT
+                    b.board_id
+                FROM
+                    comment c
+                LEFT JOIN
+                    board b
+                ON
+                    c.board_id = b.board_id
+                LEFT JOIN
+                    board_large_category lc
+                ON
+                    b.large_category_id = lc.large_category_id
+                LEFT JOIN
+                    board_small_category sc
+                ON
+                    b.small_category_index = sc.small_category_index
+                <choose>
+                    <when test="tabNo == 4">
+                    LEFT JOIN
+                        comment_action ca
+                    ON
+                        c.comment_id = ca.comment_id
+                    </when>
+                </choose>
+                WHERE
+                    c.comment_state = true
+                AND
+                    <choose>
+                        <when test="tabNo == 2">
+                            c.user_id = #{userId}
+                        </when>
+                        <when test="tabNo == 4">
+                            ca.user_id = #{userId}
+                        </when>
+                    </choose>
+                ORDER BY
+                    c.reg_date DESC
+                LIMIT
+                    1
+                OFFSET
+                    #{boardNo}
+            )
+    </select>
+
     <delete id="deleteContent" parameterType="int">
         DELETE FROM
             board

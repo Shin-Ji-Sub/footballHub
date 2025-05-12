@@ -290,6 +290,8 @@
             user_action ua
         ON
             b.board_id = ua.board_id
+        AND
+            ua.action_category = "like"
         WHERE
             ua.user_id = #{userId}
         AND

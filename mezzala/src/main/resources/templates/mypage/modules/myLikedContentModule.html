@@ -1,5 +1,7 @@
 <div class="container written-content-container" xmlns:th="http://www.thymeleaf.org">
-    <div class="row written-content" th:each="board : ${boards}" th:data-boardid="${board.boardId}">
+    <div class="row written-content" th:each="board, boardState : ${boards}"
+         th:data-index="${boardState.index}"
+         th:data-boardid="${board.boardId}">
         <div class="col-md-auto">
             <img th:if="${#lists.isEmpty(board.boardAttaches)}"
                  class="thumbnail-img"

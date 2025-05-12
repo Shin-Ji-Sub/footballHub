@@ -349,8 +349,8 @@ public class BoardController {
                           @RequestParam(name = "pageNo") int pageNo,
                           @RequestParam(name = "from") String from,
                           @RequestParam(name = "count") int count,
-                          @RequestParam(name = "sortValue") String sortValue,
-                          @RequestParam(name = "searchValue") String searchValue,
+                          @RequestParam(name = "sortValue", required = false) String sortValue,
+                          @RequestParam(name = "searchValue", required = false) String searchValue,
                           @RequestParam(name = "tabNo", required = false) Integer tabNo,
                           @CookieValue(value = "visited", required = false) String visitedBoard) {
 
@@ -362,8 +362,14 @@ public class BoardController {
             userId = user.getUserId();
         }
 
-        List<BoardDto> boards = boardService.findBoardWithBoardNo(boardNo, userId, sortValue, searchValue);
-        BoardDto board = boards.get(0);
+        BoardDto board = null;
+        if (from.equals("mypage")) {
+            List<BoardDto> boards = boardService.findMypageBoard(boardNo, userId, tabNo);
+            board = boards.get(0);
+        } else {
+            List<BoardDto> boards = boardService.findBoardWithBoardNo(boardNo, userId, sortValue, searchValue);
+            board = boards.get(0);
+        }
 
         List<UserActionDto> likeActions = new ArrayList<>();
         if (user == null) {
