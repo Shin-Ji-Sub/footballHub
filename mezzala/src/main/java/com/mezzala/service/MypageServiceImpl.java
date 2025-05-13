@@ -89,4 +89,9 @@ public class MypageServiceImpl implements MypageService{
         return mypageMapper.selectBlockUserWithUserId(start, userId);
     }
 
+    @Override
+    public boolean checkDupNickname(String nickname) {
+        return mypageMapper.checkDupNickname(nickname);
+    }
+
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.http.HttpHeaders;
 import java.util.HashMap;
 
 @Data
@@ -167,5 +168,53 @@ public class KakaoApi {
 //        }catch (Exception e){
 //            e.printStackTrace();
 //        }
+    }
+
+    // 회원 탈퇴
+    public boolean unlinkUser(String accessToken) {
+        String reqUrl = "https://kapi.kakao.com/v1/user/unlink";
+
+        try{
+            URL url = new URL(reqUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+            conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+            // 실제로는 보낼 파라미터가 없지만, 기본적인 POST 구조 유지
+            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()))) {
+                bw.write(""); // 빈 값 보내기
+                bw.flush();
+            }
+
+            // 응답 코드 확인
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                // 응답 성공
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        response.append(line);
+                    }
+                    System.out.println("[카카오 연결끊기 응답] : " + response);
+                }
+                return true;
+            } else {
+                // 실패 응답
+                System.err.println("카카오 연결 끊기 실패: " + responseCode);
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        System.err.println(line);
+                    }
+                }
+                return false;
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
 }

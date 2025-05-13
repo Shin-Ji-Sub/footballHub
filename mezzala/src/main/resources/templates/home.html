@@ -89,10 +89,10 @@
             const youtubeBest = $('#youtubeBest').val() == "empty" ? "" : $('#youtubeBest').val();
 
             // 처음 list select
-            moduleBox.load('content-list?pageNo=' + mainPageNo + '&sortValue=' + sortValue + '&searchValue=' + searchValue);
+            moduleBox.load('/home/content-list?pageNo=' + mainPageNo + '&sortValue=' + sortValue + '&searchValue=' + searchValue);
 
             // 공지사항 LOAD
-            noticeModule.load("notice-list?pageNo=" + noticePageNo);
+            noticeModule.load("/home/notice-list?pageNo=" + noticePageNo);
 
             // 공지사항 pagination
             noticeModule.on('click', '.notice-paging .page-item', function(e) {
@@ -104,7 +104,7 @@
                 if (/»/.test($(this).text())) noticePageNo = lastPageNo;
                 if (!isNaN($(this).text())) noticePageNo = $(this).text();
 
-                noticeModule.load("notice-list?pageNo=" + noticePageNo);
+                noticeModule.load("/home/notice-list?pageNo=" + noticePageNo);
             });
 
             // 공지사항 상세글
@@ -122,20 +122,22 @@
                 latestList.removeClass('underline');
                 sortValue = 'bestList';
                 $('#searchValue').val('');
-                moduleBox.load('content-list?sortValue=' + sortValue);
+
+                moduleBox.load('/home/content-list?sortValue=' + sortValue);
             });
             latestList.on('click', (e) => {
                 latestList.addClass('underline');
                 bestList.removeClass('underline');
                 sortValue = 'latestList';
                 $('#searchValue').val('');
-                moduleBox.load('content-list?sortValue=' + sortValue);
+
+                moduleBox.load('/home/content-list?sortValue=' + sortValue);
             });
 
             // 글제목 검색 FUNCTION
             function search() {
                 searchValue = $('#searchValue').val();
-                moduleBox.load('content-list?searchValue=' + searchValue);
+                moduleBox.load('/home/content-list?searchValue=' + searchValue + '&sortValue=' + sortValue);
             }
             // 글제목 검색
             searchButton.on('click', (e) => {
@@ -158,7 +160,7 @@
                 if (/»/.test($(this).text())) mainPageNo = lastPageNo;
                 if (!isNaN($(this).text())) mainPageNo = $(this).text();
 
-                moduleBox.load('content-list?pageNo=' + mainPageNo + '&sortValue=' + sortValue +
+                moduleBox.load('/home/content-list?pageNo=' + mainPageNo + '&sortValue=' + sortValue +
                                '&searchValue=' + searchValue);
             });
 

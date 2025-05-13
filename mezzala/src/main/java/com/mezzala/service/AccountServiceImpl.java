@@ -35,4 +35,9 @@ public class AccountServiceImpl implements AccountService{
     public void addReport(String reportCategory, int contentId, String userId) {
         accountMapper.insertReport(reportCategory, contentId, userId);
     }
+
+    @Override
+    public void deleteUser(String userId) {
+        accountMapper.updateUserState(userId);
+    }
 }

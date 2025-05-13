@@ -40,7 +40,7 @@
         </div>
     </div>
 </div>
-<div class="page-button-container">
+<div th:if="${boards.size() != 0}" class="page-button-container">
     <nav aria-label="Page navigation example">
         <ul class="pagination paging" id="bookmarkedContent" th:data-pageno='${ pageNo }' th:data-datacount="${ dataCount }">
             [(${ pager })]

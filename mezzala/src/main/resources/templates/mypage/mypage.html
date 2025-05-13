@@ -102,6 +102,7 @@
                 tabLoad(tabNo, 1);
             });
 
+            // 닉네임 수정 버튼
             mypageSectionEl.on('click', '#infoModifyButton', (e) => {
                 const nicknameValue = $('#nicknameValue').val();
                 const userNickname = $('#userNickname').val();
@@ -124,6 +125,10 @@
                             if (response == "success") {
                                 alert('😊수정 완료!');
                                 location.reload();
+                            }
+                            if (response == "dup") {
+                                alert("이미 존재하는 닉네임입니다.");
+                                nicknameValueEl.focus();
                             }
                         },
                         error : (xhr, status, error) => {
@@ -240,6 +245,30 @@
                 location.href = '/board/content?index=' + index + '&count=' + count +
                                                 '&tabNo=' + tabNo + '&pageNo=' + pageNo +
                                                 '&from=mypage';
+            });
+
+            // 회원탈퇴 버튼
+            mypageSectionEl.on('click', '#deleteIdButton', (e) => {
+                const ok = window.confirm("정말로 탈퇴하시겠습니까? /n탈퇴 후 동일한 아이디로 가입할 수 없습니다.");
+
+                if (ok) {
+                    $.ajax({
+                        url: '/account/delete-user',
+                        type: 'POST',
+                        success: function (res) {
+                            if (res == "success") {
+                                alert('회원탈퇴가 완료되었습니다.');
+                                window.location.href = '/'; // 홈으로 이동
+                            }
+                            if (res == "fail") {
+                                alert("회원탈퇴 중 오류가 발생했습니다. /n관리자 문의 및 다시 시도해주세요.");
+                            }
+                        },
+                        error: function () {
+                            alert('회원탈퇴 중 오류가 발생했습니다.');
+                        }
+                    });
+                }
             });
 
         });

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,12 +34,32 @@ public class MypageController {
     private MypageService mypageService;
 
     @GetMapping(path = {"/myinfo"})
-    public String myinfo(Model model,
-                         @RequestParam(name = "tabNo", defaultValue = "0") int tabNo,
-                         @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
+    public String myinfo(Model model
+//                         @RequestParam(name = "tabNo", defaultValue = "0") int tabNo,
+//                         @RequestParam(name = "pageNo", defaultValue = "1") int pageNo
+    ) {
+        // FlashAttribute에서 꺼냄
+        Integer pageNo = (Integer) model.asMap().get("pageNo");
+        Integer tabNo = (Integer) model.asMap().get("tabNo");
+
+        // 기본값 처리
+        if (pageNo == null) pageNo = 1;
+        if (tabNo == null) tabNo = 0;
+
         model.addAttribute("tabNo", tabNo);
         model.addAttribute("pageNo", pageNo);
         return "/mypage/mypage";
+    }
+
+    @PostMapping(path = {"/myinfo"})
+    public String postMyinfo(@RequestParam(name = "tabNo", defaultValue = "0") int tabNo,
+                             @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                             RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("pageNo", pageNo);
+        redirectAttributes.addFlashAttribute("tabNo", tabNo);
+
+        return "redirect:/mypage/myinfo";
     }
 
     @GetMapping(path = {"/get-myinfo"})
@@ -52,10 +73,15 @@ public class MypageController {
                                  @RequestParam(name = "nickname") String nickname,
                                  @RequestParam(name = "userId") String userId) {
 
-        UserDto user = mypageService.modifyUserNickname(nickname, userId);
-        session.setAttribute("user", user);
+        boolean isDup = mypageService.checkDupNickname(nickname);
+        if (isDup) {
+            return "dup";
+        } else {
+            UserDto user = mypageService.modifyUserNickname(nickname, userId);
+            session.setAttribute("user", user);
 
-        return "success";
+            return "success";
+        }
     }
 
     @GetMapping(path = {"/get-written-content"})

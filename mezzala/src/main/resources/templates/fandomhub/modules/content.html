@@ -278,8 +278,29 @@
 
         // 목록 버튼
         toList.on('click', () => {
-            location.href = '/fandomhub/home?pageNo=' + pageNo + '&sortValue=' + sortValue +
-                                            '&category=' + category + '&searchValue=' + searchValue;
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.action = "/fandomhub/home";
+
+            const params = [
+                { name: "pageNo", value: pageNo },
+                { name: "sortValue", value: sortValue },
+                { name: "category", value: category },
+                { name: "searchValue", value: searchValue }
+            ];
+
+            for (const p of params) {
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = p.name;
+                input.value = p.value;
+                form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+<!--            location.href = '/fandomhub/home?pageNo=' + pageNo + '&sortValue=' + sortValue +-->
+<!--                                            '&category=' + category + '&searchValue=' + searchValue;-->
         });
 
         // 다음글, 이전글 버튼

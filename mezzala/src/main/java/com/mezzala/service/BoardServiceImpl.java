@@ -53,9 +53,9 @@ public class BoardServiceImpl implements BoardService {
             boards = boardMapper.selectBoardWithPagingAndSearch(start, sortValue, searchValue, userId);
         }
 
-        for (BoardDto b : boards) {
-            System.out.println("* :" + b);
-        }
+//        for (BoardDto b : boards) {
+//            System.out.println("* :" + b);
+//        }
         return boards;
     }
 

@@ -599,4 +599,19 @@
             #{start}
     </select>
 
+    <select id="checkDupNickname" parameterType="String" resultType="boolean">
+        SELECT EXISTS
+        (
+            SELECT
+                1
+            FROM
+                user
+            WHERE
+                state = true
+            AND
+                nickname = #{nickname}
+        )
+        AS result;
+    </select>
+
 </mapper>

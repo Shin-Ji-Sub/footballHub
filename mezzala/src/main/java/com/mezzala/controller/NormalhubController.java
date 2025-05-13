@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -32,11 +33,24 @@ public class NormalhubController {
     private NormalhubService normalhubService;
 
     @GetMapping(path = {"/home"})
-    public String home(Model model,
-                       @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
-                       @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
-                       @RequestParam(name = "category", defaultValue = "all") String category,
-                       @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+    public String home(Model model
+//                       @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+//                       @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
+//                       @RequestParam(name = "category", defaultValue = "all") String category,
+//                       @RequestParam(name = "searchValue", defaultValue = "") String searchValue
+    ) {
+
+        // FlashAttribute에서 꺼냄
+        Integer pageNo = (Integer) model.asMap().get("pageNo");
+        String sortValue = (String) model.asMap().get("sortValue");
+        String category = (String) model.asMap().get("category");
+        String searchValue = (String) model.asMap().get("searchValue");
+
+        // 기본값 처리
+        if (pageNo == null) pageNo = 1;
+        if (sortValue == null) sortValue = "latest";
+        if (category == null) category = "all";
+        if (searchValue == null) searchValue = "";
 
         List<BoardSmallCategoryDto> smallCategories = normalhubService.findAllBoardSmallCategory();
 
@@ -47,6 +61,21 @@ public class NormalhubController {
         model.addAttribute("searchValue", searchValue);
 
         return "/normalhub/normalhubHome";
+    }
+
+    @PostMapping(path = {"/home"})
+    public String postHome(@RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                           @RequestParam(name = "sortValue", defaultValue = "latest") String sortValue,
+                           @RequestParam(name = "category", defaultValue = "all") String category,
+                           @RequestParam(name = "searchValue", defaultValue = "") String searchValue,
+                           RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("pageNo", pageNo);
+        redirectAttributes.addFlashAttribute("sortValue", sortValue);
+        redirectAttributes.addFlashAttribute("category", category);
+        redirectAttributes.addFlashAttribute("searchValue", searchValue);
+
+        return "redirect:/normalhub/home";
     }
 
     @GetMapping(path = {"/get-contents"})

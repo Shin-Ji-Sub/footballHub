@@ -12,4 +12,6 @@ public interface AccountService {
     void deleteBlockUser(String blockUserId, String userId);
 
     void addReport(String reportCategory, int contentId, String userId);
+
+    void deleteUser(String userId);
 }

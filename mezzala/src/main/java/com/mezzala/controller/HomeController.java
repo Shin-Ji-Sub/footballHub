@@ -11,25 +11,35 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping(path = {"/", "home"})
 public class HomeController {
 
     @Setter(onMethod_ = {@Autowired})
     private BoardService boardService;
 
-    @RequestMapping(path = {"/", "/home"})
+    @GetMapping(path = {"/", "/home"})
     public String home(Model model,
-                       @RequestParam(name = "noticePageNo", defaultValue = "1") int noticePageNo,
-                       @RequestParam(name = "mainPageNo", defaultValue = "1") int mainPageNo,
-                       @RequestParam(name = "sortValue", defaultValue = "bestList") String sortValue,
-                       @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+                       @RequestParam(name = "noticePageNo", defaultValue = "1") int noticePageNo
+//                       @RequestParam(name = "mainPageNo", defaultValue = "1") int mainPageNo,
+//                       @RequestParam(name = "sortValue", defaultValue = "bestList") String sortValue,
+//                       @RequestParam(name = "searchValue", defaultValue = "") String searchValue
+    ) {
+        // FlashAttribute에서 꺼냄
+        Integer mainPageNo = (Integer) model.asMap().get("mainPageNo");
+        String sortValue = (String) model.asMap().get("sortValue");
+        String searchValue = (String) model.asMap().get("searchValue");
+
+        // 기본값 처리
+        if (mainPageNo == null) mainPageNo = 1;
+        if (sortValue == null) sortValue = "bestList";
+        if (searchValue == null) searchValue = "";
 
         YoutubeDto youtube = boardService.findYoutube();
         if (youtube == null) {
@@ -47,11 +57,25 @@ public class HomeController {
         return "home";
     }
 
+    @PostMapping(path = {"/home"})
+    public String postHome(@RequestParam(name = "mainPageNo", defaultValue = "1") int mainPageNo,
+                           @RequestParam(name = "sortValue", defaultValue = "bestList") String sortValue,
+                           @RequestParam(name = "searchValue", defaultValue = "") String searchValue,
+                           RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("mainPageNo", mainPageNo);
+        redirectAttributes.addFlashAttribute("sortValue", sortValue);
+        redirectAttributes.addFlashAttribute("searchValue", searchValue);
+
+        return "redirect:/home";
+    }
+
     @GetMapping(path = {"/content-list"})
     public String contentList(Model model, HttpServletRequest req, HttpSession session,
                               @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
                               @RequestParam(name = "sortValue", defaultValue = "bestList") String sortValue,
                               @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
+
         UserDto user = (UserDto) session.getAttribute("user");
         String userId = "";
         if (user != null) {

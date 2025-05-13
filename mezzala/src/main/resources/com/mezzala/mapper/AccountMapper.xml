@@ -11,6 +11,7 @@
         <result property="joinDate" column="join_date"/>
         <result property="roleId" column="role_id"/>
         <result property="state" column="state"/>
+        <result property="accessToken" column="access_token"/>
         <!-- 1:1 관계 user_role -->
         <association property="userRole" javaType="com.mezzala.dto.UserRoleDto">
             <id property="roleId" column="ur_role_id"/>
@@ -41,6 +42,7 @@
             u.join_date,
             u.role_id,
             u.state,
+            u.access_token,
 
             ur.role_id AS ur_role_id,
             ur.role_name AS ur_role_name,
@@ -127,5 +129,14 @@
                 #{userId}
             )
     </insert>
+
+    <update id="updateUserState" parameterType="String">
+        UPDATE
+            user
+        SET
+            state = false
+        WHERE
+            user_id = #{userId}
+    </update>
 
 </mapper>

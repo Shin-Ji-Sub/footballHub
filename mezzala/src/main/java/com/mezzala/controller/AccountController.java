@@ -166,4 +166,22 @@ public class AccountController {
         return result;
     }
 
+    @PostMapping(path = {"/delete-user"})
+    @ResponseBody
+    public String deleteUser(HttpSession session) {
+        UserDto user = (UserDto) session.getAttribute("user");
+
+        if (user.getSocialMethod().equals("kakao")) {
+            boolean kakaoUnlinked = kakaoApi.unlinkUser(user.getAccessToken());
+            if (!kakaoUnlinked) {
+                return "fail";
+            }
+        }
+
+        accountService.deleteUser(user.getUserId());
+        session.invalidate();
+
+        return "success";
+    }
+
 }

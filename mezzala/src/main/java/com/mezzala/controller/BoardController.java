@@ -415,57 +415,6 @@ public class BoardController {
         return "/board/content";
     }
 
-//    @GetMapping(path = {"contentToContent"})
-//    public String contentToContent(Model model, HttpServletResponse res, HttpSession session,
-//                                   @CookieValue(value = "visited", required = false) String visitedBoard,
-//                                   @RequestParam(name = "boardNo") int boardNo,
-//                                   @RequestParam(name = "index") int index,
-//                                   @RequestParam(name = "pageNo") int pageNo,
-//                                   @RequestParam(name = "from", defaultValue = "none") String from,
-//                                   @RequestParam(name = "count") int count) {
-//
-//        UserDto user = (UserDto) session.getAttribute("user");
-//
-//        List<BoardDto> boards = boardService.findBoardWithBoardNo(boardNo, user.getUserId());
-//        BoardDto board = boards.get(0);
-//        List<UserActionDto> likeActions = new ArrayList<>();
-//        if (user == null) {
-//            UserActionDto action = new UserActionDto();
-//            likeActions.add(action);
-//        } else {
-//            likeActions = user.getLikeUserActions();
-//        }
-//        List<UserActionDto> bookmarkActions = new ArrayList<>();
-//        if (user == null) {
-//            UserActionDto action = new UserActionDto();
-//            bookmarkActions.add(action);
-//        } else {
-//            bookmarkActions = user.getBookmarkUserActions();
-//        }
-//
-//        // 쿠키에 현재 boardId가 포함되어 있는지 확인
-//        if (visitedBoard == null || !visitedBoard.contains("[" + board.getBoardId() + "]")) {
-//            boardService.incrementVisitedBoard(board.getBoardId()); // 조회수 증가
-//
-//            // 쿠키에 현재 boardId 추가
-//            visitedBoard = (visitedBoard == null ? "" : visitedBoard) + "[" + board.getBoardId() + "]";
-//            Cookie cookie = new Cookie("visited", visitedBoard);
-//            cookie.setPath("/");
-//            cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효 기간(1일)
-//            res.addCookie(cookie);
-//        }
-//
-//        model.addAttribute("likeActions", likeActions);
-//        model.addAttribute("bookmarkActions", bookmarkActions);
-//        model.addAttribute("board", board);
-////        model.addAttribute("comments", board.getComments());
-//        model.addAttribute("index", index);
-//        model.addAttribute("count", count);
-//        model.addAttribute("pageNo", pageNo);
-//        model.addAttribute("from", from);
-//        return "/board/content";
-//    }
-
     @GetMapping(path = {"/modify-content"})
     public String modifyContent(Model model,
                                 @RequestParam(name = "boardId") int boardId) {

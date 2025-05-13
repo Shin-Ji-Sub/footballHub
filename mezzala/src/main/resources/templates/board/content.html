@@ -238,9 +238,50 @@
         // 목록 버튼
         toList.on('click', (e) => {
             if (from == "mypage") {
-                location.href = "/mypage/myinfo?tabNo=" + tabNo + "&pageNo=" + pageNo;
+                const form = document.createElement("form");
+                form.method = "POST";
+                form.action = "/mypage/myinfo";
+
+                const params = [
+                    { name: "pageNo", value: pageNo },
+                    { name: "tabNo", value: tabNo },
+                ];
+
+                for (const p of params) {
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = p.name;
+                    input.value = p.value;
+                    form.appendChild(input);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+
+                //location.href = "/mypage/myinfo?tabNo=" + tabNo + "&pageNo=" + pageNo;
             } else {
-                location.href = "/home?mainPageNo=" + pageNo + "&sortValue=" + sortValue +  "&searchValue=" + searchValue;
+                const form = document.createElement("form");
+                form.method = "POST";
+                form.action = "/home";
+
+                const params = [
+                    { name: "mainPageNo", value: pageNo },
+                    { name: "sortValue", value: sortValue },
+                    { name: "searchValue", value: searchValue }
+                ];
+
+                for (const p of params) {
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = p.name;
+                    input.value = p.value;
+                    form.appendChild(input);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+
+                //location.href = "/home?mainPageNo=" + pageNo + "&sortValue=" + sortValue +  "&searchValue=" + searchValue;
             }
         });
 

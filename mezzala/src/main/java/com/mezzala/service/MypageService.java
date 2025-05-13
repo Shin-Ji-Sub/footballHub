@@ -33,4 +33,6 @@ public interface MypageService {
     int findBlockUserCount(String userId);
 
     List<UserDto> findBlockUserWithUserId(int start, String userId);
+
+    boolean checkDupNickname(String nickname);
 }

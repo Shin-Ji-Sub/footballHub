@@ -40,4 +40,6 @@ public interface MypageMapper {
     int selectBlockUserCount(String userId);
 
     List<UserDto> selectBlockUserWithUserId(@Param("start") int start, @Param("userId") String userId);
+
+    boolean checkDupNickname(@Param("nickname") String nickname);
 }

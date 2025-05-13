@@ -17,4 +17,6 @@ public interface AccountMapper {
     void deleteBlockUser(@Param("blockUserId") String blockUserId, @Param("userId") String userId);
 
     void insertReport(@Param("reportCategory") String reportCategory, @Param("contentId") int contentId, @Param("userId") String userId);
+
+    void updateUserState(String userId);
 }

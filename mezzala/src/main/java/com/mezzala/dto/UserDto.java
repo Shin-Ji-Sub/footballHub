@@ -17,6 +17,7 @@ public class UserDto {
     private int roleId;
     // default (true)
     private boolean state;
+    private String accessToken;
 
     // 쓴 글 수
     private int writeBoardCount;

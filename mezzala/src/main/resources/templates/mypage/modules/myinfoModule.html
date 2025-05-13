@@ -1,9 +1,5 @@
 <div class="myinfo-container" xmlns:th="http://www.thymeleaf.org">
     <div class="myinfo-section">
-        <div class="myinfo-label">아이디</div>
-        <input readonly type="text" class="data-input bg-secondary" th:value="${session.user.userId}">
-    </div>
-    <div class="myinfo-section">
         <div class="myinfo-label">닉네임</div>
         <input type="text" class="data-input" id="nicknameValue" th:value="${session.user.nickname}">
         <button class="custom-button" id="infoModifyButton">수정</button>
@@ -16,7 +12,7 @@
         <div class="myinfo-label">내 등급</div>
         <input readonly type="text" class="data-input bg-secondary" th:value="${session.user.userRole.roleKorName}">
     </div>
-    <button class="custom-button bg-warning">
+    <button id="deleteIdButton" class="custom-button bg-warning">
         <i class="bi bi-x"></i>
         회원탈퇴
     </button>
