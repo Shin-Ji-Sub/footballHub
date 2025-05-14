@@ -176,4 +176,55 @@ public class NaverApi {
 //            e.printStackTrace();
 //        }
 //    }
+
+    public boolean unlinkNaverUser(String accessToken) {
+        String reqUrl = "https://nid.naver.com/oauth2.0/token";
+
+        String clientId = naverApiKey;
+        String clientSecret = naverClientSecret;
+
+        String params = "grant_type=delete"
+                + "&client_id=" + clientId
+                + "&client_secret=" + clientSecret
+                + "&access_token=" + accessToken
+                + "&service_provider=NAVER";
+
+        try {
+            URL url = new URL(reqUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+            conn.setDoOutput(true);
+
+            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()))) {
+                bw.write(params);
+                bw.flush();
+            }
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                    String line;
+                    StringBuilder response = new StringBuilder();
+                    while ((line = br.readLine()) != null) {
+                        response.append(line);
+                    }
+                    System.out.println("[네이버 연결끊기 응답]: " + response);
+                }
+                return true;
+            } else {
+                System.err.println("네이버 연결 끊기 실패: " + responseCode);
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        System.err.println(line);
+                    }
+                }
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

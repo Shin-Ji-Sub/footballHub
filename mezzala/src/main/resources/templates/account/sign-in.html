@@ -24,8 +24,9 @@
                     </a>
                 </div>
                 <div class="naver-button">
-                    <a href="https://nid.naver.com/oauth2.0/authorize"
-                       th:href="@{https://nid.naver.com/oauth2.0/authorize(client_id=${naverApiKey}, redirect_uri=${naverRedirectUri}, response_type='code', state=${returnUri})}">
+<!--                    <a href="https://nid.naver.com/oauth2.0/authorize"-->
+<!--                       th:href="@{https://nid.naver.com/oauth2.0/authorize(client_id=${naverApiKey}, redirect_uri=${naverRedirectUri}, response_type='code', state=${returnUri})}">-->
+                    <a th:href="@{/oauth2/authorization/naver}">
                         <div class="naver-signup-button">
                             <img src="/img/btnG_naver_logo.png" alt="Naver Logo">
                             Naver로 로그인
@@ -47,7 +48,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script type="text/javascript">
         $(window).on('load', function() {
-
         });
     </script>
 </body>

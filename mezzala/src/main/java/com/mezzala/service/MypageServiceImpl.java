@@ -47,7 +47,10 @@ public class MypageServiceImpl implements MypageService{
     @Override
     public List<BoardDto> findLikedBoardWithUserId(int start, String userId) {
         List<BoardDto> boards = mypageMapper.selectLikedBoardWithUserId(start, userId);
-        List<Integer> recommendationCounts = mypageMapper.selectRecommendationCount(start, boards);
+        List<Integer> recommendationCounts = null;
+        if (!boards.isEmpty()) {
+            recommendationCounts = mypageMapper.selectRecommendationCount(start, boards);
+        }
         for (int i = 0; i < boards.size(); i++) {
             boards.get(i).setRecommendationCount(recommendationCounts.get(i));
         }
@@ -72,7 +75,10 @@ public class MypageServiceImpl implements MypageService{
     @Override
     public List<BoardDto> findBookmarkedBoards(int start, String userId) {
         List<BoardDto> boards = mypageMapper.selectBookmarkedBoards(start, userId);
-        List<Integer> recommendationCounts = mypageMapper.selectRecommendationCount(start, boards);
+        List<Integer> recommendationCounts = null;
+        if (!boards.isEmpty()) {
+            recommendationCounts = mypageMapper.selectRecommendationCount(start, boards);
+        }
         for (int i = 0; i < boards.size(); i++) {
             boards.get(i).setRecommendationCount(recommendationCounts.get(i));
         }

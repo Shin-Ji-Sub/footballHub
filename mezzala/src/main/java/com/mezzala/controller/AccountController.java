@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -39,11 +40,20 @@ public class AccountController {
         model.addAttribute("naverApiKey", naverApi.getNaverApiKey());
         model.addAttribute("naverRedirectUri", naverApi.getNaverRedirectUri());
         model.addAttribute("returnUri", returnUri);
+
+        Boolean isSuccess = (Boolean) model.asMap().get("isSuccess");
+        // 기본값 처리
+        if (isSuccess == null) isSuccess = true;
+
+        model.addAttribute("isSuccess", isSuccess);
+
         return "/account/sign-up";
     }
 
     @RequestMapping(path = {"/kakao/api"})
-    public String kakaoSignIn(@RequestParam String code, @RequestParam String state, HttpSession session) {
+    public String kakaoSignIn(@RequestParam String code,
+                              @RequestParam String state,
+                              HttpSession session, RedirectAttributes redirectAttributes) {
         String accessToken = kakaoApi.getAccessToken(code);
         Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
 
@@ -55,10 +65,17 @@ public class AccountController {
 //        System.out.println("userId : " + userId);
 //        System.out.println("accessToken : " + accessToken);
 
-        List<UserDto> users = accountService.addAccount(userId, nickname, socialMethod);
+        try {
+            List<UserDto> users = accountService.addAccount(userId, nickname, socialMethod);
+            session.setAttribute("accessToken", accessToken);
+            session.setAttribute("user", users.get(0));
+        } catch (Exception e) {
+            boolean isSuccess = false;
+            redirectAttributes.addFlashAttribute("isSuccess", isSuccess);
+            return "redirect:/account/sign-up";
+//            e.printStackTrace();
+        }
 
-        session.setAttribute("accessToken", accessToken);
-        session.setAttribute("user", users.get(0));
         state = URLDecoder.decode(state, StandardCharsets.UTF_8);
         return "redirect:" + state;
     }
@@ -72,7 +89,6 @@ public class AccountController {
             HashMap<String, String> kakao = kakaoApi.kakaoLogout();
             String clientId = kakao.get("clientId");
             String logoutUri = kakao.get("logoutUri");
-            session.invalidate();
 
             returnUri = URLEncoder.encode(returnUri, StandardCharsets.UTF_8.toString());
 
@@ -85,12 +101,14 @@ public class AccountController {
     }
 
     @GetMapping(path = {"/kakao/logout"})
-    public String logoutKakao(@RequestParam(name = "state", defaultValue = "home") String state) {
+    public String logoutKakao(@RequestParam(name = "state", defaultValue = "home") String state, HttpSession session) {
+        session.invalidate();
         return "redirect:" + state;
     }
 
     @GetMapping(path = {"/sign-in"})
-    public String signIn(Model model, @RequestParam(name = "returnUri", defaultValue = "/home") String returnUri) {
+    public String signIn(Model model, HttpSession session,
+                         @RequestParam(name = "returnUri", defaultValue = "/home") String returnUri) {
         model.addAttribute("kakaoApiKey", kakaoApi.getKakaoApiKey());
         model.addAttribute("redirectUri", kakaoApi.getKakaoRedirectUri());
         model.addAttribute("naverApiKey", naverApi.getNaverApiKey());
@@ -99,31 +117,37 @@ public class AccountController {
 
         returnUri = URLEncoder.encode(returnUri, StandardCharsets.UTF_8);
         model.addAttribute("returnUri", returnUri);
+        session.setAttribute("returnUri", returnUri);
         return "/account/sign-in";
     }
 
-    @GetMapping(path = {"/naver/api"})
-    public String naverSignIn(HttpSession session, @RequestParam String code, @RequestParam String state) {
-        String accessToken = naverApi.getAccessToken(code);
-        Map<String, Object> userInfo = naverApi.getUserInfo(accessToken);
-
-        String userId = (String) userInfo.get("userId");
-        String nickname = (String) userInfo.get("nickname");
-        String socialMethod = "naver";
-
-//        System.out.println("nickname : " + nickname);
-//        System.out.println("userId : " + userId);
-//        System.out.println("accessToken : " + accessToken);
-
-        List<UserDto> users = accountService.addAccount(userId, nickname, socialMethod);
-
-        System.out.println("user : " + users.get(0));
-
-        session.setAttribute("accessToken", accessToken);
-        session.setAttribute("user", users.get(0));
-
-        return "redirect:" + state;
-    }
+//    @GetMapping(path = {"/naver/api"})
+//    public String naverSignIn(HttpSession session, RedirectAttributes redirectAttributes,
+//                              @RequestParam String code,
+//                              @RequestParam String state) {
+//        String accessToken = naverApi.getAccessToken(code);
+//        Map<String, Object> userInfo = naverApi.getUserInfo(accessToken);
+//
+//        String userId = (String) userInfo.get("userId");
+//        String nickname = (String) userInfo.get("nickname");
+//        String socialMethod = "naver";
+//
+//        try {
+//            List<UserDto> users = accountService.addAccount(userId, nickname, socialMethod);
+//
+//            System.out.println("user : " + users.get(0));
+//
+//            session.setAttribute("accessToken", accessToken);
+//            session.setAttribute("user", users.get(0));
+//        } catch (Exception e) {
+//            boolean isSuccess = false;
+//            redirectAttributes.addFlashAttribute("isSuccess", isSuccess);
+//            return "redirect:/account/sign-up";
+//        }
+//
+//
+//        return "redirect:" + state;
+//    }
 
     @PostMapping(path = {"/block-user"})
     @ResponseBody
@@ -169,19 +193,33 @@ public class AccountController {
     @PostMapping(path = {"/delete-user"})
     @ResponseBody
     public String deleteUser(HttpSession session) {
-        UserDto user = (UserDto) session.getAttribute("user");
-
-        if (user.getSocialMethod().equals("kakao")) {
-            boolean kakaoUnlinked = kakaoApi.unlinkUser(user.getAccessToken());
-            if (!kakaoUnlinked) {
-                return "fail";
-            }
-        }
-
-        accountService.deleteUser(user.getUserId());
-        session.invalidate();
+//        UserDto user = (UserDto) session.getAttribute("user");
+//
+//        if (user.getSocialMethod().equals("kakao")) {
+//            boolean kakaoUnlinked = kakaoApi.unlinkUser(user.getAccessToken());
+//            if (!kakaoUnlinked) {
+//                return "fail";
+//            }
+//        }
+//
+//        if (user.getSocialMethod().equals("naver")) {
+//            boolean naverUnlinked = naverApi.unlinkNaverUser(user.getAccessToken());
+//            if (!naverUnlinked) {
+//                return "fail";
+//            }
+//        }
+//
+//        accountService.deleteUser(user.getUserId());
+//        session.invalidate();
 
         return "success";
+    }
+
+    @GetMapping(path = {"/oauth2/save-return-uri"})
+    @ResponseBody
+    public void saveReturnUri(@RequestParam String returnUri, HttpSession session) {
+        System.out.println("[Controller] : " + returnUri);
+        session.setAttribute("returnUri", returnUri);
     }
 
 }

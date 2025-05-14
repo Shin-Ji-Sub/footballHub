@@ -5,13 +5,12 @@
 
 <mapper namespace="com.mezzala.mapper.AccountMapper">
     <resultMap id="UserResultMap" type="com.mezzala.dto.UserDto">
-        <id property="userId" column="user_id"/>
-        <result property="nickname" column="nickname"/>
-        <result property="socialMethod" column="social_method"/>
-        <result property="joinDate" column="join_date"/>
-        <result property="roleId" column="role_id"/>
-        <result property="state" column="state"/>
-        <result property="accessToken" column="access_token"/>
+        <id property="userId" column="u_user_id"/>
+        <result property="nickname" column="u_nickname"/>
+        <result property="socialMethod" column="u_social_method"/>
+        <result property="joinDate" column="u_join_date"/>
+        <result property="roleId" column="u_role_id"/>
+        <result property="state" column="u_state"/>
         <!-- 1:1 관계 user_role -->
         <association property="userRole" javaType="com.mezzala.dto.UserRoleDto">
             <id property="roleId" column="ur_role_id"/>
@@ -34,15 +33,13 @@
     </resultMap>
 
     <select id="selectUser" parameterType="String" resultMap="UserResultMap">
-
         SELECT
-            u.user_id,
-            u.nickname,
-            u.social_method,
-            u.join_date,
-            u.role_id,
-            u.state,
-            u.access_token,
+            u.user_id AS u_user_id,
+            u.nickname AS u_nickname,
+            u.social_method AS u_social_method,
+            u.join_date AS u_join_date,
+            u.role_id AS u_role_id,
+            u.state AS u_state,
 
             ur.role_id AS ur_role_id,
             ur.role_name AS ur_role_name,

@@ -121,6 +121,7 @@ public class KakaoApi {
 
             String userId = element.getAsJsonObject().get("id").getAsString();
             String nickname = properties.getAsJsonObject().get("nickname").getAsString();
+//            String accessToken = element.getAsJsonObject().get("access_token").getAsString();
 
             userInfo.put("userId", userId);
             userInfo.put("nickname", nickname);
@@ -180,6 +181,7 @@ public class KakaoApi {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Authorization", "Bearer " + accessToken);
             conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+            conn.setDoOutput(true);
 
             // 실제로는 보낼 파라미터가 없지만, 기본적인 POST 구조 유지
             try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()))) {

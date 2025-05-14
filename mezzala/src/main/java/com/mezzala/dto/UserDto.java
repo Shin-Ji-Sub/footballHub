@@ -2,11 +2,14 @@ package com.mezzala.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Data
-public class UserDto {
+public class UserDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String userId;
     private String nickname;
@@ -17,7 +20,6 @@ public class UserDto {
     private int roleId;
     // default (true)
     private boolean state;
-    private String accessToken;
 
     // 쓴 글 수
     private int writeBoardCount;

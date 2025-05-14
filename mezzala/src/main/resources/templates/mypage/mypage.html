@@ -249,9 +249,13 @@
 
             // 회원탈퇴 버튼
             mypageSectionEl.on('click', '#deleteIdButton', (e) => {
-                const ok = window.confirm("정말로 탈퇴하시겠습니까? /n탈퇴 후 동일한 아이디로 가입할 수 없습니다.");
-
+                const ok = window.confirm('정말로 탈퇴하시겠습니까?\n탈퇴 후 동일한 아이디로 가입할 수 없습니다.');
+                let reOk = false;
                 if (ok) {
+                    reOk = window.confirm('정말로 탈퇴하시겠습니까?\n탈퇴 하시면 [동일한 아이디]로 가입할 수 없습니다.');
+                }
+
+                if (reOk) {
                     $.ajax({
                         url: '/account/delete-user',
                         type: 'POST',
@@ -261,7 +265,7 @@
                                 window.location.href = '/'; // 홈으로 이동
                             }
                             if (res == "fail") {
-                                alert("회원탈퇴 중 오류가 발생했습니다. /n관리자 문의 및 다시 시도해주세요.");
+                                alert("회원탈퇴 중 오류가 발생했습니다.\n관리자 문의 및 다시 시도해주세요.");
                             }
                         },
                         error: function () {
