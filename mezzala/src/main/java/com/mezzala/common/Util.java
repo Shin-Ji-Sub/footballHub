@@ -1,14 +1,53 @@
 package com.mezzala.common;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
 public class Util {
+
+	private static final String SECRET_KEY = KeyGenerator.generate("key"); // 32자 (256bit)
+	private static final String IV = KeyGenerator.generate("iv"); // 16자
+
+	/**
+	 * AesEncryptor 암호화
+	 */
+	public static String encrypt(String plainText) throws Exception {
+		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+
+		SecretKeySpec keySpec = new SecretKeySpec(Base64.getDecoder().decode(SECRET_KEY), "AES");
+		IvParameterSpec ivSpec = new IvParameterSpec(Base64.getDecoder().decode(IV));
+
+		cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+
+		byte[] encrypted = cipher.doFinal(plainText.getBytes("UTF-8"));
+		return Base64.getEncoder().encodeToString(encrypted);
+	}
+
+	/**
+	 * AesEncryptor 복호화
+	 */
+	public static String decrypt(String encryptedText) throws Exception {
+		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+
+		SecretKeySpec keySpec = new SecretKeySpec(Base64.getDecoder().decode(SECRET_KEY), "AES");
+		IvParameterSpec ivSpec = new IvParameterSpec(Base64.getDecoder().decode(IV));
+
+		cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+
+		byte[] decodedBytes = Base64.getDecoder().decode(encryptedText);
+		byte[] decrypted = cipher.doFinal(decodedBytes);
+
+		return new String(decrypted, "UTF-8");
+	}
 	
 	/**
 	 * 지정된 암호화 알고리즘에 따라 문자열 데이터를 암호화 처리

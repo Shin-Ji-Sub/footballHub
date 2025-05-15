@@ -2,6 +2,7 @@ package com.mezzala.controller;
 
 import com.mezzala.common.KakaoApi;
 import com.mezzala.common.NaverApi;
+import com.mezzala.common.Util;
 import com.mezzala.dto.UserDto;
 import com.mezzala.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -50,35 +52,35 @@ public class AccountController {
         return "/account/sign-up";
     }
 
-    @RequestMapping(path = {"/kakao/api"})
-    public String kakaoSignIn(@RequestParam String code,
-                              @RequestParam String state,
-                              HttpSession session, RedirectAttributes redirectAttributes) {
-        String accessToken = kakaoApi.getAccessToken(code);
-        Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
-
-        String userId = (String) userInfo.get("userId");
-        String nickname = (String) userInfo.get("nickname");
-        String socialMethod = "kakao";
-
-//        System.out.println("nickname : " + nickname);
-//        System.out.println("userId : " + userId);
-//        System.out.println("accessToken : " + accessToken);
-
-        try {
-            List<UserDto> users = accountService.addAccount(userId, nickname, socialMethod);
-            session.setAttribute("accessToken", accessToken);
-            session.setAttribute("user", users.get(0));
-        } catch (Exception e) {
-            boolean isSuccess = false;
-            redirectAttributes.addFlashAttribute("isSuccess", isSuccess);
-            return "redirect:/account/sign-up";
-//            e.printStackTrace();
-        }
-
-        state = URLDecoder.decode(state, StandardCharsets.UTF_8);
-        return "redirect:" + state;
-    }
+//    @RequestMapping(path = {"/kakao/api"})
+//    public String kakaoSignIn(@RequestParam String code,
+//                              @RequestParam String state,
+//                              HttpSession session, RedirectAttributes redirectAttributes) {
+//        String accessToken = kakaoApi.getAccessToken(code);
+//        Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
+//
+//        String userId = (String) userInfo.get("userId");
+//        String nickname = (String) userInfo.get("nickname");
+//        String socialMethod = "kakao";
+//
+////        System.out.println("nickname : " + nickname);
+////        System.out.println("userId : " + userId);
+////        System.out.println("accessToken : " + accessToken);
+//
+//        try {
+//            List<UserDto> users = accountService.addAccount(userId, nickname, socialMethod);
+//            session.setAttribute("accessToken", accessToken);
+//            session.setAttribute("user", users.get(0));
+//        } catch (Exception e) {
+//            boolean isSuccess = false;
+//            redirectAttributes.addFlashAttribute("isSuccess", isSuccess);
+//            return "redirect:/account/sign-up";
+////            e.printStackTrace();
+//        }
+//
+//        state = URLDecoder.decode(state, StandardCharsets.UTF_8);
+//        return "redirect:" + state;
+//    }
 
     @GetMapping(path = {"/log-out"})
     public String logOut(HttpSession session, @RequestParam(name="socialMethod") String socialMethod,
@@ -193,33 +195,45 @@ public class AccountController {
     @PostMapping(path = {"/delete-user"})
     @ResponseBody
     public String deleteUser(HttpSession session) {
-//        UserDto user = (UserDto) session.getAttribute("user");
-//
-//        if (user.getSocialMethod().equals("kakao")) {
-//            boolean kakaoUnlinked = kakaoApi.unlinkUser(user.getAccessToken());
-//            if (!kakaoUnlinked) {
-//                return "fail";
-//            }
-//        }
-//
-//        if (user.getSocialMethod().equals("naver")) {
-//            boolean naverUnlinked = naverApi.unlinkNaverUser(user.getAccessToken());
-//            if (!naverUnlinked) {
-//                return "fail";
-//            }
-//        }
-//
-//        accountService.deleteUser(user.getUserId());
-//        session.invalidate();
+        UserDto user = (UserDto) session.getAttribute("user");
+        String accessToken = user.getAccessToken();
+        String decryptAccessToken = "";
+
+        if (user.getSocialMethod().equals("kakao")) {
+            try {
+                decryptAccessToken = Util.decrypt(accessToken);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            boolean kakaoUnlinked = kakaoApi.unlinkUser(decryptAccessToken);
+            if (!kakaoUnlinked) {
+                return "fail";
+            }
+        }
+
+        if (user.getSocialMethod().equals("naver")) {
+            try {
+                decryptAccessToken = Util.decrypt(accessToken);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            boolean naverUnlinked = naverApi.unlinkNaverUser(decryptAccessToken);
+            if (!naverUnlinked) {
+                return "fail";
+            }
+        }
+
+        accountService.deleteUser(user.getUserId());
+        session.invalidate();
 
         return "success";
     }
 
-    @GetMapping(path = {"/oauth2/save-return-uri"})
-    @ResponseBody
-    public void saveReturnUri(@RequestParam String returnUri, HttpSession session) {
-        System.out.println("[Controller] : " + returnUri);
-        session.setAttribute("returnUri", returnUri);
-    }
+//    @GetMapping(path = {"/oauth2/save-return-uri"})
+//    @ResponseBody
+//    public void saveReturnUri(@RequestParam String returnUri, HttpSession session) {
+//        System.out.println("[Controller] : " + returnUri);
+//        session.setAttribute("returnUri", returnUri);
+//    }
 
 }

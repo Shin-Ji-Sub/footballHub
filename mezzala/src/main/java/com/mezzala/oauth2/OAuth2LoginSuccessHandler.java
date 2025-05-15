@@ -36,6 +36,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             returnUri = URLDecoder.decode(returnUri, StandardCharsets.UTF_8);
         }
         response.sendRedirect(returnUri);
+
     }
 
 }

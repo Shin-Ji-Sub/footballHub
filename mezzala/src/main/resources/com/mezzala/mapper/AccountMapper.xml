@@ -11,6 +11,8 @@
         <result property="joinDate" column="u_join_date"/>
         <result property="roleId" column="u_role_id"/>
         <result property="state" column="u_state"/>
+        <result property="accessToken" column="u_access_token"/>
+        <result property="expiresAt" column="u_expires_at"/>
         <!-- 1:1 관계 user_role -->
         <association property="userRole" javaType="com.mezzala.dto.UserRoleDto">
             <id property="roleId" column="ur_role_id"/>
@@ -40,6 +42,8 @@
             u.join_date AS u_join_date,
             u.role_id AS u_role_id,
             u.state AS u_state,
+            u.access_token AS u_access_token,
+            u.expires_at AS u_expires_at,
 
             ur.role_id AS ur_role_id,
             ur.role_name AS ur_role_name,
@@ -83,14 +87,28 @@
             user (
                 user_id,
                 nickname,
-                social_method
+                social_method,
+                access_token,
+                expires_at
             )
         VALUES (
                 #{userId},
                 #{nickname},
-                #{socialMethod}
+                #{socialMethod},
+                #{accessToken},
+                #{expiresAt}
             );
     </insert>
+
+    <update id="updateUserToken" parameterType="hashmap">
+        UPDATE
+            user
+        SET
+            access_token = #{accessToken},
+            expires_at = #{expiresAt}
+        WHERE
+            user_id = #{userId}
+    </update>
 
     <insert id="insertBlockUSer" parameterType="hashmap">
         INSERT INTO

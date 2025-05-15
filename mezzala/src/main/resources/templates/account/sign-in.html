@@ -18,8 +18,9 @@
             </div>
             <div class="field">
                 <div class="kakao-button">
-                    <a href="https://kauth.kakao.com/oauth/authorize"
-                       th:href="@{https://kauth.kakao.com/oauth/authorize(client_id=${kakaoApiKey}, redirect_uri=${redirectUri}, response_type='code', state=${returnUri})}">
+<!--                    <a href="https://kauth.kakao.com/oauth/authorize"-->
+<!--                       th:href="@{https://kauth.kakao.com/oauth/authorize(client_id=${kakaoApiKey}, redirect_uri=${redirectUri}, response_type='code', state=${returnUri})}">-->
+                    <a th:href="@{/oauth2/authorization/kakao}">
                         <img src="/img/kakao_login_medium_narrow.png">
                     </a>
                 </div>

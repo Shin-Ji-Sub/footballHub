@@ -14,7 +14,7 @@ public class AccountServiceImpl implements AccountService{
     public List<UserDto> addAccount(String userId, String nickname, String socialMethod) {
         List<UserDto> user = accountMapper.selectUser(userId);
         if (user == null || user.isEmpty()) {
-            accountMapper.insertAccount(userId, nickname, socialMethod);
+//            accountMapper.insertAccount(userId, nickname, socialMethod);
             user = accountMapper.selectUser(userId);
         }
 
