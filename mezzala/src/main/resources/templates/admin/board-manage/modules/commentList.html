@@ -17,7 +17,7 @@
             <span th:text="${comment.getRegDateFormatted()}"></span>
         </div>
     </div>
-    <div class="page-button-container">
+    <div th:if="${comments.size() != 0}" class="page-button-container">
         <nav aria-label="Page navigation example">
             <ul class="pagination paging" th:data-pageno='${ pageNo }' th:data-datacount="${ dataCount }">
                 [(${ pager })]
