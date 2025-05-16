@@ -1,5 +1,6 @@
 package com.mezzala.controller;
 
+import com.mezzala.common.Aes;
 import com.mezzala.common.KakaoApi;
 import com.mezzala.common.NaverApi;
 import com.mezzala.common.Util;
@@ -7,6 +8,7 @@ import com.mezzala.dto.UserDto;
 import com.mezzala.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +34,7 @@ public class AccountController {
 
     private final KakaoApi kakaoApi;
     private final NaverApi naverApi;
+    private final Aes aes;
 
     @Setter(onMethod_ = {@Autowired})
     private AccountService accountService;
@@ -196,15 +200,23 @@ public class AccountController {
     @ResponseBody
     public String deleteUser(HttpSession session) {
         UserDto user = (UserDto) session.getAttribute("user");
+        Date expiresAt = user.getExpiresAt();
+        Date now = new Date();
+
+        if (now.after(expiresAt)) {
+            return "reLogin";
+        }
+
         String accessToken = user.getAccessToken();
         String decryptAccessToken = "";
+        try {
+            decryptAccessToken = aes.decrypt(accessToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "fail";
+        }
 
         if (user.getSocialMethod().equals("kakao")) {
-            try {
-                decryptAccessToken = Util.decrypt(accessToken);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             boolean kakaoUnlinked = kakaoApi.unlinkUser(decryptAccessToken);
             if (!kakaoUnlinked) {
                 return "fail";
@@ -212,11 +224,6 @@ public class AccountController {
         }
 
         if (user.getSocialMethod().equals("naver")) {
-            try {
-                decryptAccessToken = Util.decrypt(accessToken);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             boolean naverUnlinked = naverApi.unlinkNaverUser(decryptAccessToken);
             if (!naverUnlinked) {
                 return "fail";
@@ -228,12 +235,5 @@ public class AccountController {
 
         return "success";
     }
-
-//    @GetMapping(path = {"/oauth2/save-return-uri"})
-//    @ResponseBody
-//    public void saveReturnUri(@RequestParam String returnUri, HttpSession session) {
-//        System.out.println("[Controller] : " + returnUri);
-//        session.setAttribute("returnUri", returnUri);
-//    }
 
 }

@@ -1,5 +1,6 @@
 package com.mezzala.oauth2;
 
+import com.mezzala.common.Aes;
 import com.mezzala.common.Util;
 import com.mezzala.dto.UserDto;
 import com.mezzala.mapper.AccountMapper;
@@ -27,6 +28,8 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+
+    private final Aes aes;
 
     @Setter(onMethod_ = {@Autowired})
     private AccountMapper accountMapper;
@@ -82,13 +85,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         // 조회 안될 경우(신규회원)
         if (users.isEmpty() || users == null) {
-            String userId = (String) attributes.get("id");
-            String nickname = (String) attributes.get("nickname");
+            String userId = String.valueOf(attributes.get("id"));
+            String nickname = registrationId.equals("naver")
+                                ? String.valueOf(attributes.get("name"))
+                                : String.valueOf(attributes.get("nickname"));
             String socialMethod = registrationId;
             String accessToken = userRequest.getAccessToken().getTokenValue();
             String encryptAccessToken = "";
             try {
-                encryptAccessToken = Util.encrypt(accessToken);
+                encryptAccessToken = aes.encrypt(accessToken);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -103,7 +108,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             String accessToken = userRequest.getAccessToken().getTokenValue();
             String encryptAccessToken = "";
             try {
-                encryptAccessToken = Util.encrypt(accessToken);
+                encryptAccessToken = aes.encrypt(accessToken);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
