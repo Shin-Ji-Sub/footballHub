@@ -10,7 +10,7 @@
     <title>FootballHub</title>
 </head>
 <body>
-    <div th:replace="~{/admin/modules/header}"></div>
+    <div th:replace="~{admin/modules/header}"></div>
     <input id="socialMethod" type="hidden" th:if="${session.user != null}" th:value="${session.user.socialMethod}">
 
     <main>
