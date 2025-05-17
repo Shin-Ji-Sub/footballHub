@@ -96,6 +96,10 @@ public class HomeController {
 
         List<BoardDto> boards = boardService.findBoardWithPaging(start, sortValue, searchValue, userId);
 
+        if (boards.isEmpty() || boards == null) {
+            return "modules/noDataModule";
+        }
+
         model.addAttribute("pager", pager);
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("dataCount", dataCount);
@@ -105,7 +109,7 @@ public class HomeController {
 
         model.addAttribute("boards", boards);
 
-        return "/modules/home-pagination";
+        return "modules/home-pagination";
     }
 
     @GetMapping(path = {"/notice-list"})
@@ -124,13 +128,17 @@ public class HomeController {
         ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
         List<BoardDto> boards = boardService.findNoticeBoardWithPaging(start);
 
+        if (boards.isEmpty() || boards == null) {
+            return "modules/noDataModule";
+        }
+
         model.addAttribute("pager", pager);
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("dataCount", dataCount);
 
         model.addAttribute("boards", boards);
 
-        return "/modules/homeNoticeList";
+        return "modules/homeNoticeList";
     }
 
 }

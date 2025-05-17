@@ -43,12 +43,12 @@ public class AdminController {
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("from", from);
         model.addAttribute("searchValue", searchValue);
-        return "/admin/notice/notice";
+        return "admin/notice/notice";
     }
 
     @GetMapping(path = {"/write-notice"})
     public String writeNotice() {
-        return "/admin/notice/writeNotice";
+        return "admin/notice/writeNotice";
     }
 
     @PostMapping(path = {"/write-board"})
@@ -103,7 +103,7 @@ public class AdminController {
             try {
                 boards = adminService.findNoticeBoardWithPaging(start, searchValue, state);
             } catch (Exception e) {
-                return "/modules/noDataModule";
+                return "modules/noDataModule";
             }
         }
 
@@ -113,7 +113,7 @@ public class AdminController {
 
         model.addAttribute("boards", boards);
 
-        return "/admin/notice/modules/" + from;
+        return "admin/notice/modules/" + from;
     }
 
     @PostMapping(path = {"/control-notice"})
@@ -156,7 +156,7 @@ public class AdminController {
         model.addAttribute("from", from);
         model.addAttribute("to", to);
 
-        return "/admin/notice/content";
+        return "admin/notice/content";
     }
 
     @PostMapping(path = {"/save-notice"})
@@ -185,7 +185,7 @@ public class AdminController {
         model.addAttribute("searchValue", searchValue);
         model.addAttribute("reportCategory", reportCategory);
 
-        return "/admin/board-manage/board-manage";
+        return "admin/board-manage/board-manage";
     }
 
     @GetMapping(path = {"/get-content"})
@@ -216,7 +216,7 @@ public class AdminController {
             List<BoardDto> boards = adminService.findBoardWithPaging(start, sortValue, totalSelectValue, smallSelectValue, searchValue);
 
             if (boards.isEmpty()) {
-                return "/modules/noDataModule";
+                return "modules/noDataModule";
             }
 
             model.addAttribute("pager", pager);
@@ -240,7 +240,7 @@ public class AdminController {
             List<BoardDto> boards = adminService.findReportBoardWithPaging(start, sortValue, searchValue);
 
             if (boards.isEmpty()) {
-                return "/modules/noDataModule";
+                return "modules/noDataModule";
             }
 
             model.addAttribute("pager", pager);
@@ -265,7 +265,7 @@ public class AdminController {
             System.out.println("[COMMENTS] : " + comments);
 
             if (comments.isEmpty()) {
-                return "/modules/noDataModule";
+                return "modules/noDataModule";
             }
 
             model.addAttribute("pager", pager);
@@ -274,7 +274,7 @@ public class AdminController {
 
             model.addAttribute("comments", comments);
 
-            return "/admin/board-manage/modules/commentList";
+            return "admin/board-manage/modules/commentList";
         }
         if (to.equals("controlCategory")) {
             // paging
@@ -292,7 +292,7 @@ public class AdminController {
             if (categoryPart.equals("large")) {
                 List<BoardLargeCategoryDto> largeCategories = adminService.findLargeCategory(start);
                 if (largeCategories.isEmpty()) {
-                    return "/modules/noDataModule";
+                    return "modules/noDataModule";
                 }
 
                 model.addAttribute("largeCategories", largeCategories);
@@ -301,7 +301,7 @@ public class AdminController {
             if (categoryPart.equals("small")) {
                 List<BoardSmallCategoryDto> smallCategories = adminService.findSmallCategory(start, largeCategoryValue);
                 if (smallCategories.isEmpty()) {
-                    return "/modules/noDataModule";
+                    return "modules/noDataModule";
                 }
 
                 model.addAttribute("smallCategories", smallCategories);
@@ -312,11 +312,11 @@ public class AdminController {
             model.addAttribute("dataCount", dataCount);
             model.addAttribute("categoryPart", categoryPart);
 
-            return "/admin/board-manage/modules/categoryList";
+            return "admin/board-manage/modules/categoryList";
 
         }
 
-        return "/admin/board-manage/modules/contentList";
+        return "admin/board-manage/modules/contentList";
 //        } catch (Exception e) {
 //            return "/modules/noDataModule";
 //        }
@@ -346,7 +346,7 @@ public class AdminController {
         model.addAttribute("reportCategory", reportCategory);
         model.addAttribute("board", board);
 
-        return "/admin/board-manage/content";
+        return "admin/board-manage/content";
     }
 
     @GetMapping(path = {"/get-controller"})
@@ -393,7 +393,7 @@ public class AdminController {
             model.addAttribute("largeCategories", largeCategories);
         }
 
-        return "/admin/board-manage/modules/" + to + "Module";
+        return "admin/board-manage/modules/" + to + "Module";
 
     }
 
@@ -434,7 +434,7 @@ public class AdminController {
     public String userManage(Model model) {
         List<UserRoleDto> userRoles = adminService.findAllUserRole();
         model.addAttribute("userRoles", userRoles);
-        return "/admin/user-manage/userManage";
+        return "admin/user-manage/userManage";
     }
 
     @GetMapping(path = {"/get-user"})
@@ -458,7 +458,7 @@ public class AdminController {
         List<UserDto> users = adminService.findUserList(start, category, searchValue, sortValue);
 
         if (users.isEmpty()) {
-            return "/modules/noDataModule";
+            return "modules/noDataModule";
         }
 
         List<UserRoleDto> userRoles = adminService.findAllUserRole();
@@ -472,7 +472,7 @@ public class AdminController {
 
         model.addAttribute("users", users);
 
-        return "/admin/user-manage/modules/userList";
+        return "admin/user-manage/modules/userList";
     }
 
     @PostMapping(path = {"/modify-role"})
@@ -485,7 +485,7 @@ public class AdminController {
 
     @GetMapping(path = {"/team-manage"})
     public String teamManage() {
-        return "/admin/schedule-manage/teamManage";
+        return "admin/schedule-manage/teamManage";
     }
 
     @GetMapping(path = {"/get-team"})
@@ -510,7 +510,7 @@ public class AdminController {
             List<CompetitionDto> competitions = adminService.findCompetition(start, searchValue);
 
             if (competitions.isEmpty()) {
-                return "/modules/noDataModule";
+                return "modules/noDataModule";
             }
 
             model.addAttribute("pager", pager);
@@ -529,7 +529,7 @@ public class AdminController {
             List<CompetitionRoundDto> rounds = adminService.findCompetitionRound(start, searchValue);
 
             if (rounds.isEmpty()) {
-                return "/modules/noDataModule";
+                return "modules/noDataModule";
             }
 
             model.addAttribute("pager", pager);
@@ -549,7 +549,7 @@ public class AdminController {
             List<TeamDto> teams = adminService.findTeam(start, searchValue);
 
             if (teams.isEmpty()) {
-                return "/modules/noDataModule";
+                return "modules/noDataModule";
             }
 
             model.addAttribute("pager", pager);
@@ -561,7 +561,7 @@ public class AdminController {
 
         model.addAttribute("category", category);
 
-        return "/admin/schedule-manage/modules/teamList";
+        return "admin/schedule-manage/modules/teamList";
     }
 
     @GetMapping(path = {"/schedule-manage"})
@@ -573,7 +573,7 @@ public class AdminController {
         model.addAttribute("teams", teams);
         model.addAttribute("competitions", competitions);
         model.addAttribute("rounds", rounds);
-        return "/admin/schedule-manage/scheduleManage";
+        return "admin/schedule-manage/scheduleManage";
     }
 
     @PostMapping(path = {"/save-schedule-category"})
@@ -654,7 +654,7 @@ public class AdminController {
         Map<Integer, List<ScheduleDto>> schedules = adminService.findSchedule(start, category, year, month, day);
 
         if (schedules.isEmpty()) {
-            return "/modules/noDataModule";
+            return "modules/noDataModule";
         }
 
         model.addAttribute("pager", pager);
@@ -663,7 +663,7 @@ public class AdminController {
 
         model.addAttribute("schedules", schedules);
 
-        return "/admin/schedule-manage/modules/scheduleList";
+        return "admin/schedule-manage/modules/scheduleList";
     }
 
     @PostMapping(path = {"/modify-schedule"})
@@ -695,7 +695,7 @@ public class AdminController {
 
         model.addAttribute("competitions", competitions);
         model.addAttribute("teams", teams);
-        return "/admin/ranking-manage/rankingManage";
+        return "admin/ranking-manage/rankingManage";
     }
 
     @GetMapping(path = {"/get-rankingTable"})
@@ -707,15 +707,15 @@ public class AdminController {
             List<RankingDto> rankings = adminService.findRanking(competitionValue, seasonValue);
 
             if (rankings.isEmpty()) {
-                return "/modules/noDataModule";
+                return "modules/noDataModule";
             }
 
             model.addAttribute("rankings", rankings);
         } catch (Exception e) {
-            return "/modules/noDataModule";
+            return "modules/noDataModule";
         }
 
-        return "/admin/ranking-manage/modules/rankingList";
+        return "admin/ranking-manage/modules/rankingList";
     }
 
     @PostMapping(path = {"/save-ranking"})
@@ -771,7 +771,7 @@ public class AdminController {
             model.addAttribute("youtube", youtube);
         }
 
-        return "/admin/youtube-manage/youtubeManage";
+        return "admin/youtube-manage/youtubeManage";
     }
 
     @PostMapping(path = {"/modify-youtube"})

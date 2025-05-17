@@ -29,7 +29,7 @@ public class ScheduleController {
 
     @GetMapping(path = {"/table"})
     public String table() {
-        return "/scheduleTable/scheduleTable";
+        return "scheduleTable/scheduleTable";
     }
 
     @GetMapping(path = {"/get-schedule"})
@@ -44,15 +44,15 @@ public class ScheduleController {
             model.addAttribute("schedules", schedules);
 
             if (schedules.isEmpty()) {
-                return "/modules/noDataModule";
+                return "modules/noDataModule";
             }
 
         } catch (Exception e) {
-            return "/modules/noDataModule";
+            return "modules/noDataModule";
         }
 
 
-        return "/scheduleTable/modules/scheduleList";
+        return "scheduleTable/modules/scheduleList";
     }
 
 }

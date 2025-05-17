@@ -49,7 +49,7 @@ public class RequestController {
         model.addAttribute("category", category);
         model.addAttribute("sortValue", sortValue);
         model.addAttribute("searchValue", searchValue);
-        return "/request/requestHome";
+        return "request/requestHome";
     }
 
     @PostMapping(path = {"/home"})
@@ -93,12 +93,12 @@ public class RequestController {
 
         model.addAttribute("boards", boards);
 
-        return "/request/modules/requestList";
+        return "request/modules/requestList";
     }
 
     @GetMapping(path = {"/write"})
     public String write() {
-        return "/request/write";
+        return "request/write";
     }
 
     @PostMapping(path = {"/write-board"})
@@ -138,7 +138,7 @@ public class RequestController {
 
         model.addAttribute("board", board);
 
-        return "/request/content";
+        return "request/content";
     }
 
     @PostMapping(path = {"/write-comment"})
@@ -181,7 +181,7 @@ public class RequestController {
 
         model.addAttribute("comments", comments);
 
-        return "/request/modules/commentModule";
+        return "request/modules/commentModule";
     }
 
     @PostMapping(path = {"/delete-comment"})

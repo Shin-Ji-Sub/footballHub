@@ -64,7 +64,7 @@ public class FandomhubController {
         model.addAttribute("category", category);
         model.addAttribute("searchValue", searchValue);
 
-        return "/fandomhub/fandomhubHome";
+        return "fandomhub/fandomhubHome";
     }
 
     @PostMapping(path = {"/home"})
@@ -113,7 +113,7 @@ public class FandomhubController {
 
         model.addAttribute("boards", boards);
 
-        return "/fandomhub/modules/hubList";
+        return "fandomhub/modules/hubList";
     }
 
 }

@@ -60,7 +60,7 @@ public class NormalhubController {
         model.addAttribute("category", category);
         model.addAttribute("searchValue", searchValue);
 
-        return "/normalhub/normalhubHome";
+        return "normalhub/normalhubHome";
     }
 
     @PostMapping(path = {"/home"})
@@ -109,7 +109,7 @@ public class NormalhubController {
 
         model.addAttribute("boards", boards);
 
-        return "/normalhub/modules/hubList";
+        return "normalhub/modules/hubList";
     }
 
 }

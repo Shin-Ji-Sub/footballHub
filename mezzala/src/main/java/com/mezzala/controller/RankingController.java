@@ -27,7 +27,7 @@ public class RankingController {
     public String table(Model model) {
         List<CompetitionDto> competitions = rankingService.findAllCompetition();
         model.addAttribute("competitions", competitions);
-        return "/rankingTable/rankingTable";
+        return "rankingTable/rankingTable";
     }
 
     @GetMapping(path = {"/get-ranking"})
@@ -42,16 +42,16 @@ public class RankingController {
             List<RankingDto> rankings = rankingService.findRanking(competitionId, season, limit);
 
             if (rankings.isEmpty()) {
-                return "/modules/noDataModule";
+                return "modules/noDataModule";
             }
 
             model.addAttribute("rankings", rankings);
 
         } catch (Exception e) {
-            return "/modules/noDataModule";
+            return "modules/noDataModule";
         }
 
-        return "/rankingTable/modules/rankingList";
+        return "rankingTable/modules/rankingList";
     }
 
 }

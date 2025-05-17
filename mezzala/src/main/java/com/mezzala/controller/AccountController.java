@@ -53,7 +53,7 @@ public class AccountController {
 
         model.addAttribute("isSuccess", isSuccess);
 
-        return "/account/sign-up";
+        return "account/sign-up";
     }
 
 //    @RequestMapping(path = {"/kakao/api"})
@@ -124,7 +124,7 @@ public class AccountController {
         returnUri = URLEncoder.encode(returnUri, StandardCharsets.UTF_8);
         model.addAttribute("returnUri", returnUri);
         session.setAttribute("returnUri", returnUri);
-        return "/account/sign-in";
+        return "account/sign-in";
     }
 
 //    @GetMapping(path = {"/naver/api"})

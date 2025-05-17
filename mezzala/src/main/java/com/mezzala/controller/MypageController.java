@@ -48,7 +48,7 @@ public class MypageController {
 
         model.addAttribute("tabNo", tabNo);
         model.addAttribute("pageNo", pageNo);
-        return "/mypage/mypage";
+        return "mypage/mypage";
     }
 
     @PostMapping(path = {"/myinfo"})
@@ -64,7 +64,7 @@ public class MypageController {
 
     @GetMapping(path = {"/get-myinfo"})
     public String myInfoModule() {
-        return "/mypage/modules/myinfoModule";
+        return "mypage/modules/myinfoModule";
     }
 
     @PostMapping(path = {"/modify-nickname"})
@@ -107,9 +107,9 @@ public class MypageController {
             model.addAttribute("dataCount", dataCount);
             model.addAttribute("boards", boards);
 
-            return "/mypage/modules/myWrittenContentModule";
+            return "mypage/modules/myWrittenContentModule";
         } else {
-            return "/mypage/modules/noDataModule";
+            return "mypage/modules/noDataModule";
         }
 
     }
@@ -137,9 +137,9 @@ public class MypageController {
             model.addAttribute("dataCount", dataCount);
             model.addAttribute("comments", comments);
 
-            return "/mypage/modules/myWrittenCommentModule";
+            return "mypage/modules/myWrittenCommentModule";
         } else {
-            return "/mypage/modules/noDataModule";
+            return "mypage/modules/noDataModule";
         }
 
     }
@@ -167,9 +167,9 @@ public class MypageController {
             model.addAttribute("dataCount", dataCount);
             model.addAttribute("boards", boards);
 
-            return "/mypage/modules/myLikedContentModule";
+            return "mypage/modules/myLikedContentModule";
         } else {
-            return "/mypage/modules/noDataModule";
+            return "mypage/modules/noDataModule";
         }
 
     }
@@ -197,9 +197,9 @@ public class MypageController {
             model.addAttribute("dataCount", dataCount);
             model.addAttribute("comments", comments);
 
-            return "/mypage/modules/myLikedCommentModule";
+            return "mypage/modules/myLikedCommentModule";
         } else {
-            return "/mypage/modules/noDataModule";
+            return "mypage/modules/noDataModule";
         }
 
     }
@@ -227,9 +227,9 @@ public class MypageController {
             model.addAttribute("dataCount", dataCount);
             model.addAttribute("boards", boards);
 
-            return "/mypage/modules/myBookmarkedContentModule";
+            return "mypage/modules/myBookmarkedContentModule";
         } else {
-            return "/mypage/modules/noDataModule";
+            return "mypage/modules/noDataModule";
         }
 
     }
@@ -257,9 +257,9 @@ public class MypageController {
             model.addAttribute("dataCount", dataCount);
             model.addAttribute("users", users);
 
-            return "/mypage/modules/myBlockUserModule";
+            return "mypage/modules/myBlockUserModule";
         } else {
-            return "/mypage/modules/noDataModule";
+            return "mypage/modules/noDataModule";
         }
 
     }

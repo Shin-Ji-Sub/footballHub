@@ -26,7 +26,7 @@ public class FootballWikiController {
 
     @GetMapping(path = {"/home"})
     public String home() {
-        return "/footballWiki/footballhubHome";
+        return "footballWiki/footballhubHome";
     }
 
 }

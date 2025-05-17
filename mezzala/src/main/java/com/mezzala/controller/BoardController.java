@@ -52,7 +52,7 @@ public class BoardController {
         model.addAttribute("fromPage", fromPage);
         model.addAttribute("categoryText", categoryText);
 
-        return "/board/write";
+        return "board/write";
     }
 
     /**
@@ -412,7 +412,7 @@ public class BoardController {
             model.addAttribute("tabNo", tabNo);
         }
 
-        return "/board/content";
+        return "board/content";
     }
 
     @GetMapping(path = {"/modify-content"})
@@ -425,7 +425,7 @@ public class BoardController {
         List<BoardLargeCategoryDto> largeCategories = boardService.findAllCategory();
         model.addAttribute("largeCategories", largeCategories);
 
-        return "/board/modify";
+        return "board/modify";
     }
 
     @PostMapping(path = {"/before-delete"})
@@ -481,7 +481,7 @@ public class BoardController {
                                @RequestParam(name = "bookmarkAction") String bookmarkAction) {
         model.addAttribute("likeAction", likeAction);
         model.addAttribute("bookmarkAction", bookmarkAction);
-        return "/board/modules/userActionModule";
+        return "board/modules/userActionModule";
     }
 
     @GetMapping(path = {"/action-like"})
@@ -489,7 +489,7 @@ public class BoardController {
                              Model model) {
         List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
         model.addAttribute("board", boards.get(0));
-        return "/board/modules/likeModule";
+        return "board/modules/likeModule";
     }
 
     @GetMapping(path = {"/action-bookmark"})
@@ -556,7 +556,7 @@ public class BoardController {
         model.addAttribute("bestCommentId", bestCommentId);
         model.addAttribute("comments", comments);
 
-        return "/board/modules/commentModule";
+        return "board/modules/commentModule";
     }
 
     @PostMapping(path = {"/delete-comment"})
@@ -669,7 +669,8 @@ public class BoardController {
 
         model.addAttribute("board", board);
 
-        return "/" + fromPage + "/modules/content";
+//        return "/" + fromPage + "/modules/content";
+        return fromPage + "/modules/content";
     }
 
     @GetMapping(path = {"/notice-content"})
@@ -736,7 +737,7 @@ public class BoardController {
 
         model.addAttribute("board", board);
 
-        return "/board/noticeContent";
+        return "board/noticeContent";
     }
 
 
