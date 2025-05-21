@@ -21,9 +21,10 @@
         <div class="main-container">
             <div class="board-container">
                 <ul>
-                    <li>파일 형태 제한</li>
-                    <li>파일 크기 제한</li>
-                    <li>비하 자제</li>
+                    <li>내용은 10000자 이내로 작성 가능합니다. (공백 포함)</li>
+                    <li>10MB 이하 크기의 이미지만 업로드 가능합니다.</li>
+                    <li style="font-weight : 600">현재 글자수 : <span id="totalTextSize">0</span> / 10000</li>
+                    <li style="font-weight : 600">현재 파일 크기 : <span id="totalFileSize">0</span>MB</li>
                 </ul>
                 <div class="write-header">
                     <!-- 큰 카테고리 -->
@@ -32,100 +33,16 @@
                             <option th:if="${largeCategory.largeCategoryId == board.largeCategory.largeCategoryId}"
                                     th:value="${largeCategory.largeCategoryId}"
                                     th:text="${largeCategory.largeCategoryName}"
-                                    selected></option>
-                            <option th:if="${largeCategory.largeCategoryId != board.largeCategory.largeCategoryId}"
-                                    th:value="${largeCategory.largeCategoryId}"
-                                    th:text="${largeCategory.largeCategoryName}"></option>
+                                    th:selected="${largeCategory.largeCategoryId == board.largeCategory.largeCategoryId}"></option>
+<!--                            <option th:if="${largeCategory.largeCategoryId != board.largeCategory.largeCategoryId}"-->
+<!--                                    th:value="${largeCategory.largeCategoryId}"-->
+<!--                                    th:text="${largeCategory.largeCategoryName}"></option>-->
                         </th:block>
                     </select>
 
-                    <!-- 일반 (작은 카테고리) -->
-                    <th:block th:if="${board.largeCategory.largeCategoryId == 1}">
-                        <select name="smallCategoryIndex" class="form-select write-subject" id="normalCategory" aria-label="Default select example">
-                            <th:block th:each="largeCategory : ${largeCategories}"
-                                      th:if="${largeCategory.largeCategoryId == 1}">
-                                <th:block th:each="smallCategory : ${largeCategory.smallCategories}">
-                                    <option th:if="${smallCategory.smallCategoryIndex == board.smallCategory.smallCategoryIndex}"
-                                            th:value="${smallCategory.smallCategoryIndex}"
-                                            th:text="${smallCategory.smallCategoryName}"
-                                            selected></option>
-                                    <option th:if="${smallCategory.smallCategoryIndex != board.smallCategory.smallCategoryIndex}"
-                                            th:value="${smallCategory.smallCategoryIndex}"
-                                            th:text="${smallCategory.smallCategoryName}"></option>
-                                </th:block>
-                            </th:block>
-                        </select>
-                    </th:block>
-                    <th:block th:if="${board.largeCategory.largeCategoryId != 1}">
-                        <select name="smallCategoryIndex" class="form-select write-subject display-none" id="normalCategory" aria-label="Default select example">
-                            <th:block th:each="largeCategory : ${largeCategories}"
-                                      th:if="${largeCategory.largeCategoryId == 1}">
-                                <th:block th:each="smallCategory : ${largeCategory.smallCategories}">
-                                    <option th:if="${smallCategory.smallCategoryIndex == board.smallCategory.smallCategoryIndex}"
-                                            th:value="${smallCategory.smallCategoryIndex}"
-                                            th:text="${smallCategory.smallCategoryName}"
-                                            selected></option>
-                                    <option th:if="${smallCategory.smallCategoryIndex != board.smallCategory.smallCategoryIndex}"
-                                            th:value="${smallCategory.smallCategoryIndex}"
-                                            th:text="${smallCategory.smallCategoryName}"></option>
-                                </th:block>
-                            </th:block>
-                        </select>
-                    </th:block>
-
-                    <!-- 선택된 팀 (공화국), (작은 카테고리) -->
-                    <th:block th:if="${board.largeCategory.largeCategoryId == 2}">
-                        <div class="input-group flex-nowrap" id="teamValueContainer">
-                            <input readonly type="text" id="teamValue" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping"
-                                    th:value="${board.smallCategory.smallCategoryName}">
-                            <input type="hidden" name="smallCategoryIndex" id="teamIndexValue"
-                                    th:value="${board.smallCategory.smallCategoryIndex}">
-                            <span class="input-group-text" id="addon-wrapping">
-                              <i class="bi bi-arrow-clockwise"></i>
-                            </span>
-                        </div>
-
-                        <div class="search-team-container display-none" id="fanCategory">
-                            <!-- 팀 검색 -->
-                            <input type="text" class="team-search-value" id="teamSearchValue" placeholder="팀 이름을 입력해주세요">
-                            <!-- 팀 선택 -->
-                            <div id="appendTeam">
-                                <th:block th:each="largeCategory : ${largeCategories}"
-                                          th:if="${largeCategory.largeCategoryId == 2}">
-                                    <div th:each="smallCategory : ${largeCategory.smallCategories}"
-                                         th:data-value="${smallCategory.smallCategoryIndex}"
-                                         th:text="${smallCategory.smallCategoryName}"
-                                         class="search-team"></div>
-                                </th:block>
-                            </div>
-                        </div>
-                    </th:block>
-                    <th:block th:if="${board.largeCategory.largeCategoryId != 2}">
-                        <div class="input-group flex-nowrap display-none" id="teamValueContainer">
-                            <input readonly type="text" id="teamValue" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping"
-                                   th:value="${board.smallCategory.smallCategoryName}">
-                            <input type="hidden" name="smallCategoryIndex" id="teamIndexValue"
-                                   th:value="${board.smallCategory.smallCategoryIndex}">
-                            <span class="input-group-text" id="addon-wrapping">
-                              <i class="bi bi-arrow-clockwise"></i>
-                            </span>
-                        </div>
-
-                        <div class="search-team-container display-none" id="fanCategory">
-                            <!-- 팀 검색 -->
-                            <input type="text" class="team-search-value" id="teamSearchValue" placeholder="팀 이름을 입력해주세요">
-                            <!-- 팀 선택 -->
-                            <div id="appendTeam">
-                                <th:block th:each="largeCategory : ${largeCategories}"
-                                          th:if="${largeCategory.largeCategoryId == 2}">
-                                    <div th:each="smallCategory : ${largeCategory.smallCategories}"
-                                         th:data-value="${smallCategory.smallCategoryIndex}"
-                                         th:text="${smallCategory.smallCategoryName}"
-                                         class="search-team"></div>
-                                </th:block>
-                            </div>
-                        </div>
-                    </th:block>
+                    <div id="smallCategoryModule">
+                        <!-- 작은 카테고리 Module -->
+                    </div>
                 </div>
                 <input type="text" class="write-subject" id="writeSubject" name="subject" placeholder="제목"
                         th:value="${board.subject}">
@@ -144,8 +61,15 @@
     <div class="visibility-hidden" id="hiddenBox">
         <input type="hidden" id="userId" name="userId" th:value="${session.user.userId}">
         <input type="hidden" id="boardId" name="boardId" th:value="${board.boardId}">
+        <div class="visibility-hidden image-file"
+             th:each="attach : ${board.boardAttaches}"
+             th:data-file='|{"userFileName" : "${attach.userFileName}", "savedFileName" : "${attach.savedFileName}", "fileSize" : "${attach.fileSize}"}|'></div>
     </div>
     </form>
+
+    <div id="editorContent" th:utext="${board.content}" style="display:none;"></div>
+    <input type="hidden" id="boardSmallCategoryIndex" th:value="${board.smallCategory.smallCategoryIndex}">
+    <input type="hidden" id="returnUri" th:value="${returnUri}">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -153,68 +77,180 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <!-- Text Editor -->
     <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-    <script type="text/javascript" th:inline="javascript">
+    <script type="text/javascript" th:inline="none">
         $(window).on('load', function() {
+            let totalUploadedSize = 0;
+            const MAX_TEXT_LENGTH = 10000;
+            const MAX_FILE_SIZE = 10 * 1024 * 1024;     // 개별 파일 제한: 10MB
+            const MAX_TOTAL_SIZE = 10 * 1024 * 1024;     // 전체 누적 제한: 10MB
+            let lastValidContent = ""; // 마지막 유효한 텍스트 저장
+            let uploadedImageSizeMap = new Map(); // key: savedFileName, value: blob.size
+            let currentlyVisibleImages = new Set();           // 이전 change 시점에 에디터에 표시되던 이미지 목록
+
             const editor = new toastui.Editor({
-                    el: document.querySelector('#content'), // 에디터를 적용할 요소 (컨테이너)
-                    height: '500px',                        // 에디터 영역의 높이 값 (OOOpx || auto)
-                    initialEditType: 'wysiwyg',            // 최초로 보여줄 에디터 타입 (markdown || wysiwyg)
-                    previewStyle: 'vertical',                // 마크다운 프리뷰 스타일 (tab || vertical)
-                    hideModeSwitch: true,
-                    placeholder: "내용을 입력해 주세요.",
-                    //useDefaultHTMLSanitizer: false,          // 🔥 기본 HTML 필터링 완전 비활성화
-                    //customHTMLSanitizer: html => html,       // HTML 필터링 방지
-                    hooks: {
-                        async addImageBlobHook(blob, callback) {     // 이미지 업로드 로직 커스텀
-                            try {
+                el: document.querySelector('#content'), // 에디터를 적용할 요소 (컨테이너)
+                height: '500px',                        // 에디터 영역의 높이 값 (OOOpx || auto)
+                initialEditType: 'wysiwyg',            // 최초로 보여줄 에디터 타입 (markdown || wysiwyg)
+                previewStyle: 'vertical',                // 마크다운 프리뷰 스타일 (tab || vertical)
+                hideModeSwitch: true,
+                placeholder: "내용을 입력해 주세요.",
+                //useDefaultHTMLSanitizer: false,          // 🔥 기본 HTML 필터링 완전 비활성화
+                //customHTMLSanitizer: html => html,       // HTML 필터링 방지
+                hooks: {
+                    async addImageBlobHook(blob, callback) {     // 이미지 업로드 로직 커스텀
+                        try {
 
-                                // 1. 에디터에 업로드한 이미지를 FormData 객체에 저장
-                                // (이때, 컨트롤러 uploadEditorImage 메서드의 파라미터인 'image'와 formData에 append 하는 key('image')값은 동일해야 함)
-                                const formData = new FormData();
-                                formData.append('image', blob);
-
-                                // 2. FileApiController - uploadEditorImage 메서드 호출
-                                const response = await fetch('/board/image-upload', {
-                                    method : 'POST',
-                                    body : formData,
-                                });
-
-                                // 3. 컨트롤러에서 전달받은 디스크에 저장된 파일명
-                                const result = await response.json();
-                                console.log('서버에 저장된 파일명 : ', result.userFileName);
-                                console.log('원본 파일명 : ', result.savedFileName);
-
-                                $('#hiddenBox').append(
-                                    `<div class='visibility-hidden image-file'
-                                    data-file='{"userFileName": "${result.userFileName}", "savedFileName": "${result.savedFileName}"}'>
-                                    </div>`
-                                );
-
-                                // 4. addImageBlobHook의 callback 함수를 통해, 디스크에 저장된 이미지를 에디터에 렌더링
-                                //const imageUrl = `/board/image-print?filename=${result.savedFileName}`;
-                                //callback(imageUrl, 'image alt attribute');
-
-                                callback(`/board/image-print?filename=${result.savedFileName}`);
-
-                            } catch (error) {
-                                console.error('업로드 실패 : ', error);
+                            // 1. 개별 이미지 크기 검사
+                            if (blob.size > MAX_FILE_SIZE) {
+                                alert("이미지 파일은 10MB 이하만 업로드 가능합니다.");
+                                return;
                             }
+
+                            // 2. 전체 누적 크기 검사
+                            if (totalUploadedSize + blob.size > MAX_TOTAL_SIZE) {
+                                alert("전체 업로드 용량은 10MB를 초과할 수 없습니다.");
+                                return;
+                            }
+
+                            // 3. 누적 크기 반영 및 화면 표시
+                            totalUploadedSize += blob.size;
+                            const totalMB = (totalUploadedSize / (1024 * 1024)).toFixed(2);
+                            $('#totalFileSize').text(totalMB);
+
+                            // 1. 에디터에 업로드한 이미지를 FormData 객체에 저장
+                            // (이때, 컨트롤러 uploadEditorImage 메서드의 파라미터인 'image'와 formData에 append 하는 key('image')값은 동일해야 함)
+                            const formData = new FormData();
+                            formData.append('image', blob);
+
+                            // 2. FileApiController - uploadEditorImage 메서드 호출
+                            const response = await fetch('/board/image-upload', {
+                                method : 'POST',
+                                body : formData,
+                            });
+
+                            // 3. 컨트롤러에서 전달받은 디스크에 저장된 파일명
+                            const result = await response.json();
+                            uploadedImageSizeMap.set(result.savedFileName, blob.size);
+                            console.log('서버에 저장된 파일명 : ', result.userFileName);
+                            console.log('원본 파일명 : ', result.savedFileName);
+
+                            $('#hiddenBox').append(
+                                `<div class='visibility-hidden image-file'
+                                data-file='{"userFileName": "${result.userFileName}", "savedFileName": "${result.savedFileName}", "fileSize": "${blob.size}"}'>
+                                </div>`
+                            );
+
+                            // 4. addImageBlobHook의 callback 함수를 통해, 디스크에 저장된 이미지를 에디터에 렌더링
+                            //const imageUrl = `/board/image-print?filename=${result.savedFileName}`;
+                            //callback(imageUrl, 'image alt attribute');
+
+                            callback(`/board/image-print?filename=${result.savedFileName}`);
+
+                        } catch (error) {
+                            console.error('업로드 실패 : ', error);
                         }
                     }
+                }
             });
-            editor.setHTML(/*[[${board.content}]]*/'');
+            const contentHtml = $('#editorContent').html();
+            editor.setHTML(contentHtml);
+
+            function readFile() {
+                let textContent = editor.getMarkdown(); // 또는 getHTML(), getText() 도 가능
+
+                // 1. 현재 마크다운에서 이미지 URL 추출
+                const imageMarkdownRegex = /!\[[^\]]*\]\((.*?)\)/g;
+                const imageUrls = [...textContent.matchAll(imageMarkdownRegex)].map(match => match[1]);
+                const fileNameRegex = /filename=([^&\)]+)/;
+
+                $('.image-file').each(function () {
+                    const fileData = $(this).data('file');
+                    const size = parseInt(fileData.fileSize, 10);
+                    if (!isNaN(size)) {
+                        totalUploadedSize += size;
+                    }
+
+                    uploadedImageSizeMap.set(fileData.savedFileName, size);
+                });
+
+                const visibleImageSizeMB = (totalUploadedSize / (1024 * 1024)).toFixed(2);
+                $('#totalFileSize').text(visibleImageSizeMB);
+
+                textContent = textContent.replace(/!\[[^\]]*\]\([^\)]*\)/g, '');
+                const length = textContent.length;
+
+                lastValidContent = textContent; // 유효한 텍스트 저장
+                $('#totalTextSize').text(length);
+            }
+            readFile();
+
+            editor.on('change', () => {
+                let textContent = editor.getMarkdown(); // 또는 getHTML(), getText() 도 가능
+
+                // 1. 현재 마크다운에서 이미지 URL 추출
+                const imageMarkdownRegex = /!\[[^\]]*\]\((.*?)\)/g;
+                const imageUrls = [...textContent.matchAll(imageMarkdownRegex)].map(match => match[1]);
+                const fileNameRegex = /filename=([^&\)]+)/;
+
+                const currentImageFiles = new Set(
+                    imageUrls.map(url => {
+                        const match = url.match(fileNameRegex);
+                        return match ? match[1] : null;
+                    }).filter(f => f !== null)
+                );
+
+                // 2. 삭제된 이미지 찾기 (이전 Set - 현재 Set)
+                for (const fileName of currentlyVisibleImages) {
+                    if (!currentImageFiles.has(fileName)) {
+                        // 삭제된 이미지 → Map에서 제거
+                        if (uploadedImageSizeMap.has(fileName)) {
+                            const size = uploadedImageSizeMap.get(fileName);
+                            totalUploadedSize -= size;
+                            uploadedImageSizeMap.delete(fileName);
+                        }
+
+                        // 삭제된 이미지에 해당하는 div 제거
+                        $(`.image-file`).each(function () {
+                            const data = $(this).data('file');
+                            if (data && data.savedFileName === fileName) {
+                                $(this).remove(); // div 제거
+                            }
+                        });
+                    }
+                }
+
+                // 3. 현재 상태로 업데이트
+                currentlyVisibleImages = currentImageFiles;
+
+                // 4. 표시 중인 이미지 총 용량 계산
+                let currentVisibleImageSize = 0;
+                for (const fileName of currentImageFiles) {
+                    if (uploadedImageSizeMap.has(fileName)) {
+                        currentVisibleImageSize += uploadedImageSizeMap.get(fileName);
+                    }
+                }
+
+                const visibleImageSizeMB = (currentVisibleImageSize / (1024 * 1024)).toFixed(2);
+                $('#totalFileSize').text(visibleImageSizeMB);
+
+                textContent = textContent.replace(/!\[[^\]]*\]\([^\)]*\)/g, '');
+                const length = textContent.length;
+
+                if (length > MAX_TEXT_LENGTH) {
+                    alert("최대 10,000자까지 입력 가능합니다.");
+                    editor.setMarkdown(lastValidContent); // 이전 상태로 롤백
+                    return;
+                }
+
+                lastValidContent = textContent; // 유효한 텍스트 저장
+                $('#totalTextSize').text(length);
+            });
 
             const writeSubject = $('#writeSubject');
             const writeLargeCategory = $('#writeLargeCategory');
-            const normalCategory = $('#normalCategory');
-            const fanCategory = $('#fanCategory');
-            const teamValueContainer = $('#teamValueContainer');
-            const contentWidth = $('#content').width();
-            const appendTeam = $('#appendTeam');
-            const teamSearchValue = $('#teamSearchValue');
-            const refreshBtn = $('#addon-wrapping');
-            const deleteOption = $('#deleteOption');
-            const teamArrEl = $('.search-team');
+            const smallCategoryModule = $('#smallCategoryModule');
+            const boardSmallCategoryIndex = $('#boardSmallCategoryIndex').val();
+            const returnUri = $('#returnUri').val();
 
             // FORM 관련 변수
             const writeBoardForm = $('#writeBoardForm');
@@ -222,103 +258,37 @@
             // 이미지 파일 정규식
             const regex = /![]\(\/board\/image-print\?filename=([\w-]+\.png)\)/g;
 
-            const width = contentWidth / 2;
-
-            writeSubject.css('width', contentWidth);
-            writeLargeCategory.css('width', width);
-            normalCategory.css('width', width);
-            fanCategory.css('width', width);
-            teamValueContainer.css('width', width);
-
-            writeLargeCategory.on('change', () => {
-              const writeLargeCategoryValue = writeLargeCategory.val();
-              if (writeLargeCategoryValue == 1) {
-                deleteOption.remove();
-                normalCategory.removeAttr('disabled');
-                normalCategory.removeClass('display-none');
-                fanCategory.addClass('display-none');
-                teamValueContainer.addClass('display-none');
-              } else if (writeLargeCategoryValue == 2) {
-                fanCategory.removeClass('display-none');
-                normalCategory.addClass('display-none');
-
-                appendTeam.css({
-                  'bottom' : writeLargeCategory.height() * 2,
-                  'max-height': teamArrEl.outerHeight() * 5 + 'px',
-                  'overflow-y': 'auto'
-                });
-              }
-            });
-
-            teamSearchValue.on('input', () => {
-              const searchValue = teamSearchValue.val();
-              const result = teamArrEl.filter((i, el) => $(el).text().trim().includes(searchValue));
-              appendTeam.empty();
-              for (let i = 0; i < result.length; i++) {
-                appendTeam.append(`<div class='search-team'>${$(result[i]).text()}</div>`);
-              }
-              if (searchValue.length == 0) {
-                for (let i = 0; i < teamArrEl.length; i++) {
-                  appendTeam.append(`<div class='search-team'>${$(teamArrEl[i]).text()}</div>`);
-                }
-              }
-            });
-
-            appendTeam.on('click', '.search-team', (e) => {
-              const value = $(e.target).html();
-              const indexValue = $(e.target).data('value');
-              $('#teamValue').val(value);
-              $('#teamIndexValue').val(indexValue);
-              teamValueContainer.removeClass('display-none');
-              fanCategory.addClass('display-none');
-            });
-
-            refreshBtn.on('click', () => {
-              fanCategory.removeClass('display-none');
-              teamValueContainer.addClass('display-none');
-              appendTeam.css({
-                'bottom' : writeLargeCategory.height() * 2,
-                'max-height': teamArrEl.outerHeight() * 5 + 'px',
-                'overflow-y': 'auto'
-              });
-            });
+            // 작은 카테고리 LOAD
+            smallCategoryModule.load("/board/get-modify-small-category?largeCategory=" + writeLargeCategory.val() +
+                                                                        "&boardSmallCategory=" + boardSmallCategoryIndex);
 
             // write ajax submit
             submitButton.on('click', (e) => {
                 const writeBoardForm = $('#writeBoardForm');
                 const largeCategory = $('#writeLargeCategory').val();
-                const normalValue = $('#normalCategory').val();
-                const teamValue = $('#teamValue').val();
+                const smallCategory = $('#smallCategory').val();
                 const subject = $('#writeSubject').val();
                 const content = editor.getHTML();
                 const userId = $('#userId').val();
 
                 const imageFiles = $('.image-file');
                 const ImageFilesArr = [];
-                if (imageFiles.length == 0) {
-                    console.log("length = 0");
-                } else {
+                if (imageFiles.length != 0) {
                     for (let i = 0; i < imageFiles.length; i++) {
                         ImageFilesArr.push(imageFiles.eq(i).data('file'));
                     }
                 }
-                console.log(ImageFilesArr);
 
-                //const matches = [...content.matchAll(regex)].map(match => match[1]);
-
-                if (largeCategory == '카테고리') {
+                if (largeCategory == 0) {
                     alert('카테고리를 선택해주세요');
                     e.preventDefault();
                     return;
                 }
 
-                if (largeCategory == 2) {
-                    if (teamValue.length == 0) {
-                        alert('팀을 선택해주세요');
-                        teamSearchValue.focus();
-                        e.preventDefault();
-                        return;
-                    }
+                if (smallCategory == 0) {
+                    alert('카테고리를 선택해주세요');
+                    e.preventDefault();
+                    return;
                 }
 
                 if (subject.length == 0) {
@@ -335,8 +305,7 @@
                 }
 
                 const data = writeBoardForm.serializeArray();
-                if (largeCategory == 1) data.splice(2, 1);
-                if (largeCategory == 2) data.splice(1, 1);
+
                 data.push({
                     name : 'content',
                     value : content
@@ -347,7 +316,7 @@
                         value : JSON.stringify(ImageFilesArr)
                     });
                 }
-                console.log(data);
+
                 $.ajax({
                     url : writeBoardForm.attr('action'),
                     method : writeBoardForm.attr('method'),
@@ -356,7 +325,7 @@
                     success : (response, status, xhr) => {
                         if (response == "success") {
                             alert('수정되었습니다.');
-                            location.href="/";
+                            location.href=`${returnUri}`;
                         };
                     },
                     error : (xhr, status, err) => {

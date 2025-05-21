@@ -57,4 +57,6 @@ public interface BoardService {
     YoutubeDto findYoutube();
 
     List<BoardDto> findMypageBoard(int boardNo, String userId, int tabNo);
+
+    List<BoardSmallCategoryDto> findSmallCategoryWithLargeCategoryId(int largeCategory);
 }

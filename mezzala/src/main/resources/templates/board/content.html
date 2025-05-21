@@ -301,11 +301,13 @@
                 }
             });
         }
-        commentModuleBox.load('/board/bring-comment?boardId=' + boardId, commentLoad);
+        commentModuleBox.load('/board/bring-comment?boardId=' + boardId + '&pageNo=' + commentPageNo, commentLoad);
 
         // 글 수정 기능
         $('#modifyContentButton').on('click', (e) => {
-            location.href = '/board/modify-content?boardId=' + boardId;
+            const url = new URL(window.location.href);
+            const returnUri = encodeURIComponent(url.pathname + url.search);
+            location.href = '/board/modify-content?boardId=' + boardId + '&returnUri=' + returnUri;
         });
 
         // 글 삭제 기능
@@ -334,13 +336,13 @@
         // 좋아요, 북마크 버튼 LOAD
         let likeState = '';
         let bookmarkState = '';
-        if (likeUserActions[0].actionId == null) {
+        if (!likeUserActions || likeUserActions.length === 0 || likeUserActions[0].actionId == null) {
             likeState = "like";
         } else {
             const likeResult = likeUserActions.find(e => e.boardId == boardId && e.actionCategory == "like");
             likeState = likeResult != undefined ? "cancelLike" : "like";
         }
-        if (bookmarkUserActions[0].actionId == null) {
+        if (!bookmarkUserActions || bookmarkUserActions.length === 0 || bookmarkUserActions[0].actionId == null) {
             bookmarkState = "bookmark";
         } else {
             const bookmarkResult = bookmarkUserActions.find(e => e.boardId == boardId && e.actionCategory == "bookmark");

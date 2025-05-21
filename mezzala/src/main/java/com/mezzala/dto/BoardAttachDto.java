@@ -11,6 +11,7 @@ public class BoardAttachDto {
     private int attachId;
     private String userFileName;
     private String savedFileName;
+    private int fileSize;
 
     // board
     private int boardId;

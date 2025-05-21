@@ -263,9 +263,12 @@
                     contentModule.load("/admin/get-content?to=" + to + "&categoryPart=" + categoryPart);
                 }
                 if (categoryPart == "small") {
-                    $('#addSmallCategoryContainer').removeClass('display-none');
-                    $('#addLargeCategoryContainer').addClass('display-none');
-                    contentModule.load("/admin/get-content?to=" + to + "&categoryPart=" + categoryPart);
+                    boardManageModule.load("/admin/get-category-control", () => {
+                        $('#addSmallCategoryContainer').removeClass('display-none');
+                        $('#addLargeCategoryContainer').addClass('display-none');
+                        $('#categoryPart option[value="small"]').prop('selected', true);
+                        contentModule.load("/admin/get-content?to=" + to + "&categoryPart=" + categoryPart);
+                    });
                 }
             });
 

@@ -179,4 +179,9 @@ public class BoardServiceImpl implements BoardService {
         return boards;
     }
 
+    @Override
+    public List<BoardSmallCategoryDto> findSmallCategoryWithLargeCategoryId(int largeCategory) {
+        return boardMapper.selectSmallCategoryWithLargeCategoryId(largeCategory);
+    }
+
 }

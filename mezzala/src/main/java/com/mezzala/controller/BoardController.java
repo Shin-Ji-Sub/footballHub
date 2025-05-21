@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.CallSite;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -33,8 +35,8 @@ public class BoardController {
     private BoardService boardService;
 
     // 파일을 업로드할 디렉터리 경로
-//    private final String uploadDir = "/webapp/board-attachments";
-//    private final String uploadDir = Paths.get("D:", "tui-editor", "upload").toString();
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
     @GetMapping(path = {"/write"})
     public String write(Model model,
@@ -55,6 +57,30 @@ public class BoardController {
         return "board/write";
     }
 
+    @GetMapping(path = {"/get-small-category"})
+    public String getSmallCategory(Model model,
+                                   @RequestParam(name = "largeCategory", defaultValue = "0") int largeCategory) {
+        List<BoardSmallCategoryDto> smallCategories = null;
+        if (largeCategory != 0) {
+            smallCategories = boardService.findSmallCategoryWithLargeCategoryId(largeCategory);
+        }
+        model.addAttribute("smallCategories", smallCategories);
+        return "board/modules/smallCategorySelectModule";
+    }
+
+    @GetMapping(path = {"/get-modify-small-category"})
+    public String getModifySmallCategory(Model model,
+                                         @RequestParam(name = "largeCategory", defaultValue = "0") int largeCategory,
+                                         @RequestParam(name = "boardSmallCategory") int boardSmallCategory) {
+        List<BoardSmallCategoryDto> smallCategories = null;
+        if (largeCategory != 0) {
+            smallCategories = boardService.findSmallCategoryWithLargeCategoryId(largeCategory);
+        }
+        model.addAttribute("smallCategories", smallCategories);
+        model.addAttribute("boardSmallCategory", boardSmallCategory);
+        return "board/modules/modifySmallCategorySelectModule";
+    }
+
     /**
      * 에디터 이미지 업로드
      * @param image 파일 객체
@@ -68,9 +94,16 @@ public class BoardController {
         if (image.isEmpty()) {
             return result;
         }
+        System.out.println(image.getSize());
+        // 🔐 파일 사이즈 체크 (20MB = 20 * 1024 * 1024)
+        if (image.getSize() > 10 * 1024 * 1024) {
+            result.put("error", "파일 크기는 20MB를 초과할 수 없습니다.");
+            return result;
+        }
 
         try {
-            String dir = req.getServletContext().getRealPath("/board-attachments");
+            String dir = uploadDir;
+//            String dir = req.getServletContext().getRealPath("/board-attachments");
             String userFileName = image.getOriginalFilename();
             String savedFileName = Util.makeUniqueFileName(userFileName);
             image.transferTo(new File(dir, savedFileName));
@@ -118,7 +151,8 @@ public class BoardController {
     @ResponseBody
     public byte[] printEditorImage(@RequestParam final String filename, HttpServletRequest req) {
         // 업로드된 파일의 전체 경로
-        String dir = req.getServletContext().getRealPath("/board-attachments");
+        String dir = uploadDir;
+//        String dir = req.getServletContext().getRealPath("/board-attachments");
         String fileFullPath = Paths.get(dir, filename).toString();
         File uploadedFile = new File(fileFullPath);
         if (uploadedFile.exists() == false) {
@@ -184,7 +218,6 @@ public class BoardController {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
                 imageFiles = objectMapper.readValue(ImageFilesArr, new TypeReference<List<Map<String, String>>>() {});
-
             } catch (Exception e) {
                 e.printStackTrace();
                 return "error";
@@ -195,98 +228,6 @@ public class BoardController {
 
         return "success";
     }
-
-    private static class UploadResponse {
-        public boolean success;
-        public String url;
-
-        public UploadResponse(boolean success, String url) {
-            this.success = success;
-            this.url = url;
-        }
-    }
-
-    @PostMapping(path = "/upload-video", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public UploadResponse uploadVideo(@RequestParam("video") MultipartFile file, HttpServletRequest req) {
-        try {
-            // 업로드 주소
-            String dir = req.getServletContext().getRealPath("/board-attachments");
-
-            // 1. 확장자 체크
-            String originalFilename = file.getOriginalFilename();
-            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
-
-            System.out.println("📂 업로드된 파일: " + originalFilename);
-            System.out.println("📏 파일 크기: " + file.getSize() + " bytes");
-
-            if (!fileExtension.matches("mp4|webm|mov")) {
-                return new UploadResponse(false, "Invalid file type");
-            }
-
-            // 2. 크기 체크 (20MB 이하)
-            if (file.getSize() > 20 * 1024 * 1024) {
-                return new UploadResponse(false, "File too large");
-            }
-
-            // 3. 저장할 파일명 생성 (UUID 사용)
-            String savedFileName = UUID.randomUUID() + "." + fileExtension;
-            file.transferTo(new File(dir, savedFileName));
-
-            // 4. 저장된 파일의 URL 반환
-            String fileUrl = "/board-attachments/" + savedFileName;
-            System.out.println("✅ 저장된 파일 URL: " + fileUrl);
-
-            return new UploadResponse(true, fileUrl);
-//            String fileUrl = req.getContextPath() + "/board-attachments/" + savedFileName;
-//            return new UploadResponse(true, fileUrl);
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new UploadResponse(false, "Upload failed");
-        }
-    }
-
-//    @PostMapping(path = {"/video-upload"})
-//    @ResponseBody
-//    public String uploadEditorVideo(@RequestParam final MultipartFile file, HttpServletRequest req) {
-//        if (file.isEmpty()) {
-//            return "";
-//        }
-//
-//        try {
-//            String dir = req.getServletContext().getRealPath("/board-attachments");
-//            String userFileName = file.getOriginalFilename();
-//            String savedFileName = Util.makeUniqueFileName(userFileName);
-//            file.transferTo(new File(dir, savedFileName));
-//            return savedFileName;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return "";
-//        }
-//    }
-//
-//    @GetMapping(path = {"/video-print"}, produces = {MediaType.})
-//    @ResponseBody
-//    public byte[] printEditorVideo(@RequestParam final String filename, HttpServletRequest req) {
-//        // 업로드된 파일의 전체 경로
-//        String dir = req.getServletContext().getRealPath("/board-attachments");
-//        String fileFullPath = Paths.get(dir, filename).toString();
-//        File uploadedFile = new File(fileFullPath);
-//        if (uploadedFile.exists() == false) {
-//            throw new RuntimeException();
-//        }
-//        try {
-//            // 이미지 파일을 byte[]로 변환 후 반환
-//            byte[] imageBytes = Files.readAllBytes(uploadedFile.toPath());
-//            return imageBytes;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            byte[] error = {1};
-//            return error;
-//        }
-//    }
 
 //    @GetMapping(path = {"content"})
 //    public String content(Model model, @RequestParam(name = "boardId") int boardId,
@@ -417,13 +358,15 @@ public class BoardController {
 
     @GetMapping(path = {"/modify-content"})
     public String modifyContent(Model model,
-                                @RequestParam(name = "boardId") int boardId) {
+                                @RequestParam(name = "boardId") int boardId,
+                                @RequestParam(name = "returnUri") String returnUri) {
 
         List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
-        model.addAttribute("board", boards.get(0));
-
         List<BoardLargeCategoryDto> largeCategories = boardService.findAllCategory();
+
+        model.addAttribute("board", boards.get(0));
         model.addAttribute("largeCategories", largeCategories);
+        model.addAttribute("returnUri", returnUri);
 
         return "board/modify";
     }
@@ -519,7 +462,10 @@ public class BoardController {
     @GetMapping(path = {"/bring-comment"})
     public String bringComment(Model model, HttpSession session, HttpServletRequest req,
                                @RequestParam(name = "boardId") int boardId,
-                               @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
+                               @RequestParam(name = "pageNo", required = false) Integer pageNo) {
+
+        pageNo = (pageNo != null) ? pageNo : 1;
+
         // paging
         int pageSize = 10;
         int pagerSize = 5;

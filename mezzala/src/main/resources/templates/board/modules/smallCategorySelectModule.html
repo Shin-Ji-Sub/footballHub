@@ -1,0 +1,8 @@
+<select xmlns:th="http://www.thymeleaf.org"
+        disabled name="smallCategoryIndex" class="form-select write-subject" id="smallCategory" aria-label="Default select example">
+    <option selected value="0">카테고리</option>
+    <option th:if="${smallCategories != null}"
+            th:each="smallCategory : ${smallCategories}"
+            th:value="${smallCategory.smallCategoryIndex}"
+            th:text="${smallCategory.smallCategoryName}"></option>
+</select>

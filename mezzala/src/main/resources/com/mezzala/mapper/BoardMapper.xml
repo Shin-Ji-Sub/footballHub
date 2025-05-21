@@ -47,6 +47,7 @@
             <id property="attachId" column="attach_id" />
             <result property="userFileName" column="user_file_name" />
             <result property="savedFileName" column="saved_file_name" />
+            <result property="fileSize" column="file_size"/>
         </collection>
         <!-- 1:N 관계 user_action -->
         <collection property="userActions" ofType="com.mezzala.dto.UserActionDto">
@@ -134,6 +135,17 @@
             small.small_category_index
     </select>
 
+    <select id="selectSmallCategoryWithLargeCategoryId" parameterType="int" resultType="BoardSmallCategoryDto">
+        SELECT
+            small_category_index AS smallCategoryIndex,
+            large_category_id AS largeCategoryId,
+            small_category_name AS smallCategoryName
+        FROM
+            board_small_category
+        WHERE
+            large_category_id = #{largeCategory}
+    </select>
+
     <insert id="insertBoard" parameterType="BoardDto" useGeneratedKeys="true" keyProperty="boardId">
         INSERT INTO
             board (
@@ -157,6 +169,7 @@
             board_attach (
                 user_file_name,
                 saved_file_name,
+                file_size,
                 board_id
             )
         VALUES
@@ -164,6 +177,7 @@
             (
                 #{file.userFileName},
                 #{file.savedFileName},
+                #{file.fileSize},
                 #{boardId}
             )
             </foreach>
@@ -389,19 +403,25 @@
             b.reg_date,
             b.visit_count,
             b.board_state,
+
             u.user_id,
             u.nickname,
             u.social_method,
             u.join_date,
             u.role_id,
             u.state,
+
             ba.attach_id,
             ba.user_file_name,
             ba.saved_file_name,
+            ba.file_size,
+
             lc.large_category_id,
             lc.large_category_name,
+
             sc.small_category_index,
             sc.small_category_name,
+
             ua.action_id,
             ua.action_category,
             ua.user_id,
@@ -451,19 +471,25 @@
             b.reg_date,
             b.visit_count,
             b.board_state,
+
             u.user_id,
             u.nickname,
             u.social_method,
             u.join_date,
             u.role_id,
             u.state,
+
             ba.attach_id,
             ba.user_file_name,
             ba.saved_file_name,
+            ba.file_size,
+
             lc.large_category_id,
             lc.large_category_name,
+
             sc.small_category_index,
             sc.small_category_name,
+
             ua.action_id,
             ua.action_category,
             ua.user_id,

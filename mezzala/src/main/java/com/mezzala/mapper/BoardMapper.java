@@ -1,9 +1,6 @@
 package com.mezzala.mapper;
 
-import com.mezzala.dto.BoardDto;
-import com.mezzala.dto.BoardLargeCategoryDto;
-import com.mezzala.dto.CommentDto;
-import com.mezzala.dto.YoutubeDto;
+import com.mezzala.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -77,4 +74,6 @@ public interface BoardMapper {
 
     List<BoardDto> selectMypageCommentBoard(@Param("boardNo") int boardNo, @Param("userId") String userId,
                                             @Param("tabNo") int tabNo);
+
+    List<BoardSmallCategoryDto> selectSmallCategoryWithLargeCategoryId(int largeCategory);
 }

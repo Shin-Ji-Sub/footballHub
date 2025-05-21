@@ -323,6 +323,13 @@ public class AdminController {
 
     }
 
+    @GetMapping(path = {"/get-category-control"})
+    public String getCategoryControl(Model model) {
+        List<BoardLargeCategoryDto> largeCategories = adminService.findAllLargeCategory();
+        model.addAttribute("largeCategories", largeCategories);
+        return "admin/board-manage/modules/controlCategoryModule";
+    }
+
     @GetMapping(path = {"/detail-content"})
     public String detailContent(Model model,
                                 @RequestParam(name = "to", defaultValue = "boardSearch") String to,
