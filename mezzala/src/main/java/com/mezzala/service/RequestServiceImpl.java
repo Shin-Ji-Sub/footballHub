@@ -1,9 +1,6 @@
 package com.mezzala.service;
 
-import com.mezzala.dto.BoardDto;
-import com.mezzala.dto.BoardSmallCategoryDto;
-import com.mezzala.dto.CommentDto;
-import com.mezzala.dto.RequestBoardDto;
+import com.mezzala.dto.*;
 import com.mezzala.mapper.NormalhubMapper;
 import com.mezzala.mapper.RequestMapper;
 import lombok.Setter;
@@ -68,5 +65,10 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public int findAllRequestCommentCount(int boardId) {
         return requestMapper.selectAllRequestCommentCount(boardId);
+    }
+
+    @Override
+    public List<BoardLargeCategoryDto> findAllLargeCategory() {
+        return requestMapper.selectAllLargeCategory();
     }
 }

@@ -1,9 +1,6 @@
 package com.mezzala.controller;
 
-import com.mezzala.dto.BoardDto;
-import com.mezzala.dto.CommentDto;
-import com.mezzala.dto.RequestBoardDto;
-import com.mezzala.dto.UserDto;
+import com.mezzala.dto.*;
 import com.mezzala.service.NormalhubService;
 import com.mezzala.service.RequestService;
 import com.mezzala.ui.ThePager;
@@ -97,7 +94,9 @@ public class RequestController {
     }
 
     @GetMapping(path = {"/write"})
-    public String write() {
+    public String write(Model model) {
+        List<BoardLargeCategoryDto> largeCategories = requestService.findAllLargeCategory();
+        model.addAttribute("largeCategories", largeCategories);
         return "request/write";
     }
 

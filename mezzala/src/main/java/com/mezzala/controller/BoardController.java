@@ -102,8 +102,8 @@ public class BoardController {
         }
 
         try {
-//            String dir = uploadDir;
-            String dir = req.getServletContext().getRealPath("/board-attachments");
+            String dir = uploadDir;
+//            String dir = req.getServletContext().getRealPath("/board-attachments");
             String userFileName = image.getOriginalFilename();
             String savedFileName = Util.makeUniqueFileName(userFileName);
             image.transferTo(new File(dir, savedFileName));
@@ -151,8 +151,8 @@ public class BoardController {
     @ResponseBody
     public byte[] printEditorImage(@RequestParam final String filename, HttpServletRequest req) {
         // 업로드된 파일의 전체 경로
-//        String dir = uploadDir;
-        String dir = req.getServletContext().getRealPath("/board-attachments");
+        String dir = uploadDir;
+//        String dir = req.getServletContext().getRealPath("/board-attachments");
         String fileFullPath = Paths.get(dir, filename).toString();
         File uploadedFile = new File(fileFullPath);
         if (uploadedFile.exists() == false) {

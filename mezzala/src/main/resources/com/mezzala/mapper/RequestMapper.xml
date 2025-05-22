@@ -332,4 +332,12 @@
             board_id = #{boardId}
     </select>
 
+    <select id="selectAllLargeCategory" resultType="BoardLargeCategoryDto">
+        SELECT
+            large_category_id AS largeCategoryId,
+            large_category_name AS largeCategoryName
+        FROM
+            board_large_category
+    </select>
+
 </mapper>

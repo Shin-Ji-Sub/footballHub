@@ -1,9 +1,6 @@
 package com.mezzala.service;
 
-import com.mezzala.dto.BoardDto;
-import com.mezzala.dto.BoardSmallCategoryDto;
-import com.mezzala.dto.CommentDto;
-import com.mezzala.dto.RequestBoardDto;
+import com.mezzala.dto.*;
 
 import java.util.List;
 
@@ -28,4 +25,6 @@ public interface RequestService {
     void modifyCommentWithCommentIdAndBoardId(int commentId, int boardId, String content);
 
     int findAllRequestCommentCount(int boardId);
+
+    List<BoardLargeCategoryDto> findAllLargeCategory();
 }

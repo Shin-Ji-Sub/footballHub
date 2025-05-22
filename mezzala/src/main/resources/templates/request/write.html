@@ -25,10 +25,12 @@
                 </ul>
                 <div class="write-header">
                     <select name="category" class="form-select write-subject" id="requestCategory" aria-label="Default select example">
-                        <option value="일반HUB">일반HUB</option>
-                        <option value="팬덤HUB">팬덤HUB</option>
-                        <option value="FootballWiki">FootballWiki</option>
+                        <option th:each="largeCategory : ${largeCategories}"
+                                th:value="${largeCategory.largeCategoryName}"
+                                th:text="${largeCategory.largeCategoryName}"></option>
+                        <option value="일정표">일정표</option>
                         <option value="순위표">순위표</option>
+                        <option value="요청글">요청글</option>
                         <option value="기타">기타</option>
                     </select>
                 </div>

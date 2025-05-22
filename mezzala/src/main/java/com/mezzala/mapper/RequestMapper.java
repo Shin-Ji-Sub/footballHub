@@ -1,9 +1,6 @@
 package com.mezzala.mapper;
 
-import com.mezzala.dto.BoardDto;
-import com.mezzala.dto.BoardSmallCategoryDto;
-import com.mezzala.dto.CommentDto;
-import com.mezzala.dto.RequestBoardDto;
+import com.mezzala.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -36,4 +33,6 @@ public interface RequestMapper {
                                               @Param("content") String content, @Param("modifyDate") Timestamp modifyDate);
 
     int selectAllRequestCommentCount(int boardId);
+
+    List<BoardLargeCategoryDto> selectAllLargeCategory();
 }
