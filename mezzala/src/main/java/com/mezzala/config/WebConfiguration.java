@@ -60,9 +60,9 @@ public class WebConfiguration implements WebMvcConfigurer {
         return new StandardServletMultipartResolver();
     }
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/board-attachments/**")
-                .addResourceLocations("file:/home/ec2-user/upload/board-attachments");
-    }
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/board-attachments/**")
+//                .addResourceLocations("file:/home/ec2-user/upload/board-attachments");
+//    }
 }

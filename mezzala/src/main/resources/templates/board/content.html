@@ -645,7 +645,7 @@
                     success : (response, status, xhr) => {
                         if (response == "success") {
                             alert(`${blockUserNickname}님을 차단하였습니다.`);
-                            location.href = "/home";
+                            location.reload();
                         }
                         if (response == "fail") {
                             alert('이미 차단된 사용자입니다.');

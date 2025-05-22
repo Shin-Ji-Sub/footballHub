@@ -889,6 +889,19 @@
             comment c2
         ON
             c1.comment_id = c2.parent_id
+        <choose>
+            <when test="userId.length != null and userId != ''">
+                AND
+                    c2.user_id NOT IN (
+                        SELECT
+                            bu.block_user
+                        FROM
+                            block_user bu
+                        WHERE
+                            bu.user_id = #{userId}
+                    )
+            </when>
+        </choose>
         LEFT JOIN
             comment_action ca2
         ON
@@ -897,16 +910,40 @@
             user u
         ON
             c1.user_id = u.user_id
+        <choose>
+            <when test="userId.length != null and userId != ''">
+                AND
+                    u.user_id NOT IN (
+                        SELECT
+                            bu.block_user
+                        FROM
+                            block_user bu
+                        WHERE
+                            bu.user_id = #{userId}
+                    )
+            </when>
+        </choose>
         LEFT JOIN
             user u2
         ON
             c2.user_id = u2.user_id
-<!--        WHERE-->
-<!--            c1.board_id = ${boardId}-->
+        <choose>
+            <when test="userId.length != null and userId != ''">
+                AND
+                    u2.user_id NOT IN (
+                        SELECT
+                            bu.block_user
+                        FROM
+                            block_user bu
+                        WHERE
+                            bu.user_id = #{userId}
+                    )
+            </when>
+        </choose>
         WHERE
             c1.parent_id IS NULL
         AND
-            c1.board_id = ${boardId}
+            c1.board_id = #{boardId}
         ORDER BY
             c1.comment_id ASC,
             c2.comment_id ASC
@@ -949,7 +986,7 @@
         WHERE
             comment_id = #{commentId}
         AND
-            board_id = ${boardId}
+            board_id = #{boardId}
     </update>
 
     <update id="updateCommentWithCommentIdAndBoardId" parameterType="hashmap">
@@ -1082,7 +1119,7 @@
                         <when test="sortValue == 'latest'">
                             b2.reg_date DESC
                         </when>
-                    </choose>
+                        </choose>
                 LIMIT
                     1
                 OFFSET
@@ -1090,15 +1127,74 @@
             )
     </select>
 
-    <select id="selectAllCommentCount" parameterType="int" resultType="int">
+    <select id="selectAllCommentCount" parameterType="hashmap" resultType="int">
         SELECT
-            COUNT(*)
+            COUNT(c1.comment_id)
         FROM
-            comment
+            comment c1
+        LEFT JOIN
+            comment_action ca1
+        ON
+            c1.comment_id = ca1.comment_id
+        LEFT JOIN
+            comment c2
+        ON
+            c1.comment_id = c2.parent_id
+        <choose>
+            <when test="userId.length != null and userId != ''">
+                AND
+                    c2.user_id NOT IN (
+                        SELECT
+                            bu.block_user
+                        FROM
+                            block_user bu
+                        WHERE
+                            bu.user_id = #{userId}
+                    )
+            </when>
+        </choose>
+        LEFT JOIN
+            comment_action ca2
+        ON
+            c2.comment_id = ca2.comment_id
+        LEFT JOIN
+            user u
+        ON
+            c1.user_id = u.user_id
+        <choose>
+            <when test="userId.length != null and userId != ''">
+                AND
+                    u.user_id NOT IN (
+                        SELECT
+                            bu.block_user
+                        FROM
+                            block_user bu
+                        WHERE
+                            bu.user_id = #{userId}
+                    )
+            </when>
+        </choose>
+        LEFT JOIN
+            user u2
+        ON
+            c2.user_id = u2.user_id
+        <choose>
+            <when test="userId.length != null and userId != ''">
+                AND
+                    u2.user_id NOT IN (
+                        SELECT
+                            bu.block_user
+                        FROM
+                            block_user bu
+                        WHERE
+                            bu.user_id = #{userId}
+                    )
+            </when>
+        </choose>
         WHERE
-            board_id = ${boardId}
+            c1.parent_id IS NULL
         AND
-            parent_id IS NULL
+            c1.board_id = #{boardId}
     </select>
 
     <select id="selectAllNoticeBoardCount" resultType="int">

@@ -37,7 +37,8 @@ public interface BoardMapper {
 
     void insertRecomment(@Param("content") String content, @Param("boardId") int boardId, @Param("userId") String userId, @Param("parentId") int parentId);
 
-    List<CommentDto> selectCommentsWithBoardId(@Param("boardId") int boardId, @Param("start") int start);
+    List<CommentDto> selectCommentsWithBoardId(@Param("boardId") int boardId, @Param("start") int start,
+                                               @Param("userId") String userId);
 
     void deleteCommentWithCommentIdAndBoardId(@Param("commentId") int commentId, @Param("boardId") int boardId);
 
@@ -59,7 +60,7 @@ public interface BoardMapper {
                                   @Param("category") String category, @Param("largeCategory") int largeCategory,
                                   @Param("userId") String userId, @Param("searchValue") String searchValue);
 
-    int selectAllCommentCount(int boardId);
+    int selectAllCommentCount(@Param("boardId") int boardId, @Param("userId") String userId);
 
     int selectAllNoticeBoardCount();
 

@@ -40,7 +40,9 @@ public class AccountController {
     private AccountService accountService;
 
     @GetMapping(path = {"/sign-up"})
-    public String signUp(Model model, @RequestParam(name = "returnUri", defaultValue = "/home") String returnUri) {
+    public String signUp(Model model,
+                         @RequestParam(name = "returnUri", defaultValue = "/home") String returnUri,
+                         @RequestParam(name = "error", required = false) String error) {
         model.addAttribute("kakaoApiKey", kakaoApi.getKakaoApiKey());
         model.addAttribute("redirectUri", kakaoApi.getKakaoRedirectUri());
         model.addAttribute("naverApiKey", naverApi.getNaverApiKey());
@@ -52,6 +54,7 @@ public class AccountController {
         if (isSuccess == null) isSuccess = true;
 
         model.addAttribute("isSuccess", isSuccess);
+        model.addAttribute("error", error);
 
         return "account/sign-up";
     }

@@ -1,5 +1,6 @@
 package com.mezzala.config;
 
+import com.mezzala.oauth2.CustomOAuth2FailureHandler;
 import com.mezzala.oauth2.CustomOAuth2UserService;
 import com.mezzala.oauth2.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import java.net.URLEncoder;
 
@@ -19,6 +21,7 @@ public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final CustomOAuth2FailureHandler customOAuth2FailureHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,10 +41,7 @@ public class SecurityConfig {
                                     .userService(customOAuth2UserService)
                             )
                             .successHandler(oAuth2LoginSuccessHandler)
-                            .failureHandler((request, response, exception) -> {
-                                exception.printStackTrace(); // 콘솔 로그
-                                response.sendRedirect("/account/sign-in?error=" + URLEncoder.encode(exception.getMessage(), "UTF-8"));
-                            })
+                            .failureHandler(customOAuth2FailureHandler)
                 )
                 .logout((logout) -> logout
                         .logoutUrl("/account/log-out")

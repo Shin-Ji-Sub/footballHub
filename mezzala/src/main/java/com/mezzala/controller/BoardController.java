@@ -102,8 +102,8 @@ public class BoardController {
         }
 
         try {
-            String dir = uploadDir;
-//            String dir = req.getServletContext().getRealPath("/board-attachments");
+//            String dir = uploadDir;
+            String dir = req.getServletContext().getRealPath("/board-attachments");
             String userFileName = image.getOriginalFilename();
             String savedFileName = Util.makeUniqueFileName(userFileName);
             image.transferTo(new File(dir, savedFileName));
@@ -151,8 +151,8 @@ public class BoardController {
     @ResponseBody
     public byte[] printEditorImage(@RequestParam final String filename, HttpServletRequest req) {
         // 업로드된 파일의 전체 경로
-        String dir = uploadDir;
-//        String dir = req.getServletContext().getRealPath("/board-attachments");
+//        String dir = uploadDir;
+        String dir = req.getServletContext().getRealPath("/board-attachments");
         String fileFullPath = Paths.get(dir, filename).toString();
         File uploadedFile = new File(fileFullPath);
         if (uploadedFile.exists() == false) {
@@ -464,12 +464,15 @@ public class BoardController {
                                @RequestParam(name = "boardId") int boardId,
                                @RequestParam(name = "pageNo", required = false) Integer pageNo) {
 
+        UserDto user = (UserDto) session.getAttribute("user");
+        String userId = user != null ? user.getUserId() : "";
+
         pageNo = (pageNo != null) ? pageNo : 1;
 
         // paging
         int pageSize = 10;
         int pagerSize = 5;
-        int dataCount = boardService.findAllCommentCount(boardId);
+        int dataCount = boardService.findAllCommentCount(boardId, userId);
         String uri = req.getRequestURI();
         String linkUrl = uri.substring(uri.lastIndexOf("/") + 1);
         String queryString = req.getQueryString();
@@ -478,13 +481,12 @@ public class BoardController {
 
         ThePager pager = new ThePager(dataCount, pageNo, pageSize, pagerSize, linkUrl, queryString);
 
-        UserDto user = (UserDto) session.getAttribute("user");
         if (user != null) {
             List<CommentDto> commentActions = boardService.findCommentActions(boardId, user.getUserId());
             model.addAttribute("commentActions", commentActions);
         }
 
-        List<CommentDto> comments = boardService.findCommentsWithBoardId(boardId, start);
+        List<CommentDto> comments = boardService.findCommentsWithBoardId(boardId, start, userId);
 
         int best = -1;
         int bestCommentId = -1;

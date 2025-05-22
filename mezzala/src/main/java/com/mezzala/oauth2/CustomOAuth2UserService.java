@@ -8,12 +8,15 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -100,7 +103,14 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             Instant instantExpiresAt = userRequest.getAccessToken().getExpiresAt();
             LocalDateTime expiresAt = LocalDateTime.ofInstant(instantExpiresAt, ZoneId.systemDefault());
 
-            accountMapper.insertAccount(userId, nickname, socialMethod, encryptAccessToken, expiresAt);
+            try {
+                accountMapper.insertAccount(userId, nickname, socialMethod, encryptAccessToken, expiresAt);
+            } catch (DuplicateKeyException e) {
+                throw new OAuth2AuthenticationException(
+                        new OAuth2Error("duplicate_id", "중복된 아이디입니다.", null)
+                );
+            }
+
             users = accountMapper.selectUser(userId);
         } else {
             // 조회 될 경우(accessToken, expiresAt Update)

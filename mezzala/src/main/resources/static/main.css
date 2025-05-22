@@ -210,6 +210,15 @@ header nav {
 .penalty-box.left { top: 50%; left: 0; transform: translateY(-50%); }
 .penalty-box.right { top: 50%; right: 0; transform: translateY(-50%); }
 
+.alert {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  width: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
 
 /* Home Section */
 .main-container {

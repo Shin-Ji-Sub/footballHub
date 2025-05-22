@@ -26,7 +26,7 @@ public interface BoardService {
 
     void addComment(String content, int boardId, String userId);
 
-    List<CommentDto> findCommentsWithBoardId(int boardId, int start);
+    List<CommentDto> findCommentsWithBoardId(int boardId, int start, String userId);
 
     void addRecomment(String content, int boardId, String userId, Integer parentId);
 
@@ -46,7 +46,7 @@ public interface BoardService {
 
     List<BoardDto> findHubBoard(int boardNo, String sortValue, String category, int largeCategory, String userId, String searchValue);
 
-    int findAllCommentCount(int boardId);
+    int findAllCommentCount(int boardId, String userId);
 
     int findAllNoticeBoardCount();
 

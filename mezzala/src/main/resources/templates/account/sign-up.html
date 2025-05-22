@@ -44,7 +44,13 @@
         </div>
     </main>
 
+    <div class="alert alert-danger alert-dismissible fade" id="errorAlert" role="alert">
+        <strong th:if="${error != null}" th:text="${error}"></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
     <input type="hidden" id="isSuccess" th:value="${isSuccess}">
+    <input type="hidden" id="error" th:value="${error}">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -52,9 +58,15 @@
     <script type="text/javascript">
         $(window).on('load', function() {
             const isSuccess = $('#isSuccess').val();
+            const error = $('#error').val();
+            const errorAlert = $('#errorAlert');
 
             if (isSuccess === "false") {
                 alert("가입이 제한된 아이디입니다.\n다른 아이디로 가입해주세요.");
+            }
+
+            if (error.length != 0) {
+                errorAlert.addClass('show');
             }
         });
     </script>
