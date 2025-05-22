@@ -34,6 +34,9 @@ public class BoardController {
     @Setter(onMethod_ = {@Autowired})
     private BoardService boardService;
 
+    @Setter(onMethod_ = {@Autowired})
+    private AccountService accountService;
+
     // 파일을 업로드할 디렉터리 경로
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -102,8 +105,8 @@ public class BoardController {
         }
 
         try {
-            String dir = uploadDir;
-//            String dir = req.getServletContext().getRealPath("/board-attachments");
+//            String dir = uploadDir;
+            String dir = req.getServletContext().getRealPath("/board-attachments");
             String userFileName = image.getOriginalFilename();
             String savedFileName = Util.makeUniqueFileName(userFileName);
             image.transferTo(new File(dir, savedFileName));
@@ -151,8 +154,8 @@ public class BoardController {
     @ResponseBody
     public byte[] printEditorImage(@RequestParam final String filename, HttpServletRequest req) {
         // 업로드된 파일의 전체 경로
-        String dir = uploadDir;
-//        String dir = req.getServletContext().getRealPath("/board-attachments");
+//        String dir = uploadDir;
+        String dir = req.getServletContext().getRealPath("/board-attachments");
         String fileFullPath = Paths.get(dir, filename).toString();
         File uploadedFile = new File(fileFullPath);
         if (uploadedFile.exists() == false) {
@@ -339,6 +342,8 @@ public class BoardController {
             res.addCookie(cookie);
         }
 
+        System.out.println("[content user] : " + user);
+
         model.addAttribute("likeActions", likeActions);
         model.addAttribute("bookmarkActions", bookmarkActions);
         model.addAttribute("board", board);
@@ -414,6 +419,11 @@ public class BoardController {
                 result = "success";
             }
         }
+
+        // session user 정보 업데이트
+        List<UserDto> updateUsers = accountService.findUser(user.getUserId());
+        UserDto updateUser = updateUsers.get(0);
+        session.setAttribute("user", updateUser);
 
         return result;
     }

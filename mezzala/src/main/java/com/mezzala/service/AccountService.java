@@ -7,6 +7,8 @@ import java.util.List;
 public interface AccountService {
     List<UserDto> addAccount(String userId, String nickname, String socialMethod);
 
+    List<UserDto> findUser(String userId);
+
     void addBlockUser(String blockUser, String userId);
 
     void deleteBlockUser(String blockUserId, String userId);
@@ -14,4 +16,5 @@ public interface AccountService {
     void addReport(String reportCategory, int contentId, String userId);
 
     void deleteUser(String userId);
+
 }

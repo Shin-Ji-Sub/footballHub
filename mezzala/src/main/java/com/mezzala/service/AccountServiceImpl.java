@@ -22,6 +22,11 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
+    public List<UserDto> findUser(String userId) {
+        return accountMapper.selectUser(userId);
+    }
+
+    @Override
     public void addBlockUser(String blockUser, String userId) {
         accountMapper.insertBlockUSer(blockUser, userId);
     }
