@@ -77,4 +77,8 @@ public interface BoardMapper {
                                             @Param("tabNo") int tabNo);
 
     List<BoardSmallCategoryDto> selectSmallCategoryWithLargeCategoryId(int largeCategory);
+
+    void deleteRequestBoard(int boardId);
+
+    CommentDto selectCommentWithCommentId(int contentId);
 }

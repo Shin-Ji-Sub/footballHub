@@ -132,8 +132,6 @@
                 </div>
             </div>
         </div>
-        <input type="hidden" id="userId" th:if="${session.user != null}" th:value="${session.user.userId}">
-        <input type="hidden" id="writeUserId" th:value="${board.user.userId}">
         <input type="hidden" id="writeUserNickname" th:value="${board.user.nickname}">
         <input type="hidden" id="boardId" th:value="${board.boardId}">
         <input type="hidden" id="indexValue" th:value="${index}">
@@ -144,6 +142,18 @@
         <input type="hidden" id="sortValue" th:value="${sortValue}">
         <input type="hidden" id="fromPage" th:value="${fromPage}">
         <input type="hidden" id="searchValue" th:value="${searchValue}">
+        <th:block th:if="${session.user != null}">
+            <input type="hidden" id="isLogIn" th:value="${true}">
+        </th:block>
+        <th:block th:if="${session.user == null}">
+            <input type="hidden" id="isLogIn" th:value="${false}">
+        </th:block>
+        <th:block th:if="${board.user.userId != session.user}">
+            <input type="hidden" id="isSameUser" th:value="${false}">
+        </th:block>
+        <th:block th:if="${board.user.userId == session.user}">
+            <input type="hidden" id="isSameUser" th:value="${true}">
+        </th:block>
     </main>
 
     <!-- jQuery -->
@@ -163,7 +173,8 @@
         const boardId = $('#boardId').val();
         const writeUserId = $('#writeUserId').val();
         const writeUserNickname = $('#writeUserNickname').val();
-        const userId = $('#userId').val();
+        const isLogIn = JSON.parse($('#isLogIn').val());
+        const isSameUser = JSON.parse($('#isSameUser').val());
         const indexValue = Number($('#indexValue').val());
         let pageNo = Number($('#pageNo').val());
         const count = Number($('#count').val());
@@ -226,22 +237,24 @@
         $('#deleteContentButton').on('click', (e) => {
             const ok = window.confirm('글을 삭제하시겠습니까? 삭제하면 복구할 수 없습니다.');
             if (ok) {
-                $.ajax({
-                    url : '/board/before-delete',
-                    method : 'POST',
-                    data : 'writeUserId=' + writeUserId,
-                    dataType : 'text',
-                    success : (response, status, xhr) => {
-                        if (response == "success") {
-                            location.href = '/board/delete-content?boardId=' + boardId;
-                        } else {
-                            alert('글을 삭제하지 못했습니다. 다시 한번 시도해주세요.');
-                        }
-                    },
-                    error : (xhr, status, error) => {
-                        alert('글을 삭제하지 못했습니다. 다시 한번 시도해주세요.');
-                    }
-                });
+                const returnUri = encodeURIComponent('/normalhub/home');
+                location.href = '/board/delete-content?boardId=' + boardId + '&returnUri' + returnUri;
+<!--                $.ajax({-->
+<!--                    url : '/board/before-delete',-->
+<!--                    method : 'POST',-->
+<!--                    data : 'writeUserId=' + writeUserId,-->
+<!--                    dataType : 'text',-->
+<!--                    success : (response, status, xhr) => {-->
+<!--                        if (response == "success") {-->
+<!--                            location.href = '/board/delete-content?boardId=' + boardId;-->
+<!--                        } else {-->
+<!--                            alert('글을 삭제하지 못했습니다. 다시 한번 시도해주세요.');-->
+<!--                        }-->
+<!--                    },-->
+<!--                    error : (xhr, status, error) => {-->
+<!--                        alert('글을 삭제하지 못했습니다. 다시 한번 시도해주세요.');-->
+<!--                    }-->
+<!--                });-->
             }
         });
 
@@ -374,7 +387,7 @@
 
         // 스크랩 버튼
         topButtonList.on('click', '#bookmarkButton', (e) => {
-            if (writeUserId == userId) {
+            if (isSameUser == true) {
                 alert('본인 글은 스크랩을 할 수 없습니다.');
                 return;
             } else {
@@ -433,14 +446,14 @@
 
         // 글 신고 기능
         boardReportButton.on('click', (e) => {
-            if (userId == undefined) {
+            if (isLogIn == false) {
                 alert('로그인 후 이용해주세요.');
                 return;
             }
-            if (writeUserId == userId) {
-                alert('본인은 신고할 수 없습니다.');
-                return;
-            }
+<!--            if (isSameUser == true) {-->
+<!--                alert('본인은 신고할 수 없습니다.');-->
+<!--                return;-->
+<!--            }-->
 
             const ok = window.confirm('이 글을 부적절한 글로 신고하시겠습니까?');
 
@@ -448,7 +461,7 @@
                 $.ajax({
                     url : "/account/report-content",
                     method : "POST",
-                    data : "reportCategory=board&contentId=" + boardId + "&userId=" + userId,
+                    data : "reportCategory=board&contentId=" + boardId,
                     dataType : "text",
                     success : (response, status, xhr) => {
                         if (response == "success") {
@@ -456,6 +469,9 @@
                         }
                         if (response == "fail") {
                             alert('중복 신고는 불가능합니다.');
+                        }
+                        if (response == "same") {
+                            alert('본인은 신고할 수 없습니다.');
                         }
                     },
                     error : (xhr, status, error) => {
@@ -467,14 +483,14 @@
 
         // 글 차단 기능
         boardBlockButton.on('click', (e) => {
-            if (userId == undefined) {
+            if (isLogIn == false) {
                 alert('로그인 후 이용해주세요.');
                 return;
             }
-            if (writeUserId == userId) {
-                alert('본인은 차단할 수 없습니다.');
-                return;
-            }
+<!--            if (isSameUser == true) {-->
+<!--                alert('본인은 차단할 수 없습니다.');-->
+<!--                return;-->
+<!--            }-->
 
             const ok = window.confirm(`${writeUserNickname}님을 차단하시겠습니까? 차단 시 차단한 사용자가 작성한 글, 댓글들이 보이지 않습니다.`);
 
@@ -482,7 +498,7 @@
                 $.ajax({
                     url : "/account/block-user",
                     method : "POST",
-                    data : "blockUser=" + writeUserId + "&userId=" + userId,
+                    data : "boardId=" + boardId,
                     dataType : "text",
                     success : (response, status, xhr) => {
                         if (response == "success") {
@@ -522,18 +538,17 @@
 
         // 댓글 신고 기능
         commentModuleBox.on('click', '.report-button', (e) => {
-            if (userId == undefined) {
+            if (isLogIn == false) {
                 alert('로그인 후 이용해주세요.');
                 return;
             }
 
             const commentId = $(e.currentTarget).siblings('.identification').val();
-            const blockUser = $(e.currentTarget).siblings('.comment-write-user').val();
 
-            if (blockUser == userId) {
-                alert('본인은 신고할 수 없습니다.');
-                return;
-            }
+<!--            if (blockUser == userId) {-->
+<!--                alert('본인은 신고할 수 없습니다.');-->
+<!--                return;-->
+<!--            }-->
 
             const ok = window.confirm('이 글을 부적절한 댓글로 신고하시겠습니까?');
 
@@ -541,7 +556,7 @@
                 $.ajax({
                     url : "/account/report-content",
                     method : "POST",
-                    data : "reportCategory=comment&contentId=" + commentId + "&userId=" + userId,
+                    data : "reportCategory=comment&contentId=" + commentId,
                     dataType : "text",
                     success : (response, status, xhr) => {
                         if (response == "success") {
@@ -549,6 +564,9 @@
                         }
                         if (response == "fail") {
                             alert('중복 신고는 불가능합니다.');
+                        }
+                        if (response == "same") {
+                            alert('본인은 신고할 수 없습니다.');
                         }
                     },
                     error : (xhr, status, error) => {
@@ -560,17 +578,16 @@
 
         // 댓글 차단 기능
         commentModuleBox.on('click', '.block-button', (e) => {
-            if (userId == undefined) {
+            if (isLogIn == false) {
                 alert('로그인 후 이용해주세요.');
                 return;
             }
 
-            const blockUser = $(e.currentTarget).siblings('.comment-write-user').val();
             const blockUserNickname = $(e.currentTarget).siblings('.comment-write-nickname').val();
-            if (blockUser == userId) {
-                alert('본인은 차단할 수 없습니다.');
-                return;
-            }
+<!--            if (blockUser == userId) {-->
+<!--                alert('본인은 차단할 수 없습니다.');-->
+<!--                return;-->
+<!--            }-->
 
             const ok = window.confirm(`${blockUserNickname}님을 차단하시겠습니까? 차단 시 차단한 사용자가 작성한 글, 댓글들이 보이지 않습니다.`);
 
@@ -578,7 +595,7 @@
                 $.ajax({
                     url : "/account/block-user",
                     method : "POST",
-                    data : "blockUser=" + blockUser + "&userId=" + userId,
+                    data : "blockUser=" + blockUser,
                     dataType : "text",
                     success : (response, status, xhr) => {
                         if (response == "success") {
@@ -612,7 +629,7 @@
                 $.ajax({
                     url : '/board/write-comment',
                     method : 'POST',
-                    data : 'content=' + content + '&boardId=' + boardId + '&userId=' + userId,
+                    data : 'content=' + content + '&boardId=' + boardId,
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == 'success') {
@@ -667,7 +684,7 @@
                 $.ajax({
                     url : '/board/write-comment',
                     method : 'POST',
-                    data : 'content=' + content + '&boardId=' + boardId + '&userId=' + userId + '&parentId=' + parentId,
+                    data : 'content=' + content + '&boardId=' + boardId + '&parentId=' + parentId,
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == 'success') {
@@ -748,14 +765,14 @@
 
         // 댓글 추천 기능
         commentModuleBox.on('click', '.comment-recommendation-button', (e) => {
-            if (user == null) {
+            if (isLogIn == false) {
                 alert('로그인 후 댓글 등록이 가능합니다.');
             } else {
                 const commentId = $(e.currentTarget).parent('.item-header').siblings('input.comment-id').val();
                 $.ajax({
                     url : '/board/recommendation-comment',
                     method : 'POST',
-                    data : 'commentId=' + commentId + '&userId=' + userId,
+                    data : 'commentId=' + commentId,
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == "success") {
@@ -776,7 +793,7 @@
             $.ajax({
                 url : '/board/cancel-comment-recommendation',
                 method : 'POST',
-                data : 'commentId=' + commentId + '&userId=' + userId,
+                data : 'commentId=' + commentId,
                 dataType : 'text',
                 success : (response, status, xhr) => {
                     if (response == "success") {

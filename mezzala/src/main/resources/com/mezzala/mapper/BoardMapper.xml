@@ -1367,4 +1367,26 @@
             youtube
     </select>
 
+    <delete id="deleteRequestBoard" parameterType="int">
+        DELETE FROM
+            request_board
+        WHERE
+            board_id = #{boardId};
+    </delete>
+
+    <select id="selectCommentWithCommentId" parameterType="int" resultType="CommentDto">
+        SELECT
+            comment_id AS commentId,
+            parent_id AS parentId,
+            reg_date AS regDate,
+            content As content,
+            comment_state AS commentState,
+            user_id AS userId,
+            board_id AS boardId
+        FROM
+            comment
+        WHERE
+            comment_id = #{contentId}
+    </select>
+
 </mapper>

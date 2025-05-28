@@ -11,10 +11,8 @@
 </head>
 <body>
     <div th:replace="~{modules/header}"></div>
-    <input id="socialMethod" type="hidden" th:if="${session.user != null}" th:value="${session.user.socialMethod}">
 
     <form id="writeBoardForm" action="/request/write-board" method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="userId" th:value="${session.user.userId}">
     <main>
         <div class="main-container">
             <div class="board-container">
@@ -54,6 +52,7 @@
             locationCategories.eq(4).addClass('active');
             locationCategories.eq(4).addClass('text-primary');
 
+            // 글작성 버튼
             writeButton.on('click', (e) => {
                 const requestCategory = $('#requestCategory').val();
                 const requestSubject = $('#requestSubject').val();

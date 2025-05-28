@@ -4,8 +4,11 @@ import com.mezzala.common.Aes;
 import com.mezzala.common.KakaoApi;
 import com.mezzala.common.NaverApi;
 import com.mezzala.common.Util;
+import com.mezzala.dto.BoardDto;
+import com.mezzala.dto.CommentDto;
 import com.mezzala.dto.UserDto;
 import com.mezzala.service.AccountService;
+import com.mezzala.service.BoardService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.Data;
@@ -38,6 +41,9 @@ public class AccountController {
 
     @Setter(onMethod_ = {@Autowired})
     private AccountService accountService;
+
+    @Setter(onMethod_ = {@Autowired})
+    private BoardService boardService;
 
     @GetMapping(path = {"/sign-up"})
     public String signUp(Model model,
@@ -160,11 +166,14 @@ public class AccountController {
 
     @PostMapping(path = {"/block-user"})
     @ResponseBody
-    public String blockUser(@RequestParam(name = "blockUser") String blockUser,
-                            @RequestParam(name = "userId") String userId) {
+    public String blockUser(@RequestParam(name = "boardId") int boardId,
+                            HttpSession session) {
         String result = "";
         try {
-            accountService.addBlockUser(blockUser, userId);
+            List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
+            String blockUser = boards.get(0).getUserId();
+            UserDto user = (UserDto) session.getAttribute("user");
+            accountService.addBlockUser(blockUser, user.getUserId());
             result = "success";
         } catch (Exception e) {
             result = "fail";
@@ -187,10 +196,27 @@ public class AccountController {
     @ResponseBody
     public String reportContent(@RequestParam(name = "reportCategory") String reportCategory,
                                 @RequestParam(name = "contentId") int contentId,
-                                @RequestParam(name = "userId") String userId) {
+                                HttpSession session) {
         String result = "";
         try {
-            accountService.addReport(reportCategory, contentId, userId);
+            UserDto user = (UserDto) session.getAttribute("user");
+
+            if (reportCategory.equals("board")) {
+                List<BoardDto> boards = boardService.findBoardWithBoardId(contentId);
+                if (boards.get(0).getUserId().equals(user.getUserId())) {
+                    return "same";
+                }
+            }
+
+            if (reportCategory.equals("comment")) {
+                CommentDto comment = boardService.findCommentWithCommentId(contentId);
+                if (comment.getUserId().equals(user.getUserId())) {
+                    return "same";
+                }
+            }
+
+            accountService.addReport(reportCategory, contentId, user.getUserId());
+
             result = "success";
         } catch (Exception e) {
             result = "fail";

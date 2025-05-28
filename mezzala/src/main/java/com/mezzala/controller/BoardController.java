@@ -232,61 +232,6 @@ public class BoardController {
         return "success";
     }
 
-//    @GetMapping(path = {"content"})
-//    public String content(Model model, @RequestParam(name = "boardId") int boardId,
-//                          @RequestParam(name = "index", defaultValue = "0") int index,
-//                          @RequestParam(name = "count", defaultValue = "0") int count,
-//                          @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
-//                          @RequestParam(name = "from", defaultValue = "none") String from,
-//                          @RequestParam(name = "tabNo", required = false) Integer tabNo,
-//                          @CookieValue(value = "visited", required = false) String visitedBoard,
-//                          HttpServletResponse res, HttpSession session) {
-//
-//        // 쿠키에 현재 boardId가 포함되어 있는지 확인
-//        if (visitedBoard == null || !visitedBoard.contains("[" + boardId + "]")) {
-//            boardService.incrementVisitedBoard(boardId); // 조회수 증가
-//
-//            // 쿠키에 현재 boardId 추가
-//            visitedBoard = (visitedBoard == null ? "" : visitedBoard) + "[" + boardId + "]";
-//            Cookie cookie = new Cookie("visited", visitedBoard);
-//            cookie.setPath("/");
-//            cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효 기간(1일)
-//            res.addCookie(cookie);
-//        }
-//
-//        List<BoardDto> boards = boardService.findBoardWithBoardId(boardId);
-//
-//        UserDto user = (UserDto) session.getAttribute("user");
-//        List<UserActionDto> likeActions = new ArrayList<>();
-//        if (user == null) {
-//            UserActionDto action = new UserActionDto();
-//            likeActions.add(action);
-//        } else {
-//            likeActions = user.getLikeUserActions();
-//        }
-//        List<UserActionDto> bookmarkActions = new ArrayList<>();
-//        if (user == null) {
-//            UserActionDto action = new UserActionDto();
-//            bookmarkActions.add(action);
-//        } else {
-//            bookmarkActions = user.getBookmarkUserActions();
-//        }
-//
-//        model.addAttribute("likeActions", likeActions);
-//        model.addAttribute("bookmarkActions", bookmarkActions);
-//        model.addAttribute("board", boards.get(0));
-//
-//        model.addAttribute("index", index);
-//        model.addAttribute("count", count);
-//        model.addAttribute("pageNo", pageNo);
-//        if (tabNo != null) {
-//            model.addAttribute("tabNo", tabNo);
-//        }
-//        model.addAttribute("from", from);
-//
-//        return "/board/content";
-//    }
-
     @GetMapping(path = {"content"})
     public String content(Model model, HttpServletResponse res, HttpSession session,
                           @RequestParam(name = "index") int index,
@@ -380,7 +325,7 @@ public class BoardController {
     @ResponseBody
     public String beforeDelete(@RequestParam(name = "writeUserId") String writeUserId,
                                HttpSession session) {
-
+        // Request 페이지에서 사용(주석처리했음)
         UserDto user = (UserDto) session.getAttribute("user");
         if (writeUserId.equals(user.getUserId())) {
             return "success";
@@ -391,11 +336,20 @@ public class BoardController {
     }
 
     @GetMapping(path = {"/delete-content"})
-    public String deleteContent(@RequestParam(name = "boardId") int boardId) {
+    public String deleteContent(@RequestParam(name = "boardId") int boardId,
+                                @RequestParam(name = "returnUri", defaultValue = "/") String returnUri) {
 
-        boardService.deleteContent(boardId);
+        if (returnUri.equals("/request/home")) {
+            boardService.deleteRequestBaord(boardId);
+        } else {
+            boardService.deleteContent(boardId);
+        }
 
-        return "redirect:/";
+        if (returnUri.equals("/")) {
+            return "redirect:/";
+        } else {
+            return "redirect:" + returnUri;
+        }
     }
 
     @PostMapping(path = {"/action"})
@@ -457,8 +411,11 @@ public class BoardController {
     @ResponseBody
     public String writeComment(@RequestParam(name = "content") String content,
                                @RequestParam(name = "boardId") int boardId,
-                               @RequestParam(name = "userId") String userId,
-                               @RequestParam(name = "parentId", required = false) Integer parentId) {
+                               @RequestParam(name = "parentId", required = false) Integer parentId,
+                               HttpSession session) {
+
+        UserDto user = (UserDto) session.getAttribute("user");
+        String userId = user.getUserId();
 
         if (parentId == null) {
             boardService.addComment(content, boardId, userId);
@@ -540,9 +497,10 @@ public class BoardController {
     @PostMapping(path = {"/recommendation-comment"})
     @ResponseBody
     public String recommendationComment(@RequestParam(name = "commentId") int commentId,
-                                        @RequestParam(name = "userId") String userId) {
+                                        HttpSession session) {
 
-        boardService.addCommentAction(commentId, userId);
+        UserDto user = (UserDto) session.getAttribute("user");
+        boardService.addCommentAction(commentId, user.getUserId());
 
         return "success";
     }
@@ -550,9 +508,10 @@ public class BoardController {
     @PostMapping(path = {"/cancel-comment-recommendation"})
     @ResponseBody
     public String cancelCommentRecommendation(@RequestParam(name = "commentId") int commentId,
-                                              @RequestParam(name = "userId") String userId) {
+                                              HttpSession session) {
 
-        boardService.deleteCommentRecommendation(commentId, userId);
+        UserDto user = (UserDto) session.getAttribute("user");
+        boardService.deleteCommentRecommendation(commentId, user.getUserId());
 
         return "success";
     }

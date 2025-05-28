@@ -34,13 +34,6 @@
                             <span class="info-data" th:text="${board.user.nickname}"></span>
 <!--                            <span class="info-data" th:text="${#dates.format(board.regDate, 'yy-MM-dd')}"></span>-->
                             <span class="info-data" th:text="${board.getRegDateFormatted()}"></span>
-<!--                            <span class="info-data" id="likeModuleBox">-->
-<!--                                &lt;!&ndash; 좋아요 개수 &ndash;&gt;-->
-<!--                            </span>-->
-<!--                            <span class="info-data">-->
-<!--                              <i class="bi bi-door-open"></i>-->
-<!--                              <span th:text="${board.visitCount}"></span>-->
-<!--                            </span>-->
                         </div>
                         <div class="content-info-container" th:if="${session.user != null && session.user.userId == board.user.userId}">
                             <span class="comment-button-common text-danger" id="deleteContentButton">
@@ -87,9 +80,6 @@
                 </div>
             </div>
         </div>
-        <input type="hidden" id="userId" th:if="${session.user != null}" th:value="${session.user.userId}">
-        <input type="hidden" id="writeUserId" th:value="${board.user.userId}">
-        <input type="hidden" id="writeUserNickname" th:value="${board.user.nickname}">
         <input type="hidden" id="boardId" th:value="${board.boardId}">
         <input type="hidden" id="indexValue" th:value="${index}">
         <input type="hidden" id="pageNo" th:value="${pageNo}">
@@ -99,6 +89,12 @@
         <input type="hidden" id="sortValue" th:value="${sortValue}">
         <input type="hidden" id="fromPage" th:value="${fromPage}">
         <input type="hidden" id="searchValue" th:value="${searchValue}">
+        <th:block th:if="${session.user != null}">
+            <input type="hidden" id="isLogIn" th:value="${true}">
+        </th:block>
+        <th:block th:if="${session.user == null}">
+            <input type="hidden" id="isLogIn" th:value="${false}">
+        </th:block>
     </main>
 
     <!-- jQuery -->
@@ -111,12 +107,9 @@
 </html>
 <script type="text/javascript" th:inline="javascript">
     $(window).on('load', function() {
-        const user = /*[[${session.user}]]*/'';
+        const isLogIn = JSON.parse($('#isLogIn').val());
         const content = /*[[${board.content}]]*/'';
         const boardId = $('#boardId').val();
-        const writeUserId = $('#writeUserId').val();
-        const writeUserNickname = $('#writeUserNickname').val();
-        const userId = $('#userId').val();
         const indexValue = Number($('#indexValue').val());
         let pageNo = Number($('#pageNo').val());
         const count = Number($('#count').val());
@@ -157,22 +150,8 @@
         $('#deleteContentButton').on('click', (e) => {
             const ok = window.confirm('글을 삭제하시겠습니까? 삭제하면 복구할 수 없습니다.');
             if (ok) {
-                $.ajax({
-                    url : '/board/before-delete',
-                    method : 'POST',
-                    data : 'writeUserId=' + writeUserId,
-                    dataType : 'text',
-                    success : (response, status, xhr) => {
-                        if (response == "success") {
-                            location.href = '/board/delete-content?boardId=' + boardId;
-                        } else {
-                            alert('글을 삭제하지 못했습니다. 다시 한번 시도해주세요.');
-                        }
-                    },
-                    error : (xhr, status, error) => {
-                        alert('글을 삭제하지 못했습니다. 다시 한번 시도해주세요.');
-                    }
-                });
+                const returnUri = encodeURIComponent('/request/home');
+                location.href = '/board/delete-content?boardId=' + boardId + '&returnUri=' + returnUri;
             }
         });
 
@@ -220,7 +199,7 @@
                 $.ajax({
                     url : '/request/write-comment',
                     method : 'POST',
-                    data : 'content=' + content + '&boardId=' + boardId + '&userId=' + userId,
+                    data : 'content=' + content + '&boardId=' + boardId,
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == 'success') {
@@ -239,7 +218,7 @@
 
         // (대)댓글쓰기 버튼 - textarea view 노출
         commentModuleBox.on('click', '.append-comment', (e) => {
-            if (user == null) {
+            if (isLogIn == false) {
                 alert('로그인 후 댓글 등록이 가능합니다.');
             } else {
                 $('.write-comment-box').empty();
@@ -274,7 +253,7 @@
                 $.ajax({
                     url : '/request/write-comment',
                     method : 'POST',
-                    data : 'content=' + content + '&boardId=' + boardId + '&userId=' + userId + '&parentId=' + parentId,
+                    data : 'content=' + content + '&boardId=' + boardId + '&parentId=' + parentId,
                     dataType : 'text',
                     success : (response, status, xhr) => {
                         if (response == 'success') {

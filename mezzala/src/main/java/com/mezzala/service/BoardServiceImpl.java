@@ -184,4 +184,14 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.selectSmallCategoryWithLargeCategoryId(largeCategory);
     }
 
+    @Override
+    public void deleteRequestBaord(int boardId) {
+        boardMapper.deleteRequestBoard(boardId);
+    }
+
+    @Override
+    public CommentDto findCommentWithCommentId(int contentId) {
+        return boardMapper.selectCommentWithCommentId(contentId);
+    }
+
 }

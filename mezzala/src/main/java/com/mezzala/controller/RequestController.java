@@ -1,6 +1,7 @@
 package com.mezzala.controller;
 
 import com.mezzala.dto.*;
+import com.mezzala.oauth2.CustomOAuth2User;
 import com.mezzala.service.NormalhubService;
 import com.mezzala.service.RequestService;
 import com.mezzala.ui.ThePager;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -102,7 +104,9 @@ public class RequestController {
 
     @PostMapping(path = {"/write-board"})
     @ResponseBody
-    public String writeBoard(RequestBoardDto board) {
+    public String writeBoard(RequestBoardDto board, HttpSession session) {
+        UserDto user = (UserDto) session.getAttribute("user");
+        board.setUserId(user.getUserId());
         requestService.addBoard(board);
 
         return "success";
@@ -142,10 +146,13 @@ public class RequestController {
 
     @PostMapping(path = {"/write-comment"})
     @ResponseBody
-    public String writeComment(@RequestParam(name = "content") String content,
+    public String writeComment(HttpSession session,
+                               @RequestParam(name = "content") String content,
                                @RequestParam(name = "boardId") int boardId,
-                               @RequestParam(name = "userId") String userId,
                                @RequestParam(name = "parentId", required = false) Integer parentId) {
+        UserDto user = (UserDto) session.getAttribute("user");
+        String userId = user.getUserId();
+
         if (parentId == null) {
             requestService.addComment(content, boardId, userId);
         } else {

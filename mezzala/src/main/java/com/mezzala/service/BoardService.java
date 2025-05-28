@@ -59,4 +59,8 @@ public interface BoardService {
     List<BoardDto> findMypageBoard(int boardNo, String userId, int tabNo);
 
     List<BoardSmallCategoryDto> findSmallCategoryWithLargeCategoryId(int largeCategory);
+
+    void deleteRequestBaord(int boardId);
+
+    CommentDto findCommentWithCommentId(int contentId);
 }
