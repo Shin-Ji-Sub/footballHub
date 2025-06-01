@@ -14,7 +14,7 @@
     <title>FootballHub</title>
 </head>
 <body>
-    <div th:replace="~{/modules/header}"></div>
+    <div th:replace="~{modules/header}"></div>
 
     <main>
         <!-- 제목, 본문, 댓글, 전체 인기글 -->
@@ -219,7 +219,8 @@
 
         // 글 수정 기능
         $('#modifyContentButton').on('click', (e) => {
-            location.href = '/board/modify-content?boardId=' + boardId;
+            const returnUri = encodeURIComponent('/normalhub/home');
+            location.href = '/board/modify-content?boardId=' + boardId + '&returnUri=' + returnUri;
         });
 
         // 글 삭제 기능
